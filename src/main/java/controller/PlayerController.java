@@ -1,5 +1,86 @@
 package controller;
 
-public class PlayerController {
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.HashSet;
+import java.util.Set;
+
+import model.ActionState;
+import model.Direction;
+import model.Player;
+
+public class PlayerController implements KeyListener {
+	
+	//TODO: manca la view
+	private Player player;
+	private final Set<Integer> keysPressed = new HashSet<>();
+	
+	public PlayerController(Player player) {
+		this.player = player;
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		keysPressed.add(e.getKeyCode());
+		
+		boolean leftPressed = keysPressed.contains(KeyEvent.VK_A) || keysPressed.contains(KeyEvent.VK_LEFT);
+		boolean rightPressed = keysPressed.contains(KeyEvent.VK_D) || keysPressed.contains(KeyEvent.VK_RIGHT);
+		boolean movingHorizontally = leftPressed || rightPressed;
+		
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_D:
+		case KeyEvent.VK_RIGHT:
+			player.walk(Direction.RIGHT);
+			break;
+			
+		case KeyEvent.VK_A:
+		case KeyEvent.VK_LEFT:
+			player.walk(Direction.LEFT);
+			break;
+			
+		case KeyEvent.VK_W:
+		case KeyEvent.VK_UP:
+			player.climb(Direction.UP); // da implementare
+			break;
+			
+		case KeyEvent.VK_S:
+		case KeyEvent.VK_DOWN:
+			player.climb(Direction.DOWN); // da implementare
+			break;
+			
+		case KeyEvent.VK_SPACE:
+		case KeyEvent.VK_ENTER:
+			player.jump(movingHorizontally); // da implementare
+			break;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		keysPressed.remove(e.getKeyCode());
+		
+		//PASSING FROM WALKING TO IDLE
+		if (!keysPressed.contains(KeyEvent.VK_D) &&
+				!keysPressed.contains(KeyEvent.VK_RIGHT) &&
+				!keysPressed.contains(KeyEvent.VK_A) &&
+				!keysPressed.contains(KeyEvent.VK_LEFT)) {
+			player.setCurrentActionState(ActionState.IDLE);
+			player.setCurrentFrameIndex(0);
+		}
+		
+		//PASSING FROM JUMPING TO FALLING
+		if (!keysPressed.contains(KeyEvent.VK_SPACE) && player.getCurrentActionState() == ActionState.JUMPING) {
+			player.setCurrentActionState(ActionState.FALLING);
+			player.setCurrentFrameIndex(0);
+		}
+		
+		//TODO: to consider, when on ladder and still, is mario climbing?
+	}
+	
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

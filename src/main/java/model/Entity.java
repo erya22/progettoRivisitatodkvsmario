@@ -21,6 +21,7 @@ public abstract class Entity {
 	private HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames;
 	private ActionState currentActionState;
 	private Direction currentDirection;
+	private Terrain currentTerrain;
 	
 	private int currentFrameIndex;
 	private int frameCounter;
@@ -42,6 +43,7 @@ public abstract class Entity {
 		
 		this.currentActionState = ActionState.IDLE;
 		this.currentDirection = Direction.RIGHT;
+		this.currentTerrain = Terrain.BEAM;
 		
 		this.currentFrameIndex = currentFrameIndex;
 		this.frameCounter = frameCounter;
@@ -137,6 +139,14 @@ public abstract class Entity {
 
 	public void setCurrentDirection(Direction currentDirection) {
 		this.currentDirection = currentDirection;
+	}
+
+	public Terrain getCurrentTerrain() {
+		return currentTerrain;
+	}
+
+	public void setCurrentTerrain(Terrain currentTerrain) {
+		this.currentTerrain = currentTerrain;
 	}
 
 	public int getCurrentFrameIndex() {
