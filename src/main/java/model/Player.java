@@ -31,22 +31,24 @@ public class Player extends Entity {
 	}
 	
 	public void walk(Direction direction) {
-		
-		if (getCurrentDirection() != direction) {
-			setCurrentDirection(direction);
+		if (getCurrentTerrain() == Terrain.BEAM) {
+			if (getCurrentDirection() != direction) {
+				setCurrentDirection(direction);
+			}
+			
+			if (getCurrentActionState() != ActionState.WALKING)  {
+				setCurrentActionState(ActionState.WALKING);
+			}
+			
+			if (direction == Direction.RIGHT) {
+				setX(getX() + getVelocityX());
+			} else if (direction == Direction.LEFT) {
+				setX(getX() - getVelocityX());
+			}
+			
+			log.info("Mario cammina verso: {} a x({}) y({})", getCurrentDirection(), getX(), getY());
 		}
 		
-		if (getCurrentActionState() != ActionState.WALKING)  {
-			setCurrentActionState(ActionState.WALKING);
-		}
-		
-		if (direction == Direction.RIGHT) {
-			setX(getX() + getVelocityX());
-		} else if (direction == Direction.LEFT) {
-			setX(getX() - getVelocityX());
-		}
-		
-		log.info("Mario cammina verso: {} a x({}) y({})", getCurrentDirection(), getX(), getY());
 		
 	}
 	
@@ -164,12 +166,13 @@ public class Player extends Entity {
 	        }
 
 	        // Quando raggiunge "il terreno"
-	        if (getY() >= 300) {  // 300 = altezza del suolo finta
+	        if (getY() >= 300) {  // Mario ha toccato il suolo
 	            setY(300);
 	            setVelocityY(0);
-	            setCurrentActionState(ActionState.IDLE);
-	            setCurrentTerrain(Terrain.BEAM);
-	        }
+	            setCurrentTerrain(Terrain.BEAM);  // Ora Mario è sul terreno
+	            setCurrentActionState(ActionState.IDLE);  // Solo qui è giusto mettere IDLE
+	        } 
+
 	    }
 	}
 	

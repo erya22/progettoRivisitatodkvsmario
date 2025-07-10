@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import model.ActionState;
 import model.Direction;
 import model.Player;
+import model.Terrain;
 
 public class PlayerController implements KeyListener {
 	private static final Logger log = LoggerFactory.getLogger(PlayerController.class);
@@ -21,6 +22,40 @@ public class PlayerController implements KeyListener {
 	public PlayerController(Player player) {
 		this.player = player;
 	}
+	
+	public void updateMovement() {
+	    boolean movingHorizontally = false;
+
+	    if (keysPressed.contains(KeyEvent.VK_RIGHT) || keysPressed.contains(KeyEvent.VK_D)) {
+	        player.setCurrentDirection(Direction.RIGHT);
+	        player.walk(Direction.RIGHT);
+	        movingHorizontally = true;
+	    } 
+	    else if (keysPressed.contains(KeyEvent.VK_LEFT) || keysPressed.contains(KeyEvent.VK_A)) {
+	        player.setCurrentDirection(Direction.LEFT);
+	        player.walk(Direction.LEFT);
+	        movingHorizontally = true;
+	    }
+
+	    // Se non stai saltando o cadendo, e non ti stai muovendo orizzontalmente, metti idle
+	    if (!movingHorizontally && player.getCurrentActionState() != ActionState.JUMPING && player.getCurrentActionState() != ActionState.FALLING 
+	    		&& player.getCurrentTerrain() == Terrain.BEAM) {
+	    	player.setCurrentActionState(ActionState.IDLE);
+	    	
+	    		
+	        
+	    }
+	    
+	    // Gestione salto
+	    if (keysPressed.contains(KeyEvent.VK_SPACE) && player.getCurrentActionState() != ActionState.JUMPING && player.getCurrentTerrain() == Terrain.BEAM) {
+	        player.jump(movingHorizontally);
+	    }
+
+	    // Aggiorna fisica e animazioni
+	    player.update();
+	}
+
+
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -63,22 +98,24 @@ public class PlayerController implements KeyListener {
 	public void keyReleased(KeyEvent e) {
 		keysPressed.remove(e.getKeyCode());
 		
-		//PASSING FROM WALKING TO IDLE
-		if (!keysPressed.contains(KeyEvent.VK_D) &&
-				!keysPressed.contains(KeyEvent.VK_RIGHT) &&
-				!keysPressed.contains(KeyEvent.VK_A) &&
-				!keysPressed.contains(KeyEvent.VK_LEFT)) {
-			player.setCurrentActionState(ActionState.IDLE);
-			player.setCurrentFrameIndex(0);
+		// Definisci il set dei tasti di movimento e salto da controllare
+		Set<Integer> movementKeys = Set.of(
+		    KeyEvent.VK_D, KeyEvent.VK_RIGHT,
+		    KeyEvent.VK_A, KeyEvent.VK_LEFT,
+		    KeyEvent.VK_W, KeyEvent.VK_UP,
+		    KeyEvent.VK_S, KeyEvent.VK_DOWN,
+		    KeyEvent.VK_SPACE, KeyEvent.VK_ENTER
+		);
+
+		// Controlla se nessuno di questi tasti è premuto
+		boolean noMovementKeyPressed = keysPressed.stream().noneMatch(movementKeys::contains);
+
+		if (noMovementKeyPressed && player.getCurrentTerrain() != Terrain.AIR) {
+		    player.setCurrentActionState(ActionState.IDLE);
+		    player.setCurrentFrameIndex(0);
 		}
+
 		
-		//PASSING FROM JUMPING TO FALLING
-		if (!keysPressed.contains(KeyEvent.VK_SPACE) && player.getCurrentActionState() == ActionState.JUMPING) {
-			player.setCurrentActionState(ActionState.FALLING);
-			player.setCurrentFrameIndex(0);
-		}
-		
-		//TODO: to consider, when on ladder and still, is mario climbing?
 	}
 	
 	@Override

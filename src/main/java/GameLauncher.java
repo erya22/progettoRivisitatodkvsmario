@@ -42,7 +42,7 @@ public class GameLauncher {
 		
 		// Simula un "loop" di aggiornamento (console/log only)
         while (true) {
-            player.update();
+            pcontroller.updateMovement();
             panel.repaint();
             try {
                 Thread.sleep(16); // 60 FPS
