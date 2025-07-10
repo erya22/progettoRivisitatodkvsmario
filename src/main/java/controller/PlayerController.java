@@ -38,7 +38,9 @@ public class PlayerController implements KeyListener {
 	    }
 
 	    // Se non stai saltando o cadendo, e non ti stai muovendo orizzontalmente, metti idle
-	    if (!movingHorizontally && player.getCurrentActionState() != ActionState.JUMPING && player.getCurrentActionState() != ActionState.FALLING 
+	    if (!movingHorizontally && player.getCurrentActionState() != ActionState.JUMPING 
+	    		&& player.getCurrentActionState() != ActionState.FALLING 
+	    		&& player.getCurrentActionState() != ActionState.CLIMBING
 	    		&& player.getCurrentTerrain() == Terrain.BEAM) {
 	    	player.setCurrentActionState(ActionState.IDLE);
 	    	
@@ -110,7 +112,7 @@ public class PlayerController implements KeyListener {
 		// Controlla se nessuno di questi tasti è premuto
 		boolean noMovementKeyPressed = keysPressed.stream().noneMatch(movementKeys::contains);
 
-		if (noMovementKeyPressed && player.getCurrentTerrain() != Terrain.AIR) {
+		if (noMovementKeyPressed && player.getCurrentTerrain() != Terrain.AIR && player.getCurrentTerrain() != Terrain.LADDER) {
 		    player.setCurrentActionState(ActionState.IDLE);
 		    player.setCurrentFrameIndex(0);
 		}

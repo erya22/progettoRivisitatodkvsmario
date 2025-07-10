@@ -41,9 +41,9 @@ public abstract class Entity {
 		this.spriteFrames = spriteFrames;
 		this.name = name;
 		
-		this.currentActionState = ActionState.IDLE;
-		this.currentDirection = Direction.RIGHT;
-		this.currentTerrain = Terrain.BEAM;
+		this.currentActionState = ActionState.CLIMBING;
+		this.currentDirection = Direction.UP;
+		this.currentTerrain = Terrain.LADDER;
 		
 		this.currentFrameIndex = currentFrameIndex;
 		this.frameCounter = frameCounter;

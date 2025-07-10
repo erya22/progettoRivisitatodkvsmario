@@ -31,9 +31,9 @@ public class PuppetMain {
         );
 
         // Imposta stato iniziale
-        player.setCurrentDirection(Direction.RIGHT);
-        player.setCurrentActionState(ActionState.IDLE);
-        player.setCurrentTerrain(Terrain.BEAM);
+        player.setCurrentDirection(Direction.UP);
+        player.setCurrentActionState(ActionState.CLIMBING);
+        player.setCurrentTerrain(Terrain.LADDER);
         // 🔹 Test movimento a destra
         player.walk(Direction.RIGHT);
         player.update();

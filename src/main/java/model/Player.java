@@ -23,6 +23,7 @@ public class Player extends Entity {
 	private int jumpStrength;
 	private boolean isMovingHorizontallyWhileJumping = false;
 	private int jumpX = 2;
+	private int ladderY = 4;
 	
 	public Player(int x, int y, int velocityX, int velocityY, int width, int height,
 			HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames, String name, int currentFrameIndex, int frameCounter, int frameDelay, int spriteNumber, int jumpStrength) {
@@ -54,11 +55,12 @@ public class Player extends Entity {
 	
 	//TODO: CONTROLLARE TERRAIN
 	public void climb(Direction direction) {
+		log.debug("WAH TI STAI ARRAMPICANDO VERSO: {}", direction);
 		if (getCurrentTerrain() == Terrain.LADDER) {
 			if (direction == Direction.UP) {
-				setY(getY() - getVelocityY());;
+				setY(getY() - getLadderY());;
 			} else if (direction == Direction.DOWN) {
-				setY(getY() + getVelocityY());
+				setY(getY() + getLadderY());
 			}
 			
 			if (getCurrentActionState() != ActionState.CLIMBING) {
@@ -196,6 +198,22 @@ public class Player extends Entity {
 
 	public void setMovingHorizontallyWhileJumping(boolean isMovingHorizontallyWhileJumping) {
 		this.isMovingHorizontallyWhileJumping = isMovingHorizontallyWhileJumping;
+	}
+	
+	public int getJumpX() {
+		return jumpX;
+	}
+
+	public void setJumpX(int jumpX) {
+		this.jumpX = jumpX;
+	}
+
+	public int getLadderY() {
+		return ladderY;
+	}
+
+	public void setLadderY(int ladderY) {
+		this.ladderY = ladderY;
 	}
 
 	@Override
