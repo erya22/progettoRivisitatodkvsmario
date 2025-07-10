@@ -5,12 +5,15 @@ import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import model.ActionState;
 import model.Direction;
 import model.Player;
 
 public class PlayerController implements KeyListener {
-	
+	private static final Logger log = LoggerFactory.getLogger(PlayerController.class);
 	//TODO: manca la view
 	private Player player;
 	private final Set<Integer> keysPressed = new HashSet<>();
@@ -21,6 +24,7 @@ public class PlayerController implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		log.debug("Tasto premuto {}", e.getKeyCode());
 		keysPressed.add(e.getKeyCode());
 		
 		boolean leftPressed = keysPressed.contains(KeyEvent.VK_A) || keysPressed.contains(KeyEvent.VK_LEFT);
