@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,15 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import model.ActionState;
+import model.Collision;
 import model.Direction;
 import model.Player;
 import model.Terrain;
+import utils.CollisionManager;
 
 public class PlayerController implements KeyListener {
 	private static final Logger log = LoggerFactory.getLogger(PlayerController.class);
 	//TODO: manca la view
 	private Player player;
 	private final Set<Integer> keysPressed = new HashSet<>();
+	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
 	
 	public PlayerController(Player player) {
 		this.player = player;
@@ -55,6 +59,7 @@ public class PlayerController implements KeyListener {
 
 	    // Aggiorna fisica e animazioni
 	    player.update();
+	    player.updatePhysics(beams);
 	}
 
 

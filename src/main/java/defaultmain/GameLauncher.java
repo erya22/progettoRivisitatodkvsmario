@@ -26,7 +26,7 @@ public class GameLauncher {
 				 0, 0,             // currentFrameIndex, frameCounter
 				 10,               // frameDelay
 				 1,                // spriteNumber
-				 15                // jumpStrength
+				 12                // jumpStrength
 				 );
 		
 		PlayerController pcontroller = new PlayerController(player);

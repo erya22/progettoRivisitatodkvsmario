@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.AbstractMap;
@@ -145,38 +146,6 @@ public class Player extends Entity {
 	@Override
 	public void update() {
 		log.debug("DATI AGGIORNATI: {}", this.toString());
-		
-		// Simula gravità
-	    if (getCurrentActionState() == ActionState.JUMPING || getCurrentActionState() == ActionState.FALLING) {
-	        setCurrentTerrain(Terrain.AIR);
-	    	setY(getY() + getVelocityY()); // aggiorna posizione
-	   
-	        // aumenta velocityY (gravità)
-	        setVelocityY(getVelocityY() + 1); // 1 è l'accelerazione verso il basso
-	        
-	        //MOVIMENTO ORIZZONTALE
-	        if (isMovingHorizontallyWhileJumping) {
-	        	if (getCurrentDirection() == Direction.RIGHT) {
-	        		setX(getX() + jumpX);
-	        	} else if (getCurrentDirection() == Direction.LEFT) {
-	        		setX(getX() - jumpX);
-	        	}
-	        }
-	        
-	        // Quando comincia a cadere
-	        if (getVelocityY() > 0 && getCurrentActionState() == ActionState.JUMPING) {
-	            setCurrentActionState(ActionState.FALLING);
-	        }
-
-	        // Quando raggiunge "il terreno"
-	        if (getY() >= 300) {  // Mario ha toccato il suolo
-	            setY(300);
-	            setVelocityY(0);
-	            setCurrentTerrain(Terrain.BEAM);  // Ora Mario è sul terreno
-	            setCurrentActionState(ActionState.IDLE);  // Solo qui è giusto mettere IDLE
-	        } 
-
-	    }
 	}
 	
 	//Aggiorna i dati per l'animazione
@@ -185,9 +154,67 @@ public class Player extends Entity {
 		
 	}
 	
+	@Override
 	public void updatePhysics(ArrayList<Collision> beams) {
-		
+	    // Applica gravità solo se in salto o in caduta
+	    if (getCurrentActionState() == ActionState.JUMPING || getCurrentActionState() == ActionState.FALLING) {
+	        setCurrentTerrain(Terrain.AIR);
+
+	        // Movimento verticale
+	        setY(getY() + getVelocityY());
+	        setVelocityY(getVelocityY() + 1); // forza di gravità
+
+	        // Movimento orizzontale durante il salto
+	        if (isMovingHorizontallyWhileJumping) {
+	            if (getCurrentDirection() == Direction.RIGHT) {
+	                setX(getX() + jumpX);
+	            } else if (getCurrentDirection() == Direction.LEFT) {
+	                setX(getX() - jumpX);
+	            }
+	        }
+
+	        // Passaggio da salto a caduta
+	        if (getVelocityY() > 0 && getCurrentActionState() == ActionState.JUMPING) {
+	            setCurrentActionState(ActionState.FALLING);
+	        }
+
+	        // Previsione dei piedi nella prossima posizione
+	        Rectangle feet = new Rectangle(getX(), getY() + getHeight(), getWidth(), 1);
+
+	        for (Collision beam : beams) {
+	            if (beam.getBounds().intersects(feet)) {
+	                // Atterraggio sulla trave
+	                setY(beam.getBounds().y - getHeight()); // Allinea i piedi
+	                setVelocityY(0);
+	                setCurrentTerrain(Terrain.BEAM);
+	                setCurrentActionState(ActionState.IDLE); // oppure WALKING se premi un tasto
+	                setMovingHorizontallyWhileJumping(false);
+	                break;
+	            }
+	        }
+	    }
+
+	    // Se Mario è a piedi (es. WALKING/IDLE) controlla se c'è beam sotto
+	    if (getCurrentActionState() == ActionState.WALKING || getCurrentActionState() == ActionState.IDLE) {
+	        Rectangle feet = new Rectangle(getX(), getY() + getHeight(), getWidth(), 1);
+	        boolean onBeam = false;
+
+	        for (Collision beam : beams) {
+	            if (beam.getBounds().intersects(feet)) {
+	                onBeam = true;
+	                break;
+	            }
+	        }
+
+	        if (!onBeam) {
+	            setCurrentActionState(ActionState.FALLING);
+	            setCurrentTerrain(Terrain.AIR);
+	        } else {
+	            setCurrentTerrain(Terrain.BEAM);
+	        }
+	    }
 	}
+
 
 	public int getJumpStrength() {
 		return jumpStrength;
