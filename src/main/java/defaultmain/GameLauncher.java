@@ -1,3 +1,4 @@
+package defaultmain;
 import java.awt.image.BufferedImage;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import model.ActionState;
 import model.Direction;
 import model.Player;
 import view.GamePanel;
+import view.MapView;
 
 public class GameLauncher {
 	public static void main(String[] args) {
@@ -28,7 +30,7 @@ public class GameLauncher {
 				 );
 		
 		PlayerController pcontroller = new PlayerController(player);
-		
+		MapView mapView = new MapView();
 		
 		// JFrame
         JFrame frame = new JFrame("Donkey Kong VS Mario");
@@ -36,7 +38,7 @@ public class GameLauncher {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);
         
-        GamePanel panel = new GamePanel(player, pcontroller);
+        GamePanel panel = new GamePanel(player, pcontroller, mapView);
         frame.add(panel);
         frame.setVisible(true);
 		

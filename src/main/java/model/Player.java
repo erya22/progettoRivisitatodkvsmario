@@ -22,7 +22,7 @@ public class Player extends Entity {
 	//JUMP SETTINGS
 	private int jumpStrength;
 	private boolean isMovingHorizontallyWhileJumping = false;
-	private int jumpX = 2;
+	private int jumpX = 4;
 	private int ladderY = 4;
 	
 	public Player(int x, int y, int velocityX, int velocityY, int width, int height,

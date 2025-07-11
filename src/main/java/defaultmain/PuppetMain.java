@@ -1,3 +1,4 @@
+package defaultmain;
 import java.awt.image.BufferedImage;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
