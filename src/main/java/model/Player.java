@@ -14,13 +14,15 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import utils.CollisionManager;
+
 /**
  * TODO: movimento, salto con fisica, 
  * scale, collisione con barile
  */
 public class Player extends Entity {
 	private static final Logger log = LoggerFactory.getLogger(Player.class);
-	
+	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
 	//JUMP SETTINGS
 	private int jumpStrength;
 	private boolean isMovingHorizontallyWhileJumping = false;
@@ -43,11 +45,29 @@ public class Player extends Entity {
 				setCurrentActionState(ActionState.WALKING);
 			}
 			
-			if (direction == Direction.RIGHT) {
-				setX(getX() + getVelocityX());
-			} else if (direction == Direction.LEFT) {
-				setX(getX() - getVelocityX());
-			}
+			//CODICE AGGIUNTO ORA:
+			int nextX = getX() + (direction == Direction.RIGHT ? getVelocityX() : -getVelocityX());
+	        int maxStepUp = 8; // massimo quanto Mario può "salire" automaticamente
+
+	        // Crea rettangolo piedi davanti a Mario nella prossima posizione
+	        for (int dy = 0; dy <= maxStepUp; dy++) {
+	            Rectangle testFeet = new Rectangle(nextX, getY() + dy + getHeight(), getWidth(), 1);
+
+	            for (Collision beam : beams) { // usa dove hai la lista
+	                if (beam.getBounds().intersects(testFeet)) {
+	                	log.debug("Trave trovata!");
+	                    // Trave trovata leggermente più in alto: sali
+	                    setX(nextX);
+	                    setY(beam.getBounds().y - getHeight()); // sali di poco
+	                    log.debug("Mario cammina verso {} con salita di {}px", direction, dy);
+	                    return;
+	                }
+	            }
+	        }
+
+	        // Nessuna trave rilevata: movimento normale orizzontale
+	        setX(nextX);
+	        //FINE CODICE AGGIUNTO ORA
 			
 			log.info("Mario cammina verso: {} a x({}) y({})", getCurrentDirection(), getX(), getY());
 		}

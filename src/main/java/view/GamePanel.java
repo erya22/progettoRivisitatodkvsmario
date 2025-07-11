@@ -6,6 +6,9 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import controller.PlayerController;
 import model.Player;
 
@@ -13,7 +16,7 @@ import model.Player;
  * Pannello centrale con il rendering.
  */
 public class GamePanel extends JPanel {
-
+	private static final Logger log = LoggerFactory.getLogger(GamePanel.class);
 	private Player player;
 	private PlayerController controller;
 	private MapView mapView;
