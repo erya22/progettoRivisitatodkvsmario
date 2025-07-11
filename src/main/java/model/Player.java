@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -181,6 +182,10 @@ public class Player extends Entity {
 	//Aggiorna i dati per l'animazione
 	@Override
 	public void updateAnimation() {
+		
+	}
+	
+	public void updatePhysics(ArrayList<Collision> beams) {
 		
 	}
 

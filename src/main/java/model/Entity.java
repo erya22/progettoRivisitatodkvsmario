@@ -1,9 +1,10 @@
 package model;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * parent class per Player Barrel DK ecc.
@@ -53,6 +54,8 @@ public abstract class Entity {
 	
 	// Metodo astratto per aggiornare la logica di ogni entità a ogni frame
     public abstract void update();
+    
+    public abstract void updatePhysics(ArrayList<Collision> beams);
 	
     public abstract void updateAnimation();
     
@@ -180,6 +183,25 @@ public abstract class Entity {
 	public void setSpriteNumber(int spriteNumber) {
 		this.spriteNumber = spriteNumber;
 	}
+	
+	public Rectangle getFeetBounds() {
+	    return new Rectangle(x + 4, y + height - 5, width - 8, 5);
+	}
+	
+	public Rectangle getHeadBounds() {
+	    return new Rectangle(x + 4, y, width - 8, 5);
+	}
+	
+	public Rectangle getLeftBounds() {
+	    return new Rectangle(x, y + 5, 5, height - 10);
+	}
+
+	public Rectangle getRightBounds() {
+	    return new Rectangle(x + width - 5, y + 5, 5, height - 10);
+	}
+
+
+
     
     
 }
