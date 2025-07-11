@@ -24,7 +24,8 @@ public class GamePanel extends JPanel {
         this.mapView = mapView;
         
         
-
+        setBackground(Color.BLACK);
+        
         setFocusable(true);
         requestFocusInWindow(); // necessario per ricevere input
         addKeyListener(controller);
