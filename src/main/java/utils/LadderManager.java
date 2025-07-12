@@ -9,6 +9,7 @@ public class LadderManager {
 	
 	public static ArrayList<Ladder> loadSampleLadders() {
 		ladders.add(new Ladder(2, 12 * Constants.TILE_SIZE, 30 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE - 4, true));
+		ladders.add(new Ladder(2, 14 * Constants.TILE_SIZE, 23 * Constants.TILE_SIZE - 4, Constants.TILE_SIZE, 4 * Constants.TILE_SIZE + 2, true));
 		ladders.add(new Ladder(2, 12 * Constants.TILE_SIZE, 27 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE * 2 + 2, true));
 		ladders.add(new Ladder(2, 23 * Constants.TILE_SIZE, 27 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE * 4 - 8, true));
 		ladders.add(new Ladder(2, 14 * Constants.TILE_SIZE, 23 * Constants.TILE_SIZE - 1, Constants.TILE_SIZE, Constants.TILE_SIZE - 2, true));
