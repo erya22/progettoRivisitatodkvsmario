@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import utils.CollisionManager;
+import utils.Constants;
 
 /**
  * TODO: movimento, salto con fisica, 
@@ -176,7 +177,18 @@ public class Player extends Entity {
 	
 	@Override
 	public void updatePhysics(ArrayList<Collision> beams) {
-	    // Applica gravità solo se in salto o in caduta
+		//LIMITI ORIZZONTALI MAPPA
+		if (getX() < 0){
+			setX(0);
+			log.debug("Mario ha colpito il bordo orizzontale sinistro della mappa");
+		} else if (getX() + getWidth() > Constants.MAP_WIDTH){
+			setX(Constants.MAP_WIDTH - getWidth());
+			log.debug("Mario ha colpito il bordo orizzontale sinistro della mappa");
+		}
+			
+
+		
+		// Applica gravità solo se in salto o in caduta
 	    if (getCurrentActionState() == ActionState.JUMPING || getCurrentActionState() == ActionState.FALLING) {
 	        setCurrentTerrain(Terrain.AIR);
 
@@ -211,6 +223,24 @@ public class Player extends Entity {
 	                setMovingHorizontallyWhileJumping(false);
 	                break;
 	            }
+	        }
+	        
+	        if (getVelocityY() < 0) {
+	        	Rectangle head = getHeadBounds();
+	        	
+	        	for (Collision beam : beams) {
+	        		if (beam.getBounds().intersects(head)) {
+	        			// ECCEZIONE: se Mario è su scala, lasciamolo passare
+	                    if (getCurrentTerrain() == Terrain.LADDER && getCurrentActionState() == ActionState.CLIMBING) {
+	                        continue;
+	                    }
+
+	                    // Colpito il soffitto: blocca salto e inizia caduta
+	                    setVelocityY(0);
+	                    setCurrentActionState(ActionState.FALLING);
+	                    return;
+	        		}
+	        	}
 	        }
 	    }
 

@@ -1,5 +1,6 @@
 package utils;
 
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 public class Constants {
@@ -17,7 +18,8 @@ public class Constants {
 	//MAP
     public static final int MAP_WIDTH = U_TILE_COLS * TILE_SIZE; // Numero di colonne * dimensione tile
     public static final int MAP_HEIGHT = U_TILE_ROWS  * TILE_SIZE;
-	
+	public static final Rectangle MAP_BOUNDS = new Rectangle(0, 0, MAP_WIDTH, MAP_HEIGHT);
+    
     public static final int MAP_OFFSET_X = (SCREEN_WIDTH - MAP_WIDTH) / 2;
     public static final int MAP_OFFSET_Y = (SCREEN_HEIGHT - MAP_HEIGHT) / 2;
 	
