@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import controller.PlayerController;
 import model.DonkeyKong;
+import model.Peach;
 import model.Player;
 
 /**
@@ -21,11 +22,13 @@ public class GamePanel extends JPanel {
 	private Player player;
 	private PlayerController controller;
 	private DonkeyKong dk;
+	private Peach peach;
 	private MapView mapView;
 	
-	 public GamePanel(Player player, DonkeyKong dk, PlayerController controller, MapView mapView) {
+	 public GamePanel(Player player, DonkeyKong dk, Peach peach, PlayerController controller, MapView mapView) {
         this.player = player;
         this.dk = dk;
+        this.peach = peach;
         this.controller = controller;
         this.mapView = mapView;
         
@@ -50,6 +53,10 @@ public class GamePanel extends JPanel {
 	        
 	        g.setColor(Color.BLUE);
 	        g.fillRect(dk.getX(), dk.getY(), dk.getWidth(), dk.getHeight());
+	        
+	        g.setColor(Color.MAGENTA);
+	        g.fillRect(peach.getX(), peach.getY(), peach.getWidth(), peach.getHeight());
+	        
 	    }
 	
 }
