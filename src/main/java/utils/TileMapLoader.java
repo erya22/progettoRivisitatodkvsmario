@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 public class TileMapLoader {
 
     public static TileMap loadMap() {
-        try (InputStream jsonStream = TileMapLoader.class.getResourceAsStream("/MAPPA32/JSON/mappa25m_collisioni.json")) {
+        try (InputStream jsonStream = TileMapLoader.class.getResourceAsStream("/MAPPA32/JSON/mappa25m_colladder.json")) {
             if (jsonStream == null) throw new FileNotFoundException("File JSON non trovato!");
             Reader reader = new InputStreamReader(jsonStream);
             return new Gson().fromJson(reader, TileMap.class);

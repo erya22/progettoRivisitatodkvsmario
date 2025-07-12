@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import model.ActionState;
 import model.Collision;
 import model.Direction;
+import model.Ladder;
 import model.Player;
 import model.Terrain;
 import utils.CollisionManager;
@@ -30,37 +32,56 @@ public class PlayerController implements KeyListener {
 	public void updateMovement() {
 	    boolean movingHorizontally = false;
 
+	    // ---- GESTIONE MOVIMENTO ORIZZONTALE ----
 	    if (keysPressed.contains(KeyEvent.VK_RIGHT) || keysPressed.contains(KeyEvent.VK_D)) {
 	        player.setCurrentDirection(Direction.RIGHT);
 	        player.walk(Direction.RIGHT);
 	        movingHorizontally = true;
-	    } 
-	    else if (keysPressed.contains(KeyEvent.VK_LEFT) || keysPressed.contains(KeyEvent.VK_A)) {
+	    } else if (keysPressed.contains(KeyEvent.VK_LEFT) || keysPressed.contains(KeyEvent.VK_A)) {
 	        player.setCurrentDirection(Direction.LEFT);
 	        player.walk(Direction.LEFT);
 	        movingHorizontally = true;
 	    }
 
-	    // Se non stai saltando o cadendo, e non ti stai muovendo orizzontalmente, metti idle
-	    if (!movingHorizontally && player.getCurrentActionState() != ActionState.JUMPING 
-	    		&& player.getCurrentActionState() != ActionState.FALLING 
-	    		&& player.getCurrentActionState() != ActionState.CLIMBING
-	    		&& player.getCurrentTerrain() == Terrain.BEAM) {
-	    	player.setCurrentActionState(ActionState.IDLE);
-	    	
-	    		
-	        
+	    // ---- SE IN SCALA E MUOVI ORIZZONTALMENTE, VERIFICA SE ESCE DALLA SCALA ----
+	    if (movingHorizontally && player.getCurrentTerrain() == Terrain.LADDER) {
+	        boolean stillOnLadder = false;
+	        Rectangle ladderBounds = player.getLadderBounds();
+
+	        for (Ladder ladder : player.getLadders()) {
+	            if (ladder.getBounds().intersects(ladderBounds)) {
+	                stillOnLadder = true;
+	                break;
+	            }
+	        }
+
+	        if (!stillOnLadder) {
+	            player.setCurrentTerrain(Terrain.AIR);
+	            player.setCurrentActionState(ActionState.FALLING);
+	        }
 	    }
-	    
-	    // Gestione salto
-	    if (keysPressed.contains(KeyEvent.VK_SPACE) && player.getCurrentActionState() != ActionState.JUMPING && player.getCurrentTerrain() == Terrain.BEAM) {
+
+	    // ---- GESTIONE IDLE SE FERMO E A TERRA ----
+	    if (!movingHorizontally &&
+	        player.getCurrentActionState() != ActionState.JUMPING &&
+	        player.getCurrentActionState() != ActionState.FALLING &&
+	        player.getCurrentActionState() != ActionState.CLIMBING &&
+	        player.getCurrentTerrain() == Terrain.BEAM) {
+	        player.setCurrentActionState(ActionState.IDLE);
+	    }
+
+	    // ---- GESTIONE SALTO SOLO SE SU TRAVE ----
+	    if (keysPressed.contains(KeyEvent.VK_SPACE) &&
+	        player.getCurrentActionState() != ActionState.JUMPING &&
+	        player.getCurrentTerrain() == Terrain.BEAM) {
 	        player.jump(movingHorizontally);
 	    }
 
-	    // Aggiorna fisica e animazioni
+	    // ---- AGGIORNA DATI E FISICA ----
 	    player.update();
 	    player.updatePhysics(beams);
 	}
+
 
 
 

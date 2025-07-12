@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import utils.CollisionManager;
 import utils.Constants;
+import utils.LadderManager;
 
 /**
  * TODO: movimento, salto con fisica, 
@@ -23,7 +24,13 @@ import utils.Constants;
  */
 public class Player extends Entity {
 	private static final Logger log = LoggerFactory.getLogger(Player.class);
+	//TODO: forse da spostare in Entity?
 	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
+	private ArrayList<Ladder> ladders = LadderManager.loadSampleLadders();
+	
+	//BOUNDS PER LE SCALE
+	private Rectangle ladderBounds;
+	private ActionState previousActionState;
 	//JUMP SETTINGS
 	private int jumpStrength;
 	private boolean isMovingHorizontallyWhileJumping = false;
@@ -76,22 +83,101 @@ public class Player extends Entity {
 		
 	}
 	
-	//TODO: CONTROLLARE TERRAIN
 	public void climb(Direction direction) {
-		log.debug("WAH TI STAI ARRAMPICANDO VERSO: {}", direction);
-		if (getCurrentTerrain() == Terrain.LADDER) {
-			if (direction == Direction.UP) {
-				setY(getY() - getLadderY());;
-			} else if (direction == Direction.DOWN) {
-				setY(getY() + getLadderY());
-			}
-			
-			if (getCurrentActionState() != ActionState.CLIMBING) {
-				setCurrentActionState(ActionState.CLIMBING);
-			}
-		}
-		
+	    log.debug("TI STAI ARRAMPICANDO VERSO: {}", direction);
+
+	    ladderBounds = getLadderBounds();
+	    boolean onLadder = false;
+
+	    for (Ladder ladder : ladders) {
+	        if (ladder.getBounds().intersects(ladderBounds)) {
+	            setCurrentTerrain(Terrain.LADDER);
+	            onLadder = true;
+	            break;
+	        }
+	    }
+
+	    if (!onLadder) {
+	        setCurrentTerrain(Terrain.AIR);
+	        setCurrentActionState(ActionState.FALLING);
+	        return;
+	    }
+
+	    if (getCurrentActionState() != ActionState.CLIMBING) {
+	        setCurrentActionState(ActionState.CLIMBING);
+	    }
+
+	    // Se stava già scalando, può andare su o giù
+	    if (previousActionState == ActionState.CLIMBING) {
+	        if (direction == Direction.UP) {
+	            setY(getY() - getLadderY());
+	        } else if (direction == Direction.DOWN) {
+	            // 🔴 BLOCCO CONTRO TRAVE
+	            Rectangle feetAfterStep = new Rectangle(getX(), getY() + getLadderY() + getHeight(), getWidth(), 1);
+	            boolean beamBelow = false;
+
+	            for (Collision beam : beams) {
+	                if (beam.getBounds().intersects(feetAfterStep)) {
+	                    beamBelow = true;
+	                    break;
+	                }
+	            }
+
+	            if (beamBelow) {
+	                log.debug("Mario non può scendere: c'è una trave sotto la scala");
+	                setCurrentTerrain(Terrain.BEAM);
+	                return;
+	            }
+
+	            setY(getY() + getLadderY());
+	        }
+	    } else {
+	        // Se non stava già scalando, può solo salire
+	        if (direction == Direction.UP) {
+	            setY(getY() - getLadderY());
+	        }
+	    }
 	}
+
+	
+	//TODO: CONTROLLARE TERRAIN
+//	public void climb(Direction direction) {
+//		log.debug("WAH TI STAI ARRAMPICANDO VERSO: {}", direction);
+//		
+//		ladderBounds = getLadderBounds();
+//		boolean onLadder = false;
+//		
+//		for (Ladder ladder : ladders) {
+//			if (ladder.getBounds().intersects(ladderBounds)) {
+//				onLadder = true;
+//				break;
+//			}
+//		}
+//		
+//		if (!onLadder) {
+//	        setCurrentTerrain(Terrain.AIR);
+//	        setCurrentActionState(ActionState.FALLING);
+//	        return;
+//	    }
+//		
+//		if (onLadder) {
+//			setCurrentTerrain(Terrain.LADDER);
+//			
+//			if (direction == Direction.UP) {
+//				setY(getY() - getLadderY());
+//			} else if (direction == Direction.DOWN) {
+//				setY(getY() + getLadderY());
+//			}
+//			
+//			if (getCurrentActionState() != ActionState.CLIMBING) {
+//				setCurrentActionState(ActionState.CLIMBING);
+//			} else {
+//				//Se Mario non è più sulla scala
+//				setCurrentTerrain(Terrain.AIR);
+//			}
+//		}
+//		
+//	}
 	
 	public void jump(boolean movingHorizontally) {
 		log.debug("is key pressed? {}", movingHorizontally);
@@ -166,6 +252,8 @@ public class Player extends Entity {
 	//TODO: aggiorna i dati per la view
 	@Override
 	public void update() {
+		// Salva lo stato attuale prima di aggiornare
+	    previousActionState = getCurrentActionState();
 		log.debug("DATI AGGIORNATI: {}", this.toString());
 	}
 	
@@ -297,6 +385,16 @@ public class Player extends Entity {
 	public void setLadderY(int ladderY) {
 		this.ladderY = ladderY;
 	}
+	
+	public Rectangle getLadderBounds() {
+		Rectangle ladderCheck = new Rectangle(
+			    getX() + getWidth() / 4,  // 25% da sinistra
+			    getY(),                   // dalla testa
+			    getWidth() / 2,           // 50% larghezza (centrato)
+			    getHeight()               // tutta l'altezza
+			);
+		return ladderCheck;
+	}
 
 	@Override
 	public String toString() {
@@ -315,6 +413,20 @@ public class Player extends Entity {
 				.append(hashCode()).append("\n, toString()=").append(super.toString()).append("]");
 		return builder.toString();
 	}
+	
+	public ArrayList<Ladder> getLadders() {
+		return ladders;
+	}
+
+	public ActionState getPreviousActionState() {
+		return previousActionState;
+	}
+
+	public void setPreviousActionState(ActionState previousActionState) {
+		this.previousActionState = previousActionState;
+	}
+	
+	
 	
 	
 	
