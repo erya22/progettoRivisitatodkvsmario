@@ -112,7 +112,7 @@ public class Player extends Entity {
 	        if (direction == Direction.UP) {
 	            setY(getY() - getLadderY());
 	        } else if (direction == Direction.DOWN) {
-	            // 🔴 BLOCCO CONTRO TRAVE
+	            //BLOCCO CONTRO TRAVE
 	            Rectangle feetAfterStep = new Rectangle(getX(), getY() + getLadderY() + getHeight(), getWidth(), 1);
 	            boolean beamBelow = false;
 
@@ -130,6 +130,10 @@ public class Player extends Entity {
 	            }
 
 	            setY(getY() + getLadderY());
+	        } else if (direction == Direction.RIGHT) {
+	        	setX(getX() + getVelocityX());
+	        } else if (direction == Direction.LEFT) {
+	        	setX(getX() - getVelocityX());
 	        }
 	    } else {
 	        // Se non stava già scalando, può solo salire

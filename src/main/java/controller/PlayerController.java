@@ -33,11 +33,11 @@ public class PlayerController implements KeyListener {
 	    boolean movingHorizontally = false;
 
 	    // ---- GESTIONE MOVIMENTO ORIZZONTALE ----
-	    if (keysPressed.contains(KeyEvent.VK_RIGHT) || keysPressed.contains(KeyEvent.VK_D)) {
+	    if (keysPressed.contains(KeyEvent.VK_RIGHT) || keysPressed.contains(KeyEvent.VK_D) && player.getCurrentTerrain() == Terrain.BEAM) {
 	        player.setCurrentDirection(Direction.RIGHT);
 	        player.walk(Direction.RIGHT);
 	        movingHorizontally = true;
-	    } else if (keysPressed.contains(KeyEvent.VK_LEFT) || keysPressed.contains(KeyEvent.VK_A)) {
+	    } else if (keysPressed.contains(KeyEvent.VK_LEFT) || keysPressed.contains(KeyEvent.VK_A) && player.getCurrentTerrain() == Terrain.BEAM) {
 	        player.setCurrentDirection(Direction.LEFT);
 	        player.walk(Direction.LEFT);
 	        movingHorizontally = true;
@@ -45,6 +45,7 @@ public class PlayerController implements KeyListener {
 
 	    // ---- SE IN SCALA E MUOVI ORIZZONTALMENTE, VERIFICA SE ESCE DALLA SCALA ----
 	    if (movingHorizontally && player.getCurrentTerrain() == Terrain.LADDER) {
+	    	player.climb(player.getCurrentDirection());
 	        boolean stillOnLadder = false;
 	        Rectangle ladderBounds = player.getLadderBounds();
 
