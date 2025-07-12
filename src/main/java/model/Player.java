@@ -183,7 +183,7 @@ public class Player extends Entity {
 			log.debug("Mario ha colpito il bordo orizzontale sinistro della mappa");
 		} else if (getX() + getWidth() > Constants.MAP_WIDTH){
 			setX(Constants.MAP_WIDTH - getWidth());
-			log.debug("Mario ha colpito il bordo orizzontale sinistro della mappa");
+			log.debug("Mario ha colpito il bordo orizzontale destro della mappa");
 		}
 			
 

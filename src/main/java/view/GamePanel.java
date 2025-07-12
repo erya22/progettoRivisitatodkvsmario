@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import controller.PlayerController;
+import model.DonkeyKong;
 import model.Player;
 
 /**
@@ -19,10 +20,12 @@ public class GamePanel extends JPanel {
 	private static final Logger log = LoggerFactory.getLogger(GamePanel.class);
 	private Player player;
 	private PlayerController controller;
+	private DonkeyKong dk;
 	private MapView mapView;
 	
-	 public GamePanel(Player player, PlayerController controller, MapView mapView) {
+	 public GamePanel(Player player, DonkeyKong dk, PlayerController controller, MapView mapView) {
         this.player = player;
+        this.dk = dk;
         this.controller = controller;
         this.mapView = mapView;
         
@@ -44,6 +47,9 @@ public class GamePanel extends JPanel {
 	        // Disegna temporaneamente Mario come un rettangolo rosso
 	        g.setColor(Color.RED);
 	        g.fillRect(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+	        
+	        g.setColor(Color.BLUE);
+	        g.fillRect(dk.getX(), dk.getY(), dk.getWidth(), dk.getHeight());
 	    }
 	
 }
