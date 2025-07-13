@@ -3,6 +3,7 @@ package view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -11,24 +12,22 @@ import org.slf4j.LoggerFactory;
 
 import controller.PlayerController;
 import model.DonkeyKong;
+import model.GameItem;
 import model.Peach;
 import model.Player;
+import model.World;
 
 /**
  * Pannello centrale con il rendering.
  */
 public class GamePanel extends JPanel {
 	private static final Logger log = LoggerFactory.getLogger(GamePanel.class);
-	private Player player;
+	private World world;
 	private PlayerController controller;
-	private DonkeyKong dk;
-	private Peach peach;
 	private MapView mapView;
 	
-	 public GamePanel(Player player, DonkeyKong dk, Peach peach, PlayerController controller, MapView mapView) {
-        this.player = player;
-        this.dk = dk;
-        this.peach = peach;
+	 public GamePanel(World world, PlayerController controller, MapView mapView) {
+        this.world = world;
         this.controller = controller;
         this.mapView = mapView;
         
@@ -43,6 +42,11 @@ public class GamePanel extends JPanel {
 	    @Override
 	    protected void paintComponent(Graphics g) {
 	        super.paintComponent(g);
+	        
+	        Player player = world.getPlayer();
+	        Peach peach = world.getPeach();
+	        DonkeyKong dk = world.getDk();
+	        ArrayList<GameItem> item = world.getItems();
 
 	        //Disegna la mappa
 	        mapView.render((Graphics2D) g);
@@ -56,6 +60,12 @@ public class GamePanel extends JPanel {
 	        
 	        g.setColor(Color.MAGENTA);
 	        g.fillRect(peach.getX(), peach.getY(), peach.getWidth(), peach.getHeight());
+	        
+	        for (GameItem barrel : world.getItems()) {
+	        	g.setColor(Color.GREEN);
+		        g.fillOval(barrel.getX(), barrel.getY(), barrel.getWidth(), barrel.getHeight());
+	        }
+	        
 	        
 	    }
 	

@@ -24,6 +24,8 @@ import utils.LadderManager;
  */
 public class Player extends Entity {
 	private static final Logger log = LoggerFactory.getLogger(Player.class);
+	
+	private PlayerState state;
 	//TODO: forse da spostare in Entity?
 	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
 	private ArrayList<Ladder> ladders = LadderManager.loadSampleLadders();
@@ -38,9 +40,10 @@ public class Player extends Entity {
 	private int ladderY = 4;
 	
 	public Player(int x, int y, int velocityX, int velocityY, int width, int height,
-			HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames, String name, int currentFrameIndex, int frameCounter, int frameDelay, int spriteNumber, int jumpStrength) {
+			HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames, String name, int currentFrameIndex, int frameCounter, int frameDelay, int spriteNumber, int jumpStrength, PlayerState ps) {
 		super(x, y, velocityX, velocityY, width, height, spriteFrames, name, currentFrameIndex, frameCounter, frameDelay, spriteNumber);
 		this.jumpStrength = jumpStrength;
+		this.state = ps;
 	}
 	
 	public void walk(Direction direction) {
@@ -63,11 +66,11 @@ public class Player extends Entity {
 
 	            for (Collision beam : beams) { // usa dove hai la lista
 	                if (beam.getBounds().intersects(testFeet)) {
-	                	log.debug("Trave trovata!");
+//	                	log.debug("Trave trovata!");
 	                    // Trave trovata leggermente più in alto: sali
 	                    setX(nextX);
 	                    setY(beam.getBounds().y - getHeight()); // sali di poco
-	                    log.debug("Mario cammina verso {} con salita di {}px", direction, dy);
+//	                    log.debug("Mario cammina verso {} con salita di {}px", direction, dy);
 	                    return;
 	                }
 	            }
@@ -77,14 +80,14 @@ public class Player extends Entity {
 	        setX(nextX);
 	        //FINE CODICE AGGIUNTO ORA
 			
-			log.info("Mario cammina verso: {} a x({}) y({})", getCurrentDirection(), getX(), getY());
+//			log.info("Mario cammina verso: {} a x({}) y({})", getCurrentDirection(), getX(), getY());
 		}
 		
 		
 	}
 	
 	public void climb(Direction direction) {
-	    log.debug("TI STAI ARRAMPICANDO VERSO: {}", direction);
+//	    log.debug("TI STAI ARRAMPICANDO VERSO: {}", direction);
 
 	    ladderBounds = getLadderBounds();
 	    boolean onLadder = false;
@@ -124,7 +127,7 @@ public class Player extends Entity {
 	            }
 
 	            if (beamBelow) {
-	                log.debug("Mario non può scendere: c'è una trave sotto la scala");
+//	                log.debug("Mario non può scendere: c'è una trave sotto la scala");
 	                setCurrentTerrain(Terrain.BEAM);
 	                return;
 	            }
@@ -142,46 +145,6 @@ public class Player extends Entity {
 	        }
 	    }
 	}
-
-	
-	//TODO: CONTROLLARE TERRAIN
-//	public void climb(Direction direction) {
-//		log.debug("WAH TI STAI ARRAMPICANDO VERSO: {}", direction);
-//		
-//		ladderBounds = getLadderBounds();
-//		boolean onLadder = false;
-//		
-//		for (Ladder ladder : ladders) {
-//			if (ladder.getBounds().intersects(ladderBounds)) {
-//				onLadder = true;
-//				break;
-//			}
-//		}
-//		
-//		if (!onLadder) {
-//	        setCurrentTerrain(Terrain.AIR);
-//	        setCurrentActionState(ActionState.FALLING);
-//	        return;
-//	    }
-//		
-//		if (onLadder) {
-//			setCurrentTerrain(Terrain.LADDER);
-//			
-//			if (direction == Direction.UP) {
-//				setY(getY() - getLadderY());
-//			} else if (direction == Direction.DOWN) {
-//				setY(getY() + getLadderY());
-//			}
-//			
-//			if (getCurrentActionState() != ActionState.CLIMBING) {
-//				setCurrentActionState(ActionState.CLIMBING);
-//			} else {
-//				//Se Mario non è più sulla scala
-//				setCurrentTerrain(Terrain.AIR);
-//			}
-//		}
-//		
-//	}
 	
 	public void jump(boolean movingHorizontally) {
 		log.debug("is key pressed? {}", movingHorizontally);
@@ -191,6 +154,8 @@ public class Player extends Entity {
 			setMovingHorizontallyWhileJumping(movingHorizontally);
 		}
 	}
+	
+	
 
 	private void loadPlayerSprites() {
 	    // Carica immagini e riempi spriteFrames
@@ -258,7 +223,7 @@ public class Player extends Entity {
 	public void update() {
 		// Salva lo stato attuale prima di aggiornare
 	    previousActionState = getCurrentActionState();
-		log.debug("DATI AGGIORNATI: {}", this.toString());
+//		log.debug("DATI AGGIORNATI: {}", this.toString());
 	}
 	
 	//Aggiorna i dati per l'animazione
@@ -272,10 +237,10 @@ public class Player extends Entity {
 		//LIMITI ORIZZONTALI MAPPA
 		if (getX() < 0){
 			setX(0);
-			log.debug("Mario ha colpito il bordo orizzontale sinistro della mappa");
+//			log.debug("Mario ha colpito il bordo orizzontale sinistro della mappa");
 		} else if (getX() + getWidth() > Constants.MAP_WIDTH){
 			setX(Constants.MAP_WIDTH - getWidth());
-			log.debug("Mario ha colpito il bordo orizzontale destro della mappa");
+//			log.debug("Mario ha colpito il bordo orizzontale destro della mappa");
 		}
 			
 
@@ -356,7 +321,7 @@ public class Player extends Entity {
 	        }
 	    }
 	}
-
+	
 
 	public int getJumpStrength() {
 		return jumpStrength;
@@ -429,6 +394,16 @@ public class Player extends Entity {
 	public void setPreviousActionState(ActionState previousActionState) {
 		this.previousActionState = previousActionState;
 	}
+
+	public PlayerState getState() {
+		return state;
+	}
+
+	public void setState(PlayerState state) {
+		this.state = state;
+	}
+	
+	
 	
 	
 	

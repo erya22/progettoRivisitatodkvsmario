@@ -199,9 +199,8 @@ public abstract class Entity {
 	public Rectangle getRightBounds() {
 	    return new Rectangle(x + width - 5, y + 5, 5, height - 10);
 	}
-
-
-
-    
-    
+	
+	public Rectangle getBounds() {
+		return new Rectangle(x, y, width, height);
+	}
 }

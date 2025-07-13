@@ -3,22 +3,34 @@ package defaultmain;
 
 import java.awt.image.BufferedImage;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import controller.PlayerController;
 import model.ActionState;
 import model.Direction;
 import model.DonkeyKong;
+import model.Entity;
+import model.GameItem;
 import model.Peach;
 import model.Player;
+import model.PlayerState;
+import model.TileMap;
+import model.World;
 import utils.Constants;
+import utils.TileMapLoader;
 import view.GamePanel;
 import view.MapView;
 
 public class GameSetter {
+	
+	private World world;
+	
     private Player player;
     private DonkeyKong dk;
     private Peach peach;
+    private ArrayList<GameItem> items;
+    private ArrayList<Entity> entities;
     
     private PlayerController pcontroller;
     
@@ -26,38 +38,61 @@ public class GameSetter {
     private GamePanel panel;
 
     public void setupGame() {
-        // Crea sprite mappe
+        //LISTE
+        items = new ArrayList<>();
+        entities = new ArrayList<>();
+        
+        // Crea sprite mappe, entità e oggetti
         HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFramesPlayer = new HashMap<>();
         HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFramesDK = new HashMap<>();
         HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFramesPeach = new HashMap<>();
-        // Crea Player
-        player = new Player(0, 0, 4, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, spriteFramesPlayer, "Mario", 0, 0, 10, 1, 12);
-
-        // Crea Donkey Kong
+        HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteBarrel = new HashMap<>();
+        
+        //MAPPA
+        TileMap map = TileMapLoader.loadMap();
+        mapView = new MapView();
+        
+        //PLAYER
+        player = new Player(0, 0, 4, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, spriteFramesPlayer, "Mario", 0, 0, 10, 1, 12, PlayerState.ALIVE);
+        pcontroller = new PlayerController(player);
+        
+        //DK
         dk = new DonkeyKong(0, (Constants.TILE_SIZE * 8) + (Constants.TILE_SIZE / 2) + (Constants.TILE_SIZE / 4), 0, 0, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 2, spriteFramesDK, "Donkey Kong", 0, 0, 0, 0);
-
-        //Crea Peach
+        //TODO: METODO LOADSPRITES!
+        
+        //PEACH
         peach = new Peach(12 * Constants.TILE_SIZE, 5 * Constants.TILE_SIZE, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE * 2, spriteFramesPeach, "Peach", 0, 0, 0, 0);
         
-        // Controller, mappa e panel
-        pcontroller = new PlayerController(player);
-        mapView = new MapView();
-        panel = new GamePanel(player, dk, peach, pcontroller, mapView);
+        //MONDO
+        world = new World(map, player, dk, peach);
+        world.setItems(items);
+        world.setEntities(entities);
+        
+        //PANNELLO DI GIOCO
+        panel = new GamePanel(world, pcontroller, mapView); 
+        
     }
 
-    public GamePanel getPanel() {
-        return panel;
-    }
+	public World getWorld() {
+		return world;
+	}
 
-    public PlayerController getController() {
-        return pcontroller;
-    }
+	public void setWorld(World world) {
+		this.world = world;
+	}
 
-    public Player getPlayer() {
-        return player;
-    }
+	public GamePanel getPanel() {
+		return panel;
+	}
 
-    public DonkeyKong getDonkeyKong() {
-        return dk;
-    }
+	public void setPanel(GamePanel panel) {
+		this.panel = panel;
+	}
+
+	public PlayerController getPcontroller() {
+		return pcontroller;
+	}
+    
+    
+
 }

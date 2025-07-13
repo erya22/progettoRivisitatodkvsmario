@@ -11,6 +11,8 @@ import javax.imageio.ImageIO;
 
 import com.google.gson.Gson;
 
+import model.TileMap;
+
 public class TileMapLoader {
 
     public static TileMap loadMap() {

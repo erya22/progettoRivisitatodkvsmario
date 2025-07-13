@@ -2,13 +2,15 @@ package defaultmain;
 
 import javax.swing.JFrame;
 
+import model.Barrel;
+import model.World;
 import view.GamePanel;
 
 public class GameLauncher {
     public static void main(String[] args) {
         GameSetter setter = new GameSetter();
         setter.setupGame(); // crea tutto
-
+        World world = setter.getWorld();
         GamePanel panel = setter.getPanel();
 
         // JFrame
@@ -21,7 +23,13 @@ public class GameLauncher {
 
         // Game loop
         while (true) {
-            setter.getController().updateMovement(); // aggiornamento movimento
+        	world.update(world.getBeams());
+        	if (world.getDk().canThrowBarrel()) {
+        	    Barrel b = world.getDk().throwBarrel();
+        	    world.addItem(b);
+        	}
+
+            setter.getPcontroller().updateMovement(); // aggiornamento movimento
             panel.repaint(); // disegna
             try {
                 Thread.sleep(16); // 60 FPS
