@@ -39,6 +39,10 @@ public class Player extends Entity {
 	private int jumpX = 4;
 	private int ladderY = 4;
 	
+	//GESTIONE VITA PLAYER
+	private int playerLives = 3;
+	private PlayerListener listener;
+	
 	public Player(int x, int y, int velocityX, int velocityY, int width, int height,
 			HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames, String name, int currentFrameIndex, int frameCounter, int frameDelay, int spriteNumber, int jumpStrength, PlayerState ps) {
 		super(x, y, velocityX, velocityY, width, height, spriteFrames, name, currentFrameIndex, frameCounter, frameDelay, spriteNumber);
@@ -155,6 +159,27 @@ public class Player extends Entity {
 		}
 	}
 	
+	//Collisione con barili
+	public void hitByBarrell() {
+		if(getState() != PlayerState.HIT_BY_BARREL)
+			return;
+		else {
+			playerLives--;
+			if (listener != null) {
+                listener.onPlayerDamaged();
+            }
+			if(playerLives == 0)
+				setState(PlayerState.DEAD);
+			else
+				setState(PlayerState.ALIVE);
+		}
+	}
+	
+	public void checkIfAlive() {
+		if(getState() == PlayerState.DEAD)
+			System.exit(0);
+			
+	}
 	
 
 	private void loadPlayerSprites() {
@@ -403,7 +428,17 @@ public class Player extends Entity {
 		this.state = state;
 	}
 	
-	
+	public int getPlayerLives() {
+		return playerLives;
+	}
+
+	public void setPlayerLives(int playerLives) {
+		this.playerLives = playerLives;
+	}
+
+    public void setListener(PlayerListener listener) {
+        this.listener = listener;
+    }
 	
 	
 	

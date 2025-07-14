@@ -21,6 +21,7 @@ import utils.Constants;
 import utils.TileMapLoader;
 import view.GamePanel;
 import view.MapView;
+import view.SideMenuView;
 
 public class GameSetter {
 	
@@ -36,6 +37,7 @@ public class GameSetter {
     
     private MapView mapView;
     private GamePanel panel;
+    private SideMenuView sideMenu;
 
     public void setupGame() {
         //LISTE
@@ -62,6 +64,9 @@ public class GameSetter {
         
         //PEACH
         peach = new Peach(12 * Constants.TILE_SIZE, 5 * Constants.TILE_SIZE, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE * 2, spriteFramesPeach, "Peach", 0, 0, 0, 0);
+        
+        //MENU
+        sideMenu = new SideMenuView(player);
         
         //MONDO
         world = new World(map, player, dk, peach);
@@ -93,6 +98,9 @@ public class GameSetter {
 		return pcontroller;
 	}
     
+	public SideMenuView getSideMenu() {
+		return sideMenu;
+	}
     
 
 }

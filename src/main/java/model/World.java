@@ -80,6 +80,9 @@ public class World {
 
 		        if (barrel.isCollidingWithMario(player)) {
 		            iterator.remove(); // ✅ rimozione sicura
+		            player.setState(PlayerState.HIT_BY_BARREL);
+		            player.hitByBarrell();
+		            player.checkIfAlive();
 		        }
 		    }
 		}
