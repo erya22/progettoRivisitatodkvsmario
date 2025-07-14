@@ -25,12 +25,27 @@ public class PlayerController implements KeyListener {
 	private final Set<Integer> keysPressed = new HashSet<>();
 	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
 	
+	//Variabili di uscita al programma
+	private long escPressedTime = -1;
+	private static final long ESC_HOLD_DURATION_MS = 1000;
+	
 	public PlayerController(Player player) {
 		this.player = player;
 	}
 	
 	public void updateMovement() {
 	    boolean movingHorizontally = false;
+
+	    // ---- GESTIONE USCITA ----
+	    if (keysPressed.contains(KeyEvent.VK_ESCAPE)) {
+	        if (escPressedTime < 0) {
+	            escPressedTime = System.currentTimeMillis();
+	        } else if (System.currentTimeMillis() - escPressedTime >= ESC_HOLD_DURATION_MS) {
+	            System.exit(0);
+	        }
+	    } else {
+	        escPressedTime = -1; // reset se ESC non è premuto
+	    }
 
 	    // ---- GESTIONE MOVIMENTO ORIZZONTALE ----
 	    if (keysPressed.contains(KeyEvent.VK_RIGHT) || keysPressed.contains(KeyEvent.VK_D) && player.getCurrentTerrain() == Terrain.BEAM) {
