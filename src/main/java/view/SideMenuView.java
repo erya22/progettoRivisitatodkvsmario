@@ -13,6 +13,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import defaultmain.GameEngine;
 import model.Player;
 import model.PlayerListener;
 
@@ -20,11 +21,13 @@ public class SideMenuView extends JPanel implements PlayerListener {
     private Font customFont;
     private BufferedImage arrowImg, wasdImg, viteImg;
     private Player player;
+    private GameEngine engine;
 
     
-    public SideMenuView(Player player) {
+    public SideMenuView(Player player, GameEngine engine) {
     	this.player = player;
     	this.player.setListener(this);
+    	this.engine = engine;
     	
     	//CARICAMENTO IMMAGINI
     	try {
@@ -133,7 +136,14 @@ public class SideMenuView extends JPanel implements PlayerListener {
         }
     }
     
+    //Per display vite rimanenti
     public void onPlayerDamaged() {
-        repaint(); // o aggiorna la vita
+        repaint(); 
     }
+
+	@Override
+	public void onPlayerDead() {
+		engine.stop();
+		
+	}
 }

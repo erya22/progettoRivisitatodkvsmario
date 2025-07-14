@@ -165,9 +165,7 @@ public class Player extends Entity {
 			return;
 		else {
 			playerLives--;
-			if (listener != null) {
-                listener.onPlayerDamaged();
-            }
+			listener.onPlayerDamaged();
 			if(playerLives == 0)
 				setState(PlayerState.DEAD);
 			else
@@ -175,9 +173,10 @@ public class Player extends Entity {
 		}
 	}
 	
+	//Ferma il gioco. TODO: popup con score finale e se si vole ricominciare la partita
 	public void checkIfAlive() {
 		if(getState() == PlayerState.DEAD)
-			System.exit(0);
+			listener.onPlayerDead();
 			
 	}
 	

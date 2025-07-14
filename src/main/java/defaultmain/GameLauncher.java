@@ -11,7 +11,10 @@ import view.GamePanel;
 import view.SideMenuView;
 
 public class GameLauncher {
+	
     public static void main(String[] args) {
+    	boolean running = true;
+    	
         GameSetter setter = new GameSetter();
         setter.setupGame(); // crea tutto
         World world = setter.getWorld();
@@ -32,20 +35,8 @@ public class GameLauncher {
         frame.setVisible(true);
 
         // Game loop
-        while (true) {
-        	world.update(world.getBeams());
-        	if (world.getDk().canThrowBarrel()) {
-        	    Barrel b = world.getDk().throwBarrel();
-        	    world.addItem(b);
-        	}
-
-            setter.getPcontroller().updateMovement(); // aggiornamento movimento
-            panel.repaint(); // disegna
-            try {
-                Thread.sleep(16); // 60 FPS
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        GameEngine engine = setter.getEngine();
+        Thread gameThread = new Thread(engine);
+        gameThread.start();
     }
 }

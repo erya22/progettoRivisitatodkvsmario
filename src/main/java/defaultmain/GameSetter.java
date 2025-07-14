@@ -38,8 +38,9 @@ public class GameSetter {
     private MapView mapView;
     private GamePanel panel;
     private SideMenuView sideMenu;
+    private GameEngine engine;
 
-    public void setupGame() {
+	public void setupGame() {
         //LISTE
         items = new ArrayList<>();
         entities = new ArrayList<>();
@@ -63,10 +64,7 @@ public class GameSetter {
         //TODO: METODO LOADSPRITES!
         
         //PEACH
-        peach = new Peach(12 * Constants.TILE_SIZE, 5 * Constants.TILE_SIZE, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE * 2, spriteFramesPeach, "Peach", 0, 0, 0, 0);
-        
-        //MENU
-        sideMenu = new SideMenuView(player);
+        peach = new Peach(12 * Constants.TILE_SIZE, 5 * Constants.TILE_SIZE, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE * 2, spriteFramesPeach, "Peach", 0, 0, 0, 0);        
         
         //MONDO
         world = new World(map, player, dk, peach);
@@ -76,6 +74,9 @@ public class GameSetter {
         //PANNELLO DI GIOCO
         panel = new GamePanel(world, pcontroller, mapView); 
         
+        //MENU
+        engine = new GameEngine(world, panel, pcontroller);
+        sideMenu = new SideMenuView(player, engine);
     }
 
 	public World getWorld() {
@@ -102,5 +103,11 @@ public class GameSetter {
 		return sideMenu;
 	}
     
+    public GameEngine getEngine() {
+		return engine;
+	}
 
+	public void setEngine(GameEngine engine) {
+		this.engine = engine;
+	}
 }
