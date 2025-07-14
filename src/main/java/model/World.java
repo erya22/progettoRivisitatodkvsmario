@@ -61,7 +61,16 @@ public class World {
 	
 	//TODO: UPDATE ANIMATION
 	private void updateAllEntities(ArrayList<Collision> beams) {
+		if (peach.isCollidingWithMario(player)) {
+			log.debug("Mario vincitore!");
+			player.setPlayerState(PlayerState.WINNER);
+			peach.setCurrentActionState(ActionState.VICTORY);
+			
+			//TODO: monta animazioni
+			return;
+		}
 		for (Entity entity : entities) {
+
 			entity.update();
 			entity.updatePhysics(beams);
 		}
@@ -80,7 +89,7 @@ public class World {
 
 		        if (barrel.isCollidingWithMario(player)) {
 		            iterator.remove(); // ✅ rimozione sicura
-		            player.setState(PlayerState.HIT_BY_BARREL);
+		            player.setPlayerState(PlayerState.HIT_BY_BARREL);
 		            player.hitByBarrell();
 		            player.checkIfAlive();
 		        }

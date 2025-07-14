@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import utils.CollisionManager;
 import utils.Constants;
 import utils.LadderManager;
+import utils.Sprite;
 
 /**
  * TODO: movimento, salto con fisica, 
@@ -48,6 +49,7 @@ public class Player extends Entity {
 		super(x, y, velocityX, velocityY, width, height, spriteFrames, name, currentFrameIndex, frameCounter, frameDelay, spriteNumber);
 		this.jumpStrength = jumpStrength;
 		this.state = ps;
+		setSpriteFrames(loadPlayerSprites());
 	}
 	
 	public void walk(Direction direction) {
@@ -161,84 +163,92 @@ public class Player extends Entity {
 	
 	//Collisione con barili
 	public void hitByBarrell() {
-		if(getState() != PlayerState.HIT_BY_BARREL)
+		if(getPlayerState() != PlayerState.HIT_BY_BARREL)
 			return;
 		else {
 			playerLives--;
 			listener.onPlayerDamaged();
 			if(playerLives == 0)
-				setState(PlayerState.DEAD);
+				setPlayerState(PlayerState.DEAD);
 			else
-				setState(PlayerState.ALIVE);
+				setPlayerState(PlayerState.ALIVE);
 		}
 	}
 	
 	//Ferma il gioco. TODO: popup con score finale e se si vole ricominciare la partita
 	public void checkIfAlive() {
-		if(getState() == PlayerState.DEAD)
+		if(getPlayerState() == PlayerState.DEAD)
 			listener.onPlayerDead();
 			
 	}
 	
 
-	private void loadPlayerSprites() {
+	private HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> loadPlayerSprites() {
 	    // Carica immagini e riempi spriteFrames
 		HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames = this.getSpriteFrames();
-        try {
-        	//IDLE
-        	BufferedImage[] idleR = new BufferedImage[1];
-        	BufferedImage[] idleL = new BufferedImage[1];
-        	spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.IDLE, Direction.RIGHT), idleR);
-        	spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.IDLE, Direction.LEFT), idleL);
-            
-            // UP/DOWN
-            BufferedImage[] up = new BufferedImage[7];
-            for (int i = 0; i < 7; i++) {
-                up[i] = ImageIO.read(getClass().getResourceAsStream("/PLAYER/b" + (i+1) + ".png"));
-            }
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.UP), up);
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.DOWN), up);
-
-            // RIGHT
-            BufferedImage[] right = new BufferedImage[4];
-            for (int i = 0; i < 4; i++) {
-                right[i] = ImageIO.read(getClass().getResourceAsStream("/PLAYER/a" + (i + 1) + ".png"));
-            }
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.WALKING, Direction.RIGHT), right);
-
-            // LEFT
-            BufferedImage[] left = new BufferedImage[4];
-            for (int i = 0; i < 4; i++) {
-                left[i] = ImageIO.read(getClass().getResourceAsStream("/PLAYER/m" + (i + 1) + ".png"));
-            }
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.WALKING, Direction.LEFT), left);
-            
-            // JUMP AND FALL ANIMATIONS
-            BufferedImage[] jumpR = new BufferedImage[1];
-            jumpR[0] = ImageIO.read(getClass().getResourceAsStream("/PLAYER/c3.png"));
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.JUMPING, Direction.RIGHT), jumpR);
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.FALLING, Direction.RIGHT), jumpR);
-            
-            BufferedImage[] jumpL = new BufferedImage[1];
-            jumpL[0] = ImageIO.read(getClass().getResourceAsStream("/PLAYER/m3.png"));
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.JUMPING, Direction.LEFT), jumpL);
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.FALLING, Direction.LEFT), jumpL);
-            
-            BufferedImage[] hitFrames = new BufferedImage[5];
-            // DEATH AND HIT ANIMATION
-            for (int i = 0; i < 5; i++) {
-                hitFrames[i] = ImageIO.read(getClass().getResourceAsStream("/PLAYER/e" + (i + 1) + ".png"));
-            }
-            
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.HIT, Direction.RIGHT), hitFrames);
-            //TODO: When used, reverse order of the array
-            spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.HIT, Direction.LEFT), hitFrames);
-            
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		//IDLE
+		BufferedImage[] idleR = new BufferedImage[] {
+				Sprite.MARIO_WALK_R.img()
+		};
+		BufferedImage[] idleL = new BufferedImage[] {
+				Sprite.MARIO_WALK_L.img()	
+		};
+		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.IDLE, Direction.RIGHT), idleR);
+		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.IDLE, Direction.LEFT), idleL);
+		
+		// UP/DOWN
+		BufferedImage[] up = new BufferedImage[] {
+				Sprite.MARIO_IDLE_CLIMB.img()
+		};
+		
+		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.UP), up);
+		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.DOWN), up);
+		
+		// RIGHT
+		BufferedImage[] right = new BufferedImage[] {
+				Sprite.MARIO_WALK_R.img(),
+				Sprite.MARIO_WALK_R1.img(),
+				Sprite.MARIO_WALK_R2.img(),
+				Sprite.MARIO_WALK_R3.img()
+		};
+		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.WALKING, Direction.RIGHT), right);
+		
+		// LEFT
+		BufferedImage[] left = new BufferedImage[] {
+				Sprite.MARIO_WALK_L.img(),
+				Sprite.MARIO_WALK_L1.img(),
+				Sprite.MARIO_WALK_JUMP_L_L2.img(),
+				Sprite.MARIO_WALK_L3.img()
+		};
+		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.WALKING, Direction.LEFT), left);
+		
+		// JUMP AND FALL ANIMATIONS
+		BufferedImage[] jumpR = new BufferedImage[] {
+				Sprite.MARIO_JUMP_R.img()
+		};
+		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.JUMPING, Direction.RIGHT), jumpR);
+		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.FALLING, Direction.RIGHT), jumpR);
+		
+		BufferedImage[] jumpL = new BufferedImage[] {
+				Sprite.MARIO_WALK_JUMP_L_L2.img()
+		};
+		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.JUMPING, Direction.LEFT), jumpL);
+		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.FALLING, Direction.LEFT), jumpL);
+		
+		BufferedImage[] hitFrames = new BufferedImage[] {
+				Sprite.MARIO_HIT.img(),
+				Sprite.MARIO_HIT1.img(),
+				Sprite.MARIO_HIT2.img(),
+				Sprite.MARIO_HIT3.img(),
+				Sprite.MARIO_HIT4.img()
+		};
+		
+		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.HIT, Direction.RIGHT), hitFrames);
+		//TODO: When used, reverse order of the array
+		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.HIT, Direction.LEFT), hitFrames);
+		
+		
+		return spriteFrames;
 
 	}
 
@@ -419,11 +429,11 @@ public class Player extends Entity {
 		this.previousActionState = previousActionState;
 	}
 
-	public PlayerState getState() {
+	public PlayerState getPlayerState() {
 		return state;
 	}
 
-	public void setState(PlayerState state) {
+	public void setPlayerState(PlayerState state) {
 		this.state = state;
 	}
 	
@@ -438,6 +448,8 @@ public class Player extends Entity {
     public void setListener(PlayerListener listener) {
         this.listener = listener;
     }
+    
+    
 	
 	
 	

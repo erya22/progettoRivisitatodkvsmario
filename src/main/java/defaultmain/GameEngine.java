@@ -1,10 +1,15 @@
 package defaultmain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import controller.PlayerController;
+import model.PlayerState;
 import model.World;
 import view.GamePanel;
 
 public class GameEngine implements Runnable {
+	private static final Logger log = LoggerFactory.getLogger(GameEngine.class);
     private boolean running = true;
     private World world;
     private GamePanel panel;
@@ -23,6 +28,11 @@ public class GameEngine implements Runnable {
     @Override
     public void run() {
         while (running) {
+        	if (world.getPlayer().getPlayerState() == PlayerState.WINNER) {
+        		//TODO: ANIMAZIONE VITTORIA
+        		log.debug("HAI VINTO!");
+        		stop();
+        	}
             world.update(world.getBeams());
             if (world.getDk().canThrowBarrel()) {
                 world.addItem(world.getDk().throwBarrel());
@@ -33,7 +43,7 @@ public class GameEngine implements Runnable {
             try {
                 Thread.sleep(16);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.debug("sleep failed", e);
                 running = false;
             }
         }
