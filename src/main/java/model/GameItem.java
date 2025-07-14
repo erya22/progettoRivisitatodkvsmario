@@ -57,8 +57,8 @@ public abstract class GameItem {
     // Metodo astratto per l'aggiornamento logico
     public abstract void update();
 
-    // Metodo astratto per l'aggiornamento della fisica
-    public abstract void updatePhysics(ArrayList<Collision> beams);
+//    // Metodo astratto per l'aggiornamento della fisica
+//    public abstract void updatePhysics(ArrayList<Collision> beams);
 
 	public HashMap<Direction, BufferedImage[]> getSpriteFrames() {
 		return spriteFrames;

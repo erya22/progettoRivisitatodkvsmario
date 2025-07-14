@@ -2,12 +2,14 @@ package model;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import utils.CollisionManager;
 import utils.LadderManager;
+import utils.TriggerZoneManager;
 
 public class World {
 	private static final Logger log = LoggerFactory.getLogger(World.class);
@@ -20,6 +22,7 @@ public class World {
 	private ArrayList<GameItem> items;
 	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
 	private ArrayList<Ladder> ladders = LadderManager.loadSampleLadders();
+	private ArrayList<TriggerZone> triggerZones = TriggerZoneManager.loadSampleTriggerZone();
 	
 	public World(TileMap map, Player player, DonkeyKong dk, Peach peach) {
 		this.map = map;
@@ -66,21 +69,21 @@ public class World {
 	
 	//TODO: UPDATE ANIMATION
 	private void updateAllItems(ArrayList<Collision> beams) {
-		
-		for (GameItem item : items) {
-			item.update();
-		    if (item instanceof Barrel) {
-		        Barrel barrel = (Barrel) item;
-		        barrel.update();
-		        barrel.roll();
-		        barrel.updatePhysics(beams);
+		Iterator<GameItem> iterator = items.iterator();
+		while (iterator.hasNext()) {
+		    GameItem item = iterator.next();
+		    item.update();
+
+		    if (item instanceof Barrel barrel) {
+		        barrel.roll(beams, triggerZones);
+		        barrel.updatePhysics(beams, triggerZones);
+
 		        if (barrel.isCollidingWithMario(player)) {
-		            // gestisci danno o morte
-		        	items.remove(item);
-//		        	player.setState(PlayerState.HIT_BY_BARREL);
-		        } //TODO: scale
+		            iterator.remove(); // ✅ rimozione sicura
+		        }
 		    }
 		}
+
 	}
 	
 	public boolean checkBarrelCollision() {

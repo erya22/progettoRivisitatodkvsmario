@@ -35,25 +35,40 @@ public class Barrel extends GameItem {
 		this.barrelState = barrelState;
 	}
 
-	public void roll() {
-		if (getCurrentTerrain() == Terrain.BEAM) {
-			if (getCurrentDirection() == Direction.RIGHT) {
-				setX(getX() + getVelocityX());
-			} else {
-				setX(getX() - getVelocityY());
-			}
-		} else {
+	public void roll(ArrayList<Collision> beams, ArrayList<TriggerZone> triggerZones) {
+		if (isFalling(beams)) {
 			setCurrentActionState(ActionState.FALLING);
 			setCurrentDirection(Direction.DOWN);
-			setY(getY() + 1);
+			applyGravity();
+			return;
+		} 
+		
+		setCurrentActionState(ActionState.ROLLING);
+		if (getCurrentDirection() == Direction.RIGHT) {
+			setX(getX() + getVelocityX());
+		} else if (getCurrentDirection() == Direction.LEFT){
+			setX(getX() - getVelocityX());
+		} else {
+			log.debug("direzione sbagliata: {}", getCurrentDirection());
+			barrelDirection(triggerZones);
 		}
 		
+	}
+	
+	public void barrelDirection(ArrayList<TriggerZone> triggerZones) {
+		for (TriggerZone tz : triggerZones) {
+			if (tz.getBounds().intersects(getBounds())) {
+				setCurrentDirection(tz.getForcedDirection());
+				return;
+			}
+		}
+		log.debug("non ho trovato la triggerZone: x{} y{} ", getX(), getY());
 	}
 	
 	public boolean isFalling(ArrayList<Collision> beams) {
 	
 		for (Collision beam : beams) {
-			if (beam.getBounds().intersects(this.getBounds())) {
+			if (beam.getBounds().intersects(getFeetBounds())) {
 				return false;
 			}
 		}
@@ -73,87 +88,46 @@ public class Barrel extends GameItem {
 	public void update() {
 		log.debug("DATI AGGIORNATI: {}\n", this.toString());
 	}
-//	
-//	@Override
-//	public void updatePhysics(ArrayList<Collision> beams) {
-//	    // Se sei in aria o in caduta, applichi gravità
-//	    if (getCurrentTerrain() == Terrain.AIR || getCurrentActionState() == ActionState.FALLING) {
-//	        setVelocityY(getVelocityY() + 1); // gravità
-//	        setY(getY() + getVelocityY());
-//
-//	        for (Collision beam : beams) {
-//	            if (getFeetBounds().intersects(beam.getBounds())) {
-//	                int beamY = beam.getY();
-//	                int diffY = Math.abs(beamY - getY());
-//
-//	                // Se cadi da troppo in alto, cambia direzione
-//	                if (previousBeamY != -1 && Math.abs(beamY - previousBeamY) > maxStepUp) {
-//	                    toggleDirection();
-//	                }
-//
-//	                setY(beamY - getHeight());
-//	                setVelocityY(0);
-//	                setCurrentTerrain(Terrain.BEAM);
-//	                setCurrentActionState(ActionState.ROLLING);
-//	                previousBeamY = beamY;
-//	                return;
-//	            }
-//	        }
-//
-//	        // Non hai toccato nulla
-//	        setCurrentTerrain(Terrain.AIR);
-//	        setCurrentActionState(ActionState.FALLING);
-//	        return;
-//	    }
-//
-//	    // Se sei su una trave e stai rotolando
-//	    if (getCurrentTerrain() == Terrain.BEAM && getCurrentActionState() == ActionState.ROLLING) {
-//	        roll();
-//	    }
-//	}
 	
-	@Override
-	public void updatePhysics(ArrayList<Collision> beams) {
-	    if (getCurrentActionState() == ActionState.FALLING) {
-	        applyGravity();
+	
+	public void updatePhysics(ArrayList<Collision> beams, ArrayList<TriggerZone> triggerZones) {
+	    boolean onBeam = false;
 
-	        for (Collision beam : beams) {
-	        	if (getFeetBounds().intersects(beam.getBounds())) {
-	        		
-	        		int beamY = beam.getY();
-	        		int currentY = getY();
-	        		int diffY = Math.abs(currentY - beamY);
-	        		
-	        		if (previousBeamY != -1 && diffY > maxStepUp) {
-	        			toggleDirection(); // ← cambia direzione se salto alto
-	        		}
-	        		
-	        		// Allineamento verticale alla nuova trave
-	        		setY(beamY - getHeight());
-	        		setVelocityY(0);
-	        		setCurrentTerrain(Terrain.BEAM);
-	        		setCurrentActionState(ActionState.ROLLING);
-	        		previousBeamY = beamY;
-	        		
-	        		return; // esce dopo aver toccato la beam
-	        	}
+	    // 🔄 Controlla se è sopra una beam
+	    for (Collision b : beams) {
+	    	if (b.getBounds().intersects(getFeetBounds())) {
+	    	    log.debug("🎯 COLLISIONE RILEVATA con beam a y={}", b.getY());
+	    	    // Allinea il barile sopra la beam
+	    	    setY(b.getY() - getHeight());
+	    	    setVelocityY(0);
+	    	    setCurrentActionState(ActionState.ROLLING);
+	    	    setCurrentTerrain(Terrain.BEAM);
+	    	    onBeam = true;
+	    	    break;
+	    	}
+
+	    }
+
+	    if (onBeam) {
+	        // ✅ Barile sulla beam → passa a ROLLING
+	        if (getCurrentActionState() != ActionState.ROLLING) {
+	            log.debug("Barile atterra su BEAM → stato ROLLING");
 	        }
-	    }
+	        setCurrentActionState(ActionState.ROLLING);
+	        setCurrentTerrain(Terrain.BEAM);
+	        setVelocityY(0); // blocca la caduta
 
-	    //se non interseca alcuna beam
-	    setCurrentTerrain(Terrain.AIR);
-	    setCurrentActionState(ActionState.FALLING);
-	}
-	
-
-
-	public void toggleDirection() {
-	    if (getCurrentDirection() == Direction.RIGHT) {
-	        setCurrentDirection(Direction.LEFT);
+	        roll(beams, triggerZones); // continua a rotolare
 	    } else {
-	        setCurrentDirection(Direction.RIGHT);
+	        // ❌ Nessuna beam sotto → cade
+	        if (getCurrentActionState() != ActionState.FALLING) {
+	            log.debug("Barile inizia a cadere → stato FALLING");
+	        }
+	        setCurrentActionState(ActionState.FALLING);
+	        setCurrentTerrain(Terrain.AIR);
 	    }
 	}
+
 	
 	public void applyGravity() {
 		log.debug("Gravità applicata");
@@ -186,7 +160,7 @@ public class Barrel extends GameItem {
 	}
 	
 	public Rectangle getFeetBounds() {
-	    return new Rectangle(getX(), getY() + getHeight() - 4, getWidth(), 4); // parte bassa
+	    return new Rectangle(getX(), getY() + getHeight() - 2, getWidth(), 10); // aumentato da 4 a 8 pixel
 	}
 
 	public Direction getPreviousDirection() {
@@ -213,6 +187,12 @@ public class Barrel extends GameItem {
 				.append("]");
 		return builder.toString();
 	}
+
+//	@Override
+//	public void updatePhysics(ArrayList<Collision> beams) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 	
 	
 
