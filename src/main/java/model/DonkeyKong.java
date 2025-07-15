@@ -79,7 +79,7 @@ public class DonkeyKong extends Entity {
 	public Barrel throwBarrel() {
 		lastThrowTime = System.currentTimeMillis();
 				
-		int barrelX = this.getX() + this.getWidth();
+		int barrelX = this.getX() + this.getWidth() + Constants.TILE_SIZE;
 		int barrelY = this.getY() + (this.getHeight() / 2);
 		
 		log.debug("BARILE LANCIATO!");

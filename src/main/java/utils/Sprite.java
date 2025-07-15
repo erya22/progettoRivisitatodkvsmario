@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -38,7 +39,8 @@ public enum Sprite {
 	BARREL2("/barrelhammer/barrel2.png"),
 	BARREL3("/barrelhammer/barrel3.png"),
 	BARREL4("/barrelhammer/barrel4.png"),
-	BARREL5("/barrelhammer/barrel5.png");
+	BARREL5("/barrelhammer/barrel5.png"),
+	BARREL_PILE("/barrelhammer/barili.png");
 	
 	private final Logger log = LoggerFactory.getLogger(Sprite.class);
 	
@@ -61,10 +63,9 @@ public enum Sprite {
     }
 	
 	Sprite(String path) {
-		try {
-			img = ImageIO.read(getClass().getResourceAsStream(path));
+		try (InputStream in = getClass().getResourceAsStream(path)){
+			img = ImageIO.read(in);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			log.debug("cannot read path {}", path, e);
 			throw new RuntimeException(path, e);
 		}

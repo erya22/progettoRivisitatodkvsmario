@@ -3,6 +3,7 @@ package view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -16,6 +17,8 @@ import model.GameItem;
 import model.Peach;
 import model.Player;
 import model.World;
+import utils.Constants;
+import utils.Sprite;
 
 /**
  * Pannello centrale con il rendering.
@@ -49,14 +52,17 @@ public class GamePanel extends JPanel {
 	        Peach peach = world.getPeach();
 	        DonkeyKong dk = world.getDk();
 	        ArrayList<GameItem> item = world.getItems();
+	        BufferedImage barrelPile = Sprite.resize(Sprite.BARREL_PILE.img(), Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 3);
 
 	        //Disegna la mappa
 	        mapView.render((Graphics2D) g);
 	        
+	        g2d.drawImage(barrelPile, 0, 8 * Constants.TILE_SIZE - 10, null);
+	        
 	        // Disegna temporaneamente Mario come un rettangolo rosso
 	        g2d.drawImage(player.getCurrentFrame(), player.getX(), player.getY(), null);
 	        
-	        g2d.drawImage(dk.getCurrentFrame(),dk.getX(), dk.getY(), null);
+	        g2d.drawImage(dk.getCurrentFrame(), dk.getX(), dk.getY(), null);
 	        
 	        g2d.drawImage(peach.getCurrentFrame(), peach.getX(), peach.getY(), null);
 	        

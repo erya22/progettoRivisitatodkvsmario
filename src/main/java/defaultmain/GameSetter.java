@@ -57,7 +57,7 @@ public class GameSetter {
         
         //PLAYER
         player = new Player(0,
-        		0,
+        		Constants.MAP_HEIGHT - (Constants.TILE_SIZE*2),
         		4,
         		0,
         		Constants.TILE_SIZE,
@@ -73,7 +73,7 @@ public class GameSetter {
         pcontroller = new PlayerController(player);
         
         //DK
-        dk = new DonkeyKong(0, //x
+        dk = new DonkeyKong(Constants.TILE_SIZE*2, //x
         		(Constants.TILE_SIZE * 8) + (Constants.TILE_SIZE / 2) + (Constants.TILE_SIZE / 4), //y
         		0, //vx
         		0, //vy

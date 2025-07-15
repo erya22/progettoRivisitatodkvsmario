@@ -42,11 +42,18 @@ public class Player extends Entity {
 	private PlayerListener listener;
 	private int score = 0;
 	
+	private final int xStart;
+	private final int yStart;
+	
+	
 	public Player(int x, int y, int velocityX, int velocityY, int width, int height,
-			HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames, String name, int currentFrameIndex, int frameCounter, int frameDelay, int spriteNumber, int jumpStrength, PlayerState ps) {
+			HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames, String name, int currentFrameIndex,
+			int frameCounter, int frameDelay, int spriteNumber, int jumpStrength, PlayerState ps) {
 		super(x, y, velocityX, velocityY, width, height, spriteFrames, name, currentFrameIndex, frameCounter, frameDelay, spriteNumber);
 		this.jumpStrength = jumpStrength;
 		this.state = ps;
+		this.xStart = x;
+		this.yStart = y;
 		setSpriteFrames(loadPlayerSprites());
 	}
 	
@@ -165,23 +172,56 @@ public class Player extends Entity {
 	
 	//Collisione con barili
 	public void hitByBarrell() {
-		if(getPlayerState() != PlayerState.HIT_BY_BARREL)
+		if(getPlayerState() != PlayerState.HIT_BY_BARREL) {
 			return;
-		else {
-			playerLives--;
-			listener.sideMenuRefresh();
-			if(playerLives == 0)
-				setPlayerState(PlayerState.DEAD);
-			else
-				setPlayerState(PlayerState.ALIVE);
+		}
+		
+		setCurrentActionState(ActionState.HIT);
+//		animateHit();
+		
+		playerLives--;
+		listener.sideMenuRefresh();
+		if (playerLives == 0) {
+			setPlayerState(PlayerState.DEAD);
+		} else {
+			restart();
 		}
 	}
+	
+//	public void animateHit() {
+//		if (getCurrentDirection() != Direction.LEFT) {
+//			setCurrentDirection(Direction.RIGHT);			
+//		}
+//		setFrameCounter(0);
+//		setSpriteNumber(getCurrentAnimationFrames().length);
+//		setCurrentFrameIndex(0);
+//		
+//		do {
+//			if (getFrameCounter() < getFrameDelay()) {
+//				setFrameCounter(getFrameCounter()+1);
+//				setCurrentFrameIndex(getCurrentFrameIndex() + 1); 
+//			} else {
+//				setFrameCounter(0);
+//				setCurrentFrameIndex(0);
+//			}
+//			
+//		} while (getCurrentFrameIndex() < getSpriteNumber());
+//		
+//	}
 	
 	//Ferma il gioco. TODO: popup con score finale e se si vole ricominciare la partita
 	public void checkIfAlive() {
 		if(getPlayerState() == PlayerState.DEAD)
 			listener.stopGameLoop();
 			
+	}
+	
+	public void restart() {
+		setX(this.xStart);
+		setY(this.yStart);
+		setCurrentDirection(Direction.RIGHT);
+		setPlayerState(PlayerState.ALIVE);
+		setCurrentActionState(ActionState.IDLE);
 	}
 	
 	public void addScore(int scoreAdded) {
