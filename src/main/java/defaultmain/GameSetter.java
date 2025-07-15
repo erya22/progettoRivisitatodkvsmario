@@ -24,7 +24,7 @@ import view.MapView;
 import view.SideMenuView;
 
 public class GameSetter {
-	
+	//DOVE CREARE IL CLIENT MANAGER?
 	private World world;
 	
     private Player player;

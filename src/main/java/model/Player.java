@@ -11,6 +11,7 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import defaultmain.ClientManager;
 import utils.CollisionManager;
 import utils.Constants;
 import utils.LadderManager;
