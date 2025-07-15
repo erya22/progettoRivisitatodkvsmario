@@ -28,11 +28,37 @@ public class GameEngine implements Runnable {
     @Override
     public void run() {
         while (running) {
+        	
         	if (world.getPlayer().getPlayerState() == PlayerState.WINNER) {
-        		//TODO: ANIMAZIONE VITTORIA
-        		log.debug("HAI VINTO!");
-        		stop();
+                log.debug("HAI VINTO!");
+                stop();
+                break;
+            }
+        	
+        	if (world.getPlayer().getPlayerState() == PlayerState.HIT_BY_BARREL) {
+        		log.debug("hit by barrel");
+        		world.setPaused(true);
+        		if (world.getPlayer().animateHit()) {
+        	        
+        			panel.repaint();
+        	        try {
+        	            Thread.sleep(32);
+        	        } catch (InterruptedException e) {
+        	            running = false;
+        	        }
+        	        continue;
+        	    } else {
+        	    	world.setPaused(false);
+        	        // Quando l'animazione è finita, blocca qui se il giocatore è morto
+        	        if (world.getPlayer().getPlayerState() == PlayerState.DEAD) {
+        	            log.debug("GAME OVER: Mario è morto");
+        	            stop(); // Ferma il game loop
+        	            break;
+        	        }
+        	    }
+        		
         	}
+        	
             world.update(world.getBeams());
             if (world.getDk().canThrowBarrel()) {
                 world.addItem(world.getDk().throwBarrel());

@@ -14,6 +14,8 @@ import utils.TriggerZoneManager;
 public class World {
 	private static final Logger log = LoggerFactory.getLogger(World.class);
 
+	private boolean isPaused = false;
+	
 	private TileMap map;
 	private Player player;
 	private DonkeyKong dk;
@@ -54,7 +56,7 @@ public class World {
 	
 	public void update(ArrayList<Collision> beams) {
 //		updatePhysics();
-		
+		if (isPaused) return;
 		updateAllEntities(beams);
 		updateAllItems(beams);
 	}
@@ -105,7 +107,7 @@ public class World {
         	
 		    barrel.setBarrelState(BarrelState.HIT_PLAYER);
             iterator.remove();
-            player.setPlayerState(PlayerState.HIT_BY_BARREL);
+            
             player.hitByBarrell();
             player.checkIfAlive();
             
@@ -202,6 +204,9 @@ public class World {
 	public ArrayList<Ladder> getLadders() {
 		return ladders;
 	}
+	
+	public boolean isPaused() { return isPaused; }
+	public void setPaused(boolean p) { isPaused = p; }
 	
 	
 	

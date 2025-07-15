@@ -45,6 +45,8 @@ public class Player extends Entity {
 	private final int xStart;
 	private final int yStart;
 	
+	private boolean isHitAnimationInitialized = false;
+	private long animationTime = 0;
 	
 	public Player(int x, int y, int velocityX, int velocityY, int width, int height,
 			HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames, String name, int currentFrameIndex,
@@ -172,42 +174,46 @@ public class Player extends Entity {
 	
 	//Collisione con barili
 	public void hitByBarrell() {
-		if(getPlayerState() != PlayerState.HIT_BY_BARREL) {
-			return;
-		}
-		
-		setCurrentActionState(ActionState.HIT);
-//		animateHit();
-		
+		log.debug("hit by barrel method");
 		playerLives--;
 		listener.sideMenuRefresh();
+		animateHitInit();
+		setPlayerState(PlayerState.HIT_BY_BARREL);
+	}
+	
+	public void animateHitInit() {
+		log.debug("passed by animate init");
+		setCurrentActionState(ActionState.HIT);
+		if (getCurrentDirection() != Direction.LEFT) {
+			setCurrentDirection(Direction.RIGHT);			
+		}
+		animationTime = System.currentTimeMillis() + 3000;
+		log.debug("animationTime: {}", animationTime);
+		setFrameCounter(0);
+		setSpriteNumber(getCurrentAnimationFrames().length);
+		setCurrentFrameIndex(0);
+		
+	}
+	
+	public boolean animateHit()	{
+		log.debug("passed by animate hit method cfi: {}, fc: {}, spn{}", getCurrentFrameIndex(), getFrameCounter(), getSpriteNumber());
+		long now = System.currentTimeMillis();
+		log.debug("now: {} e at: {}", now, animationTime);
+		if (now < animationTime) {
+			updateAnimation();
+			return true;
+		}
 		if (playerLives == 0) {
 			setPlayerState(PlayerState.DEAD);
 		} else {
 			restart();
 		}
+		return false;
+		
+		
 	}
 	
-//	public void animateHit() {
-//		if (getCurrentDirection() != Direction.LEFT) {
-//			setCurrentDirection(Direction.RIGHT);			
-//		}
-//		setFrameCounter(0);
-//		setSpriteNumber(getCurrentAnimationFrames().length);
-//		setCurrentFrameIndex(0);
-//		
-//		do {
-//			if (getFrameCounter() < getFrameDelay()) {
-//				setFrameCounter(getFrameCounter()+1);
-//				setCurrentFrameIndex(getCurrentFrameIndex() + 1); 
-//			} else {
-//				setFrameCounter(0);
-//				setCurrentFrameIndex(0);
-//			}
-//			
-//		} while (getCurrentFrameIndex() < getSpriteNumber());
-//		
-//	}
+
 	
 	//Ferma il gioco. TODO: popup con score finale e se si vole ricominciare la partita
 	public void checkIfAlive() {
@@ -222,6 +228,8 @@ public class Player extends Entity {
 		setCurrentDirection(Direction.RIGHT);
 		setPlayerState(PlayerState.ALIVE);
 		setCurrentActionState(ActionState.IDLE);
+		setCurrentFrameIndex(0);
+		setFrameCounter(0);
 	}
 	
 	public void addScore(int scoreAdded) {
@@ -523,6 +531,14 @@ public class Player extends Entity {
 
 	public void setScore(int score) {
 		this.score = score;
+	}
+
+	public boolean isHitAnimationInitialized() {
+		return isHitAnimationInitialized;
+	}
+
+	public void setHitAnimationInitialized(boolean isHitAnimationInitialized) {
+		this.isHitAnimationInitialized = isHitAnimationInitialized;
 	}
     
     

@@ -121,7 +121,7 @@ public class Barrel extends GameItem {
 
 	@Override
 	public void update() {
-		log.debug("DATI AGGIORNATI: {}\n", this.toString());
+//		log.debug("DATI AGGIORNATI: {}\n", this.toString());
 	}
 	
 	
@@ -131,7 +131,7 @@ public class Barrel extends GameItem {
 	    // 🔄 Controlla se è sopra una beam
 	    for (Collision b : beams) {
 	    	if (b.getBounds().intersects(getFeetBounds())) {
-	    	    log.debug("🎯 COLLISIONE RILEVATA con beam a y={}", b.getY());
+//	    	    log.debug("🎯 COLLISIONE RILEVATA con beam a y={}", b.getY());
 	    	    // Allinea il barile sopra la beam
 	    	    setY(b.getY() - getHeight());
 	    	    setVelocityY(0);
@@ -165,7 +165,7 @@ public class Barrel extends GameItem {
 
 	
 	public void applyGravity() {
-		log.debug("Gravità applicata");
+//		log.debug("Gravità applicata");
 	    setY(getY() + getVelocityY());
 	    setVelocityY(getVelocityY() + 1);
 	}

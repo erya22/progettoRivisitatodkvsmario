@@ -15,6 +15,7 @@ import model.Collision;
 import model.Direction;
 import model.Ladder;
 import model.Player;
+import model.PlayerState;
 import model.Terrain;
 import utils.CollisionManager;
 
@@ -35,6 +36,11 @@ public class PlayerController implements KeyListener {
 	
 	public void updateMovement() {
 	    boolean movingHorizontally = false;
+	    if (player.getPlayerState() == PlayerState.HIT_BY_BARREL) {
+	    	keysPressed.clear();
+	        return; // Blocca input
+	    }
+
 
 	    // ---- GESTIONE USCITA ----
 	    if (keysPressed.contains(KeyEvent.VK_ESCAPE)) {
@@ -103,7 +109,12 @@ public class PlayerController implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		log.debug("Tasto premuto {}", e.getKeyCode());
+		switch (player.getPlayerState()) {
+		case HIT_BY_BARREL:
+		case DEAD: 
+		case WINNER: return;
+		}
+//		log.debug("Tasto premuto {}", e.getKeyCode());
 		keysPressed.add(e.getKeyCode());
 		
 		boolean leftPressed = keysPressed.contains(KeyEvent.VK_A) || keysPressed.contains(KeyEvent.VK_LEFT);

@@ -22,5 +22,7 @@ public class Constants {
     
     public static final int MAP_OFFSET_X = (SCREEN_WIDTH - MAP_WIDTH) / 2;
     public static final int MAP_OFFSET_Y = (SCREEN_HEIGHT - MAP_HEIGHT) / 2;
+    
+    
 	
 }

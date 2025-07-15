@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Entity {
 	private static final Logger log = LoggerFactory.getLogger(Entity.class);
+	
 	//VARIABILI LOGICA ENTITA'
 	private int x, y;
 	private int velocityX, velocityY;
@@ -84,7 +85,7 @@ public abstract class Entity {
             // Fallback a IDLE_RIGHT
             sprites = spriteFrames.get(new SimpleEntry<>(ActionState.IDLE, Direction.RIGHT));
         }
-        log.debug("cfi: {} di {}", currentFrameIndex, name);
+//        log.debug("cfi: {} di {}", currentFrameIndex, name);
         return sprites[currentFrameIndex % sprites.length];
     }
 
