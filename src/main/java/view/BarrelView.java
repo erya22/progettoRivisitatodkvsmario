@@ -1,16 +1,18 @@
 package view;
 
+import java.awt.Graphics2D;
+
 import model.Barrel;
 
-public class BarrelView {
-	private Barrel barrel;
-		
+public class BarrelView extends GameItemView {
+	Barrel barrel;
+	
 	public BarrelView(Barrel barrel) {
-		this.barrel = barrel;
+		super(barrel);
 	}
 
-	public void updateAnimation() {
-		
-	}
+
+
+	
 
 }
