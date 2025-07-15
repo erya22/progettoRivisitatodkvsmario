@@ -56,11 +56,35 @@ public class GameSetter {
         mapView = new MapView();
         
         //PLAYER
-        player = new Player(0, 0, 4, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, spriteFramesPlayer, "Mario", 0, 0, 10, 0, 12, PlayerState.ALIVE);
+        player = new Player(0,
+        		0,
+        		4,
+        		0,
+        		Constants.TILE_SIZE,
+        		Constants.TILE_SIZE,
+        		spriteFramesPlayer,
+        		"Mario",
+        		0,
+        		0,
+        		10,
+        		10,
+        		12,
+        		PlayerState.ALIVE);
         pcontroller = new PlayerController(player);
         
         //DK
-        dk = new DonkeyKong(0, (Constants.TILE_SIZE * 8) + (Constants.TILE_SIZE / 2) + (Constants.TILE_SIZE / 4), 0, 0, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 2, spriteFramesDK, "Donkey Kong", 0, 0, 0, 10);
+        dk = new DonkeyKong(0, //x
+        		(Constants.TILE_SIZE * 8) + (Constants.TILE_SIZE / 2) + (Constants.TILE_SIZE / 4), //y
+        		0, //vx
+        		0, //vy
+        		Constants.TILE_SIZE * 2, //width
+        		Constants.TILE_SIZE * 2, //height
+        		spriteFramesDK, //sprites
+        		"Donkey Kong", //name
+        		0, //currentFrameIndex
+        		0, //currentFrameCounter
+        		50, //frameDelay
+        		0); //spriteNumber
         //TODO: METODO LOADSPRITES!
         
         //PEACH

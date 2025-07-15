@@ -40,37 +40,29 @@ public class DonkeyKong extends Entity {
 	    int targetHeight = Constants.TILE_SIZE * 2;
 
 	    BufferedImage imgRight = Sprite.resize(Sprite.DK_LANCIA_BARILE_R.img(), targetWidth, targetHeight);
-	    BufferedImage[] dx = new BufferedImage[] { imgRight,
+	    BufferedImage imgLeft = Sprite.resize(Sprite.DK_L.img(), targetWidth, targetHeight);
+	    BufferedImage imgRest = Sprite.resize(Sprite.DK_REST.img(), targetWidth, targetHeight);
+	    BufferedImage imgRoar = Sprite.resize(Sprite.DK_ROAR.img(), targetWidth, targetHeight);
+	    BufferedImage imgRoar2 = Sprite.resize(Sprite.DK_ROAR2.img(), targetWidth, targetHeight);
+	    BufferedImage[] allSprites = new BufferedImage[] { 
+	    		imgLeft,
+	    		imgRest,
 	    		imgRight,
+	    		imgLeft,
+	    		imgRoar,
+	    		imgRoar2,
 	    		imgRight
 	    };
-	    spriteMap.put(new SimpleEntry<>(ActionState.THROWING, Direction.RIGHT), dx);
+	    spriteMap.put(new SimpleEntry<>(ActionState.STATIC, Direction.NONE), allSprites);
 
-	    BufferedImage imgLeft = Sprite.resize(Sprite.DK_L.img(), targetWidth, targetHeight);
-	    BufferedImage[] sx = new BufferedImage[] { imgLeft,
-	    		imgLeft,
-	    		imgLeft
-	    		};
-	    spriteMap.put(new SimpleEntry<>(ActionState.STATIC, Direction.LEFT), sx);
-
-	    BufferedImage imgRest = Sprite.resize(Sprite.DK_REST.img(), targetWidth, targetHeight);
-	    BufferedImage[] rest = new BufferedImage[] { imgRest,
-	    		imgRest,
-	    		imgRest};
-	    spriteMap.put(new SimpleEntry<>(ActionState.STATIC, Direction.NONE), rest);
-
-	    BufferedImage imgRoar = Sprite.resize(Sprite.DK_ROAR.img(), targetWidth, targetHeight);
-	    BufferedImage[] urlo = new BufferedImage[] { imgRoar,
-	    		imgRoar,
-	    		imgRoar};
-	    spriteMap.put(new SimpleEntry<>(ActionState.ROARING, Direction.NONE), urlo);
-
+	   
+	  
 	    // Fallback for missing states/directions
 	    for (ActionState state : ActionState.values()) {
 	        for (Direction dir : Direction.values()) {
 	            spriteMap.putIfAbsent(
 	                new SimpleEntry<>(state, dir),
-	                dx // fallback
+	                allSprites // fallback
 	            );
 	        }
 	    }
@@ -81,14 +73,12 @@ public class DonkeyKong extends Entity {
 	
 	public boolean canThrowBarrel() {
 		long currentTime = System.currentTimeMillis();
-		return (currentTime - lastThrowTime) >= throwCooldown;
+		return ((currentTime - lastThrowTime) >= throwCooldown) && (getCurrentFrameIndex() == 6);
 	}
 	
 	public Barrel throwBarrel() {
 		lastThrowTime = System.currentTimeMillis();
-		
-		setCurrentActionState(ActionState.THROWING);
-		
+				
 		int barrelX = this.getX() + this.getWidth();
 		int barrelY = this.getY() + (this.getHeight() / 2);
 		

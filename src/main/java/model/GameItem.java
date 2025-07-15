@@ -57,7 +57,12 @@ public abstract class GameItem {
     // Metodo astratto per l'aggiornamento logico
     public abstract void update();
     
+    public BufferedImage[] getCurrentAnimationFrames() {
+        return spriteFrames.get(currentDirection);
+    }
+    
     public void updateAnimation() {
+    	setSpriteNumber(getCurrentAnimationFrames().length);
 		setFrameCounter(getFrameCounter() + 1);
 		if (getFrameCounter() >= getFrameDelay()) {
 			setFrameCounter(0);
