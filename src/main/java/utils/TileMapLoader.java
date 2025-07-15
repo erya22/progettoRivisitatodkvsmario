@@ -16,7 +16,7 @@ import model.TileMap;
 public class TileMapLoader {
 
     public static TileMap loadMap() {
-        try (InputStream jsonStream = TileMapLoader.class.getResourceAsStream("/MAPPA32/JSON/mappa25m_colladder.json")) {
+        try (InputStream jsonStream = TileMapLoader.class.getResourceAsStream("/mappadimension32/JSON/mappa25m_colladder.json")) {
             if (jsonStream == null) throw new FileNotFoundException("File JSON non trovato!");
             Reader reader = new InputStreamReader(jsonStream);
             return new Gson().fromJson(reader, TileMap.class);
@@ -27,7 +27,7 @@ public class TileMapLoader {
     }
 
     public static BufferedImage loadTileset() {
-        try (InputStream imageStream = TileMapLoader.class.getResourceAsStream("/MAPPA32/TILESET/TraviScale.png")) {
+        try (InputStream imageStream = TileMapLoader.class.getResourceAsStream("/mappadimension32/TILESET/TraviScale.png")) {
             if (imageStream == null) throw new FileNotFoundException("Tileset non trovato!");
             return ImageIO.read(imageStream);
         } catch (IOException e) {

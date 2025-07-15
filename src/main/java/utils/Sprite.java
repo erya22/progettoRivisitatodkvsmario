@@ -1,5 +1,7 @@
 package utils;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -11,31 +13,32 @@ import org.slf4j.LoggerFactory;
 public enum Sprite {
 	
 	
-	PEACH("/NPCS/27peach.png"),
-	DK_LANCIA_BARILE_R("/NPCS/h6.png"),
-	DK_L("/NPCS/h4.png"),
-	DK_REST("/NPCS/h1.png"),
-	DK_ROAR("/NPCS/h3.png"),
-	MARIO_IDLE_CLIMB("/PLAYER/b1.png"),
-	MARIO_WALK_R("/PLAYER/a1.png"),
-	MARIO_WALK_R1("/PLAYER/a2.png"),
-	MARIO_WALK_R2("/PLAYER/a3.png"),
-	MARIO_WALK_R3("/PLAYER/a4.png"),
-	MARIO_WALK_L("/PLAYER/m1.png"),
-	MARIO_WALK_L1("/PLAYER/m2.png"),
-	MARIO_WALK_JUMP_L_L2("/PLAYER/m3.png"),
-	MARIO_WALK_L3("/PLAYER/m4.png"),
-	MARIO_JUMP_R("/PLAYER/c3.png"),
-	MARIO_HIT("/PLAYER/e1.png"),
-	MARIO_HIT1("/PLAYER/e2.png"),
-	MARIO_HIT2("/PLAYER/e3.png"),
-	MARIO_HIT3("/PLAYER/e4.png"),
-	MARIO_HIT4("/PLAYER/e5.png"),
-	BARREL1("/OBJECTS/barrel1.png"),
-	BARREL2("/OBJECTS/barrel2.png"),
-	BARREL3("/OBJECTS/barrel3.png"),
-	BARREL4("/OBJECTS/barrel4.png"),
-	BARREL5("/OBJECTS/barrel5.png");
+	PEACH("/npcsprites/peach.png"),
+	DK_LANCIA_BARILE_R("/npcsprites/h3.png"),
+	DK_L("/npcsprites/h1.png"),
+	DK_REST("/npcsprites/h4.png"),
+	DK_ROAR("/npcsprites/h5.png"),
+	DK_ROAR2("/npcsprites/h2.png"),
+	MARIO_IDLE_CLIMB("/playersprites/b1.png"),
+	MARIO_WALK_R("/playersprites/a1.png"),
+	MARIO_WALK_R1("/playersprites/a2.png"),
+	MARIO_WALK_R2("/playersprites/a3.png"),
+	MARIO_WALK_R3("/playersprites/a4.png"),
+	MARIO_WALK_L("/playersprites/m1.png"),
+	MARIO_WALK_L1("/playersprites/m2.png"),
+	MARIO_WALK_JUMP_L_L2("/playersprites/m3.png"),
+	MARIO_WALK_L3("/playersprites/m4.png"),
+	MARIO_JUMP_R("/playersprites/c3.png"),
+	MARIO_HIT("/playersprites/e1.png"),
+	MARIO_HIT1("/playersprites/e2.png"),
+	MARIO_HIT2("/playersprites/e3.png"),
+	MARIO_HIT3("/playersprites/e4.png"),
+	MARIO_HIT4("/playersprites/e5.png"),
+	BARREL1("/barrelhammer/barrel1.png"),
+	BARREL2("/barrelhammer/barrel2.png"),
+	BARREL3("/barrelhammer/barrel3.png"),
+	BARREL4("/barrelhammer/barrel4.png"),
+	BARREL5("/barrelhammer/barrel5.png");
 	
 	private final Logger log = LoggerFactory.getLogger(Sprite.class);
 	
@@ -47,6 +50,15 @@ public enum Sprite {
 	public BufferedImage img() {
 		return img;
 	}
+	
+	public static BufferedImage resize(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resizedImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+        g2d.dispose();
+        return resizedImage;
+    }
 	
 	Sprite(String path) {
 		try {

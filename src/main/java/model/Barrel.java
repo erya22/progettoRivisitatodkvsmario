@@ -2,15 +2,13 @@ package model;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import utils.Constants;
 import utils.Sprite;
 
 /**
@@ -43,31 +41,34 @@ public class Barrel extends GameItem {
 	}
 	
 	private HashMap<Direction, BufferedImage[]> loadSprites() {
-		HashMap<Direction, BufferedImage[]> spriteFrames = new HashMap<Direction, BufferedImage[]>();
-		BufferedImage[] images = new BufferedImage[] {
-				Sprite.BARREL1.img(),
-				Sprite.BARREL2.img(),
-				Sprite.BARREL3.img(),
-				Sprite.BARREL4.img(),
-				Sprite.BARREL5.img()
-		};
-		
-		BufferedImage[] revImages = new BufferedImage[] {
-				Sprite.BARREL5.img(),
-				Sprite.BARREL4.img(),
-				Sprite.BARREL3.img(),
-				Sprite.BARREL2.img(),
-				Sprite.BARREL1.img()
-		};
-		
-		spriteFrames.put(Direction.RIGHT, images);
-		spriteFrames.put(Direction.LEFT, revImages);
-		spriteFrames.put(Direction.DOWN, images);
-		
-		
-		
-		return spriteFrames;
+	    int targetWidth = Constants.TILE_SIZE;
+	    int targetHeight = Constants.TILE_SIZE;
+
+	    HashMap<Direction, BufferedImage[]> spriteFrames = new HashMap<>();
+
+	    BufferedImage[] images = new BufferedImage[] {
+	        Sprite.resize(Sprite.BARREL1.img(), targetWidth, targetHeight),
+	        Sprite.resize(Sprite.BARREL2.img(), targetWidth, targetHeight),
+	        Sprite.resize(Sprite.BARREL3.img(), targetWidth, targetHeight),
+	        Sprite.resize(Sprite.BARREL4.img(), targetWidth, targetHeight),
+	        Sprite.resize(Sprite.BARREL5.img(), targetWidth, targetHeight)
+	    };
+
+	    BufferedImage[] revImages = new BufferedImage[] {
+    		Sprite.resize(Sprite.BARREL5.img(), targetWidth, targetHeight),
+    		Sprite.resize(Sprite.BARREL4.img(), targetWidth, targetHeight),
+    		Sprite.resize(Sprite.BARREL3.img(), targetWidth, targetHeight),
+    		Sprite.resize(Sprite.BARREL2.img(), targetWidth, targetHeight),
+    		Sprite.resize(Sprite.BARREL1.img(), targetWidth, targetHeight)
+	    };
+
+	    spriteFrames.put(Direction.RIGHT, images);
+	    spriteFrames.put(Direction.LEFT, revImages);
+	    spriteFrames.put(Direction.DOWN, images);
+
+	    return spriteFrames;
 	}
+
 
 	public void roll(ArrayList<Collision> beams, ArrayList<TriggerZone> triggerZones) {
 		if (isFalling(beams)) {
@@ -117,6 +118,8 @@ public class Barrel extends GameItem {
 	public boolean isCollidingWithMario(Player player) {
 		return this.getBounds().intersects(player.getBounds());
 	}
+	
+	
 
 	@Override
 	public void update() {
@@ -214,6 +217,15 @@ public class Barrel extends GameItem {
 	}
 
 	@Override
+	public void updateAnimation() {
+		setFrameCounter(getFrameCounter() + 1);
+		if (getFrameCounter() >= getFrameDelay()) {
+			setFrameCounter(0);
+			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
+		}
+	}
+	
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Barrel [velocityX=").append(velocityX).append(", velocityY=").append(velocityY)
@@ -229,6 +241,8 @@ public class Barrel extends GameItem {
 				.append("]");
 		return builder.toString();
 	}
+	
+	
 
 //	@Override
 //	public void updatePhysics(ArrayList<Collision> beams) {

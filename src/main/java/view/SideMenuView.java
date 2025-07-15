@@ -34,14 +34,14 @@ public class SideMenuView extends JPanel implements PlayerListener {
     	try {
             arrowImg = ImageIO.read(getClass().getResourceAsStream("/SIDEMENU/FRECCE.png"));
             wasdImg = ImageIO.read(getClass().getResourceAsStream("/SIDEMENU/WASD.png"));
-            viteImg = ImageIO.read(getClass().getResourceAsStream("/PLAYER/a1.png"));
+            viteImg = ImageIO.read(getClass().getResourceAsStream("/playersprites/a1.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     	
     	//CARICAMENTO FONT
         try {
-            InputStream is = getClass().getResourceAsStream("/FONTS/PressStart2P-Regular.ttf");
+            InputStream is = getClass().getResourceAsStream("/fontstexts/PressStart2P-Regular.ttf");
             customFont = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.PLAIN, 14f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(customFont);

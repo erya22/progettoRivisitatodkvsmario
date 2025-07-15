@@ -2,7 +2,7 @@ package model;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 
 public abstract class GameItem {
@@ -56,6 +56,8 @@ public abstract class GameItem {
 
     // Metodo astratto per l'aggiornamento logico
     public abstract void update();
+    
+    public abstract void updateAnimation();
 
 //    // Metodo astratto per l'aggiornamento della fisica
 //    public abstract void updatePhysics(ArrayList<Collision> beams);
@@ -131,6 +133,12 @@ public abstract class GameItem {
 	public void setHeight(int height) {
 		this.height = height;
 	}
+	
+	public BufferedImage getCurrentFrame() {
+	    BufferedImage[] sprites = spriteFrames.get(getCurrentDirection());
+	    return sprites[getCurrentFrameIndex()];
+	}
+
     
     
 }

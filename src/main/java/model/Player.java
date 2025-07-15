@@ -190,68 +190,93 @@ public class Player extends Entity {
 
 	private HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> loadPlayerSprites() {
 	    // Carica immagini e riempi spriteFrames
-		HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames = this.getSpriteFrames();
+		HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames = new HashMap<AbstractMap.SimpleEntry<ActionState,Direction>, BufferedImage[]>();
+		
+		int targetWidth = Constants.TILE_SIZE;
+		int targetHeight = Constants.TILE_SIZE;
+		
 		//IDLE
 		BufferedImage[] idleR = new BufferedImage[] {
-				Sprite.MARIO_WALK_R.img()
+				Sprite.resize(Sprite.MARIO_WALK_R.img(), targetWidth, targetHeight)
 		};
 		BufferedImage[] idleL = new BufferedImage[] {
-				Sprite.MARIO_WALK_L.img()	
+				Sprite.resize(Sprite.MARIO_WALK_L.img(), targetWidth, targetHeight)	
 		};
+		
 		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.IDLE, Direction.RIGHT), idleR);
 		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.IDLE, Direction.LEFT), idleL);
-		
+
 		// UP/DOWN
 		BufferedImage[] up = new BufferedImage[] {
-				Sprite.MARIO_IDLE_CLIMB.img()
+				Sprite.resize(Sprite.MARIO_IDLE_CLIMB.img(), targetWidth, targetHeight)
 		};
 		
 		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.UP), up);
 		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.DOWN), up);
+		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.LEFT), up);
+		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.RIGHT), up);
+		
 		
 		// RIGHT
 		BufferedImage[] right = new BufferedImage[] {
-				Sprite.MARIO_WALK_R.img(),
-				Sprite.MARIO_WALK_R1.img(),
-				Sprite.MARIO_WALK_R2.img(),
-				Sprite.MARIO_WALK_R3.img()
+				Sprite.resize(Sprite.MARIO_WALK_R.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_WALK_R1.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_WALK_R2.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_WALK_R3.img(), targetWidth, targetHeight)
 		};
 		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.WALKING, Direction.RIGHT), right);
 		
 		// LEFT
 		BufferedImage[] left = new BufferedImage[] {
-				Sprite.MARIO_WALK_L.img(),
-				Sprite.MARIO_WALK_L1.img(),
-				Sprite.MARIO_WALK_JUMP_L_L2.img(),
-				Sprite.MARIO_WALK_L3.img()
+				Sprite.resize(Sprite.MARIO_WALK_L.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_WALK_L1.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_WALK_JUMP_L_L2.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_WALK_L3.img(), targetWidth, targetHeight)
 		};
 		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.WALKING, Direction.LEFT), left);
 		
 		// JUMP AND FALL ANIMATIONS
 		BufferedImage[] jumpR = new BufferedImage[] {
-				Sprite.MARIO_JUMP_R.img()
+				Sprite.resize(Sprite.MARIO_JUMP_R.img(), targetWidth, targetHeight)
 		};
 		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.JUMPING, Direction.RIGHT), jumpR);
 		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.FALLING, Direction.RIGHT), jumpR);
 		
 		BufferedImage[] jumpL = new BufferedImage[] {
-				Sprite.MARIO_WALK_JUMP_L_L2.img()
+				Sprite.resize(Sprite.MARIO_WALK_JUMP_L_L2.img(), targetWidth, targetHeight)
 		};
 		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.JUMPING, Direction.LEFT), jumpL);
 		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.FALLING, Direction.LEFT), jumpL);
 		
 		BufferedImage[] hitFrames = new BufferedImage[] {
-				Sprite.MARIO_HIT.img(),
-				Sprite.MARIO_HIT1.img(),
-				Sprite.MARIO_HIT2.img(),
-				Sprite.MARIO_HIT3.img(),
-				Sprite.MARIO_HIT4.img()
+				Sprite.resize(Sprite.MARIO_HIT.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_HIT1.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_HIT2.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_HIT3.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_HIT4.img(), targetWidth, targetHeight)
+		};
+		
+		BufferedImage[] revHitFrames = new BufferedImage[] {
+				Sprite.resize(Sprite.MARIO_HIT4.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_HIT3.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_HIT2.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_HIT1.img(), targetWidth, targetHeight),
+				Sprite.resize(Sprite.MARIO_HIT.img(), targetWidth, targetHeight)
 		};
 		
 		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.HIT, Direction.RIGHT), hitFrames);
 		//TODO: When used, reverse order of the array
-		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.HIT, Direction.LEFT), hitFrames);
+		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.HIT, Direction.LEFT), revHitFrames);
 		
+		for (ActionState state : ActionState.values()) {
+		    for (Direction dir : Direction.values()) {
+		        spriteFrames.putIfAbsent(
+		            new SimpleEntry<>(state, dir),
+		            idleR // fallback
+		        );
+		    }
+		}
+
 		
 		return spriteFrames;
 
@@ -268,7 +293,11 @@ public class Player extends Entity {
 	//Aggiorna i dati per l'animazione
 	@Override
 	public void updateAnimation() {
-		
+		setFrameCounter(getFrameCounter() + 1);
+		if (getFrameCounter() >= getFrameDelay()) {
+			setFrameCounter(0);
+			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
+		}
 	}
 	
 	@Override

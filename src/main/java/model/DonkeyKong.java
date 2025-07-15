@@ -33,27 +33,41 @@ public class DonkeyKong extends Entity {
 
 	public HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> loadSpriteFrames() {
 
-		HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteMap = new HashMap<SimpleEntry<ActionState,Direction>, BufferedImage[]>();
-		
-		// dx/sx prendi barili
-		BufferedImage[] dx = new BufferedImage[1];
-		dx[0] = Sprite.DK_LANCIA_BARILE_R.img();
-		spriteMap.put(new SimpleEntry<>(ActionState.THROWING, Direction.RIGHT), dx);
-		BufferedImage[] sx = new BufferedImage[1];
-		sx[0] = Sprite.DK_L.img();
-		spriteMap.put(new SimpleEntry<>(ActionState.STATIC, Direction.LEFT), dx);
-		
-		// urlo selvaggio
-		BufferedImage[] rest = new BufferedImage[1];
-		rest[0] = Sprite.DK_REST.img();
-		spriteMap.put(new SimpleEntry<>(ActionState.STATIC, Direction.NONE), dx);
-		BufferedImage[] urlo = new BufferedImage[1];
-		urlo[0] = Sprite.DK_ROAR.img();
-		spriteMap.put(new SimpleEntry<>(ActionState.ROARING, Direction.NONE), dx);
-		
-		return spriteMap;
-		
+	    HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteMap = new HashMap<>();
+
+	    // Target size you want, e.g. 32x32 or Constants.TILE_SIZE
+	    int targetWidth = Constants.TILE_SIZE * 4;  
+	    int targetHeight = Constants.TILE_SIZE * 2;
+
+	    BufferedImage imgRight = Sprite.resize(Sprite.DK_LANCIA_BARILE_R.img(), targetWidth, targetHeight);
+	    BufferedImage[] dx = new BufferedImage[] { imgRight };
+	    spriteMap.put(new SimpleEntry<>(ActionState.THROWING, Direction.RIGHT), dx);
+
+	    BufferedImage imgLeft = Sprite.resize(Sprite.DK_L.img(), targetWidth, targetHeight);
+	    BufferedImage[] sx = new BufferedImage[] { imgLeft };
+	    spriteMap.put(new SimpleEntry<>(ActionState.STATIC, Direction.LEFT), sx);
+
+	    BufferedImage imgRest = Sprite.resize(Sprite.DK_REST.img(), targetWidth, targetHeight);
+	    BufferedImage[] rest = new BufferedImage[] { imgRest };
+	    spriteMap.put(new SimpleEntry<>(ActionState.STATIC, Direction.NONE), rest);
+
+	    BufferedImage imgRoar = Sprite.resize(Sprite.DK_ROAR.img(), targetWidth, targetHeight);
+	    BufferedImage[] urlo = new BufferedImage[] { imgRoar };
+	    spriteMap.put(new SimpleEntry<>(ActionState.ROARING, Direction.NONE), urlo);
+
+	    // Fallback for missing states/directions
+	    for (ActionState state : ActionState.values()) {
+	        for (Direction dir : Direction.values()) {
+	            spriteMap.putIfAbsent(
+	                new SimpleEntry<>(state, dir),
+	                dx // fallback
+	            );
+	        }
+	    }
+
+	    return spriteMap;
 	}
+
 	
 	public boolean canThrowBarrel() {
 		long currentTime = System.currentTimeMillis();
@@ -62,6 +76,9 @@ public class DonkeyKong extends Entity {
 	
 	public Barrel throwBarrel() {
 		lastThrowTime = System.currentTimeMillis();
+		
+		setCurrentActionState(ActionState.THROWING);
+		
 		
 		int barrelX = this.getX() + this.getWidth();
 		int barrelY = this.getY() + (this.getHeight() / 2);
@@ -87,8 +104,11 @@ public class DonkeyKong extends Entity {
 
 	@Override
 	public void updateAnimation() {
-		// TODO Auto-generated method stub
-		
+		setFrameCounter(getFrameCounter() + 1);
+		if (getFrameCounter() >= getFrameDelay()) {
+			setFrameCounter(0);
+			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
+		}
 	}
 
 }

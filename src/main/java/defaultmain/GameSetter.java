@@ -49,7 +49,7 @@ public class GameSetter {
         HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFramesPlayer = new HashMap<>();
         HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFramesDK = new HashMap<>();
         HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFramesPeach = new HashMap<>();
-        HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteBarrel = new HashMap<>();
+        
         
         //MAPPA
         TileMap map = TileMapLoader.loadMap();

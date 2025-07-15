@@ -6,6 +6,7 @@ import java.util.AbstractMap.SimpleEntry;
 
 import javax.imageio.ImageIO;
 
+import utils.Constants;
 import utils.Sprite;
 
 import java.util.ArrayList;
@@ -23,11 +24,24 @@ public class Peach extends Entity {
 	
 	private HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> loadSpriteFrames() {
 		HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteMap = new HashMap<SimpleEntry<ActionState,Direction>, BufferedImage[]>();
-		BufferedImage[] images = new BufferedImage[1];
 		
-		images[0] = Sprite.PEACH.img();
+		int targetWidth = Constants.TILE_SIZE;
+		int targetHeight = Constants.TILE_SIZE*2;
+		
+		BufferedImage[] images = new BufferedImage[] {
+				Sprite.resize(Sprite.PEACH.img(), targetWidth, targetHeight)
+		};
 		
 		spriteMap.put(new SimpleEntry<>(ActionState.IDLE, Direction.NONE), images);
+		
+		for (ActionState state : ActionState.values()) {
+		    for (Direction dir : Direction.values()) {
+		        spriteMap.putIfAbsent(
+		            new SimpleEntry<>(state, dir),
+		            images // fallback
+		        );
+		    }
+		}
 		
 		return spriteMap;
 	}
@@ -46,8 +60,11 @@ public class Peach extends Entity {
 
 	@Override
 	public void updateAnimation() {
-		// TODO Auto-generated method stub
-		
+		setFrameCounter(getFrameCounter() + 1);
+		if (getFrameCounter() >= getFrameDelay()) {
+			setFrameCounter(0);
+			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
+		}
 	}
 	
 	public boolean isCollidingWithMario(Player player) {

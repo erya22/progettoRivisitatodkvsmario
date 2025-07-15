@@ -63,6 +63,17 @@ public abstract class Entity {
     public BufferedImage[] getCurrentAnimationFrames() {
         return spriteFrames.get(new SimpleEntry<>(currentActionState, currentDirection));
     }
+    
+    public BufferedImage getCurrentFrame() {
+        BufferedImage[] sprites = spriteFrames.get(new SimpleEntry<>(getCurrentActionState(), getCurrentDirection()));
+        if (sprites == null) {
+            System.err.println("MISSING SPRITES for " + getCurrentActionState() + " " + getCurrentDirection());
+            // Fallback a IDLE_RIGHT
+            sprites = spriteFrames.get(new SimpleEntry<>(ActionState.IDLE, Direction.RIGHT));
+        }
+        return sprites[currentFrameIndex % sprites.length];
+    }
+
 
 	public int getX() {
 		return x;
