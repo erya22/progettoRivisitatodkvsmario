@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import utils.CollisionManager;
+import utils.Constants;
 import utils.LadderManager;
 import utils.TriggerZoneManager;
 
@@ -83,31 +84,52 @@ public class World {
 	
 	//TODO: UPDATE ANIMATION
 	private void updateAllItems(ArrayList<Collision> beams) {
-		Iterator<GameItem> iterator = items.iterator();
-		while (iterator.hasNext()) {
-		    GameItem item = iterator.next();
+		boolean isBarrelColliding = false;
+		ArrayList<Barrel> expiredBarrels = new ArrayList<Barrel>();
+		
+		for (GameItem item : items) {
 		    item.update();
 
+		    
 		    if(item instanceof Barrel) {
+		    	
 				Barrel barrel = (Barrel) item;
-			    checkBarrelCollision(barrel, iterator);
+				if (checkBarrelCollision(barrel)) {
+					isBarrelColliding = true;
+					break;
+				}
 			    checkJumpOverBarrels(barrel);
-                player.getListener().sideMenuRefresh(); // Per eventuale modifica score
+                player.getListener().sideMenuRefresh();// Per eventuale modifica score
+                
+                if ((barrel.getX() < 0) || (barrel.getY() >= Constants.MAP_HEIGHT + Constants.TILE_SIZE)) {
+                	expiredBarrels.add(barrel);
+                }
 		    }
+		    
+		}
+		
+		if (isBarrelColliding) {
+			ArrayList<GameItem> newItems = new ArrayList<GameItem>();
+			for (GameItem i : items) {
+				if (i instanceof Barrel) {
+					newItems.add(i);
+				}
+			}
+			items.removeAll(newItems);
+		} else if (!expiredBarrels.isEmpty()){
+			log.debug("barile rimosso");
+			items.removeAll(expiredBarrels);
 		}
 
 	}
 	
-	public void checkBarrelCollision(Barrel barrel, Iterator<GameItem> iterator) {
+	public boolean checkBarrelCollision(Barrel barrel) {
         barrel.roll(beams, triggerZones);
         barrel.updatePhysics(beams, triggerZones);
 
         if (barrel.isCollidingWithMario(player)) {
         	boolean hitFromAbove = player.getY() + player.getHeight() <= barrel.getY() + 10;
-        	
-		    barrel.setBarrelState(BarrelState.HIT_PLAYER);
-            iterator.remove();
-            
+        	            
             player.hitByBarrell();
             player.checkIfAlive();
             
@@ -115,7 +137,11 @@ public class World {
                 // Mario è atterrato sopra il barile, non conto i 100 punti di score
                 player.addScore(-100);
             }
+            return true;
 	    }
+        
+        return false;
+        
 	}
 	
 	private void checkJumpOverBarrels(Barrel barrel) {
