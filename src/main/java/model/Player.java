@@ -2,14 +2,11 @@ package model;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +37,10 @@ public class Player extends Entity {
 	private int jumpX = 4;
 	private int ladderY = 4;
 	
-	//GESTIONE VITA PLAYER
+	//GESTIONE VITA/SCORE PLAYER
 	private int playerLives = 3;
 	private PlayerListener listener;
+	private int score = 0;
 	
 	public Player(int x, int y, int velocityX, int velocityY, int width, int height,
 			HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames, String name, int currentFrameIndex, int frameCounter, int frameDelay, int spriteNumber, int jumpStrength, PlayerState ps) {
@@ -161,13 +159,17 @@ public class Player extends Entity {
 		}
 	}
 	
+	public boolean isInAir() {
+	    return getCurrentTerrain() == Terrain.AIR;
+	}
+	
 	//Collisione con barili
 	public void hitByBarrell() {
 		if(getPlayerState() != PlayerState.HIT_BY_BARREL)
 			return;
 		else {
 			playerLives--;
-			listener.onPlayerDamaged();
+			listener.sideMenuRefresh();
 			if(playerLives == 0)
 				setPlayerState(PlayerState.DEAD);
 			else
@@ -178,10 +180,13 @@ public class Player extends Entity {
 	//Ferma il gioco. TODO: popup con score finale e se si vole ricominciare la partita
 	public void checkIfAlive() {
 		if(getPlayerState() == PlayerState.DEAD)
-			listener.onPlayerDead();
+			listener.stopGameLoop();
 			
 	}
 	
+	public void addScore(int scoreAdded) {
+		score += scoreAdded;
+	}
 
 	private HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> loadPlayerSprites() {
 	    // Carica immagini e riempi spriteFrames
@@ -445,9 +450,21 @@ public class Player extends Entity {
 		this.playerLives = playerLives;
 	}
 
+	public PlayerListener getListener() {
+		return listener;
+	}
+	
     public void setListener(PlayerListener listener) {
         this.listener = listener;
     }
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
     
     
 	

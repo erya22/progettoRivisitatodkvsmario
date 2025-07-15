@@ -29,6 +29,7 @@ public class Barrel extends GameItem {
 	private int velocityY;
 	
 	private Direction previousDirection;
+	private boolean jumpedOver = false;
 	
 	public Barrel(int x, int y, int radius, HashMap<Direction, BufferedImage[]> sprites,
 			ActionState currentActionState, Direction currentDirection, Terrain currentTerrain, int currentFrameIndex,
@@ -202,6 +203,14 @@ public class Barrel extends GameItem {
 
 	public void setPreviousDirection(Direction previousDirection) {
 		this.previousDirection = previousDirection;
+	}
+
+	public boolean isJumpedOver() {
+		return jumpedOver;
+	}
+
+	public void setJumpedOver(boolean jumpedOver) {
+		this.jumpedOver = jumpedOver;
 	}
 
 	@Override

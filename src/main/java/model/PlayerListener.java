@@ -2,8 +2,8 @@ package model;
 
 public interface PlayerListener {
 
-	void onPlayerDamaged();
+	void sideMenuRefresh();
 	
-	void onPlayerDead();
+	void stopGameLoop();
 
 }

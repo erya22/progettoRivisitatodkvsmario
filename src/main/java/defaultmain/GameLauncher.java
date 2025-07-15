@@ -5,19 +5,15 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import model.Barrel;
-import model.World;
 import view.GamePanel;
 import view.SideMenuView;
 
 public class GameLauncher {
 	
     public static void main(String[] args) {
-    	boolean running = true;
     	
         GameSetter setter = new GameSetter();
         setter.setupGame(); // crea tutto
-        World world = setter.getWorld();
         GamePanel panel = setter.getPanel();
         SideMenuView sideMenu = setter.getSideMenu();
 

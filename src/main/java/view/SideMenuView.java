@@ -126,7 +126,7 @@ public class SideMenuView extends JPanel implements PlayerListener {
         g2.drawString("Hai a disposizione tre vite", x, y);
         
         y += 40;
-        g2.drawString("SCORE: " /*+ player.score*/ , x, y); // da implementare playerscore
+        g2.drawString("SCORE: " + player.getScore(), x, y);
         
         //Immagini vite rimanenti
         y += 40;
@@ -138,12 +138,12 @@ public class SideMenuView extends JPanel implements PlayerListener {
     }
     
     //Per display vite rimanenti
-    public void onPlayerDamaged() {
+    public void sideMenuRefresh() {
         repaint(); 
     }
 
 	@Override
-	public void onPlayerDead() {
+	public void stopGameLoop() {
 		engine.stop();
 		
 	}

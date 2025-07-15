@@ -64,7 +64,10 @@ public class World {
 		if (peach.isCollidingWithMario(player)) {
 			log.debug("Mario vincitore!");
 			player.setPlayerState(PlayerState.WINNER);
+			player.setScore(1000); // Provvisorio, punteggio aggiuntivo se salvi peach
 			peach.setCurrentActionState(ActionState.VICTORY);
+			player.getListener().sideMenuRefresh();
+			player.getListener().stopGameLoop(); // fermo il gioco
 			
 			//TODO: monta animazioni
 			return;
@@ -83,35 +86,52 @@ public class World {
 		    GameItem item = iterator.next();
 		    item.update();
 
-		    if (item instanceof Barrel barrel) {
-		        barrel.roll(beams, triggerZones);
-		        barrel.updatePhysics(beams, triggerZones);
-
-		        if (barrel.isCollidingWithMario(player)) {
-		            iterator.remove(); // ✅ rimozione sicura
-		            player.setPlayerState(PlayerState.HIT_BY_BARREL);
-		            player.hitByBarrell();
-		            player.checkIfAlive();
-		        }
+		    if(item instanceof Barrel) {
+				Barrel barrel = (Barrel) item;
+			    checkBarrelCollision(barrel, iterator);
+			    checkJumpOverBarrels(barrel);
+                player.getListener().sideMenuRefresh(); // Per eventuale modifica score
 		    }
 		}
 
 	}
 	
-	public boolean checkBarrelCollision() {
-		for (GameItem item : items) {
-			if (item instanceof Barrel) {
-				Barrel barrel = (Barrel) item;
-				if (barrel.getBounds().intersects(player.getBounds())) {
-					items.remove(item);
-				    barrel.setBarrelState(BarrelState.HIT_PLAYER);
-				     // TODO: o cambia stato mario takes damage
-				    return true;
-				}
-			}
-		}
-		return false;
+	public void checkBarrelCollision(Barrel barrel, Iterator<GameItem> iterator) {
+        barrel.roll(beams, triggerZones);
+        barrel.updatePhysics(beams, triggerZones);
+
+        if (barrel.isCollidingWithMario(player)) {
+        	boolean hitFromAbove = player.getY() + player.getHeight() <= barrel.getY() + 10;
+        	
+		    barrel.setBarrelState(BarrelState.HIT_PLAYER);
+            iterator.remove();
+            player.setPlayerState(PlayerState.HIT_BY_BARREL);
+            player.hitByBarrell();
+            player.checkIfAlive();
+            
+            if (hitFromAbove) {
+                // Mario è atterrato sopra il barile, non conto i 100 punti di score
+                player.addScore(-100);
+            }
+	    }
 	}
+	
+	private void checkJumpOverBarrels(Barrel barrel) {
+		// Zona virtuale sopra il barile
+        Rectangle barrelTopZone = new Rectangle(
+            barrel.getX(),
+            barrel.getY() - 50,  // 50 pixel sopra
+            barrel.getWidth(),
+            20                   // altezza 20 pixel
+        );
+        
+        if (player.getBounds().intersects(barrelTopZone) && player.isInAir() && !barrel.isJumpedOver()) {
+            player.addScore(100);
+            barrel.setJumpedOver(true); /*NOTA: non viene piu resettata a false per ogni barile, quindi se il player salta piu volte  
+            								 lo stesso barile non avrà score aggiuntivo, ma è abbastanza insolto che ciò avvenga*/
+        }
+	}
+
 	
 	public void addItem(GameItem item) {
 		items.add(item);
