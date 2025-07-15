@@ -290,16 +290,6 @@ public class Player extends Entity {
 //		log.debug("DATI AGGIORNATI: {}", this.toString());
 	}
 	
-	//Aggiorna i dati per l'animazione
-	@Override
-	public void updateAnimation() {
-		setFrameCounter(getFrameCounter() + 1);
-		if (getFrameCounter() >= getFrameDelay()) {
-			setFrameCounter(0);
-			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
-		}
-	}
-	
 	@Override
 	public void updatePhysics(ArrayList<Collision> beams) {
 		//LIMITI ORIZZONTALI MAPPA

@@ -57,7 +57,13 @@ public abstract class GameItem {
     // Metodo astratto per l'aggiornamento logico
     public abstract void update();
     
-    public abstract void updateAnimation();
+    public void updateAnimation() {
+		setFrameCounter(getFrameCounter() + 1);
+		if (getFrameCounter() >= getFrameDelay()) {
+			setFrameCounter(0);
+			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
+		}
+	}
 
 //    // Metodo astratto per l'aggiornamento della fisica
 //    public abstract void updatePhysics(ArrayList<Collision> beams);
@@ -135,9 +141,12 @@ public abstract class GameItem {
 	}
 	
 	public BufferedImage getCurrentFrame() {
+		updateAnimation();
 	    BufferedImage[] sprites = spriteFrames.get(getCurrentDirection());
 	    return sprites[getCurrentFrameIndex()];
 	}
+	
+	
 
     
     

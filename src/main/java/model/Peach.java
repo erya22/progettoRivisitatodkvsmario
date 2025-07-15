@@ -58,15 +58,6 @@ public class Peach extends Entity {
 		
 	}
 
-	@Override
-	public void updateAnimation() {
-		setFrameCounter(getFrameCounter() + 1);
-		if (getFrameCounter() >= getFrameDelay()) {
-			setFrameCounter(0);
-			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
-		}
-	}
-	
 	public boolean isCollidingWithMario(Player player) {
 		if (getBounds().intersects(player.getBounds())) {
 			return true;

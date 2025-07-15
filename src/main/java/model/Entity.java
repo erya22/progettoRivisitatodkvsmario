@@ -6,10 +6,14 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * parent class per Player Barrel DK ecc.
  */
 public abstract class Entity {
+	private static final Logger log = LoggerFactory.getLogger(Entity.class);
 	//VARIABILI LOGICA ENTITA'
 	private int x, y;
 	private int velocityX, velocityY;
@@ -57,7 +61,15 @@ public abstract class Entity {
     
     public abstract void updatePhysics(ArrayList<Collision> beams);
 	
-    public abstract void updateAnimation();
+    public void updateAnimation() {
+    	
+    	setSpriteNumber(getCurrentAnimationFrames().length);
+		setFrameCounter(getFrameCounter() + 1);
+		if (getFrameCounter() >= getFrameDelay()) {
+			setFrameCounter(0);
+			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
+		}
+	}
     
     // Metodo per recuperare il frame attuale da disegnare, utile per la view
     public BufferedImage[] getCurrentAnimationFrames() {
@@ -65,12 +77,14 @@ public abstract class Entity {
     }
     
     public BufferedImage getCurrentFrame() {
+    	updateAnimation();
         BufferedImage[] sprites = spriteFrames.get(new SimpleEntry<>(getCurrentActionState(), getCurrentDirection()));
         if (sprites == null) {
             System.err.println("MISSING SPRITES for " + getCurrentActionState() + " " + getCurrentDirection());
             // Fallback a IDLE_RIGHT
             sprites = spriteFrames.get(new SimpleEntry<>(ActionState.IDLE, Direction.RIGHT));
         }
+        log.debug("cfi: {} di {}", currentFrameIndex, name);
         return sprites[currentFrameIndex % sprites.length];
     }
 
@@ -214,4 +228,19 @@ public abstract class Entity {
 	public Rectangle getBounds() {
 		return new Rectangle(x, y, width, height);
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Entity [x=").append(x).append(", y=").append(y).append(", velocityX=").append(velocityX)
+				.append(", velocityY=").append(velocityY).append(", width=").append(width).append(", height=")
+				.append(height).append(", name=").append(name).append(", spriteFrames=").append(spriteFrames)
+				.append(", currentActionState=").append(currentActionState).append(", currentDirection=")
+				.append(currentDirection).append(", currentTerrain=").append(currentTerrain)
+				.append(", currentFrameIndex=").append(currentFrameIndex).append(", frameCounter=").append(frameCounter)
+				.append(", frameDelay=").append(frameDelay).append(", spriteNumber=").append(spriteNumber).append("]");
+		return builder.toString();
+	}
+	
+	
 }

@@ -50,12 +50,10 @@ public class Barrel extends GameItem {
 	        Sprite.resize(Sprite.BARREL1.img(), targetWidth, targetHeight),
 	        Sprite.resize(Sprite.BARREL2.img(), targetWidth, targetHeight),
 	        Sprite.resize(Sprite.BARREL3.img(), targetWidth, targetHeight),
-	        Sprite.resize(Sprite.BARREL4.img(), targetWidth, targetHeight),
-	        Sprite.resize(Sprite.BARREL5.img(), targetWidth, targetHeight)
+	        Sprite.resize(Sprite.BARREL4.img(), targetWidth, targetHeight)
 	    };
 
 	    BufferedImage[] revImages = new BufferedImage[] {
-    		Sprite.resize(Sprite.BARREL5.img(), targetWidth, targetHeight),
     		Sprite.resize(Sprite.BARREL4.img(), targetWidth, targetHeight),
     		Sprite.resize(Sprite.BARREL3.img(), targetWidth, targetHeight),
     		Sprite.resize(Sprite.BARREL2.img(), targetWidth, targetHeight),
@@ -216,14 +214,6 @@ public class Barrel extends GameItem {
 		this.jumpedOver = jumpedOver;
 	}
 
-	@Override
-	public void updateAnimation() {
-		setFrameCounter(getFrameCounter() + 1);
-		if (getFrameCounter() >= getFrameDelay()) {
-			setFrameCounter(0);
-			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
-		}
-	}
 	
 	@Override
 	public String toString() {

@@ -56,15 +56,15 @@ public class GameSetter {
         mapView = new MapView();
         
         //PLAYER
-        player = new Player(0, 0, 4, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, spriteFramesPlayer, "Mario", 0, 0, 10, 1, 12, PlayerState.ALIVE);
+        player = new Player(0, 0, 4, 0, Constants.TILE_SIZE, Constants.TILE_SIZE, spriteFramesPlayer, "Mario", 0, 0, 10, 0, 12, PlayerState.ALIVE);
         pcontroller = new PlayerController(player);
         
         //DK
-        dk = new DonkeyKong(0, (Constants.TILE_SIZE * 8) + (Constants.TILE_SIZE / 2) + (Constants.TILE_SIZE / 4), 0, 0, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 2, spriteFramesDK, "Donkey Kong", 0, 0, 0, 0);
+        dk = new DonkeyKong(0, (Constants.TILE_SIZE * 8) + (Constants.TILE_SIZE / 2) + (Constants.TILE_SIZE / 4), 0, 0, Constants.TILE_SIZE * 2, Constants.TILE_SIZE * 2, spriteFramesDK, "Donkey Kong", 0, 0, 0, 10);
         //TODO: METODO LOADSPRITES!
         
         //PEACH
-        peach = new Peach(12 * Constants.TILE_SIZE, 5 * Constants.TILE_SIZE, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE * 2, spriteFramesPeach, "Peach", 0, 0, 0, 0);        
+        peach = new Peach(12 * Constants.TILE_SIZE, 5 * Constants.TILE_SIZE, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE * 2, spriteFramesPeach, "Peach", 0, 0, 10, 1);        
         
         //MONDO
         world = new World(map, player, dk, peach);

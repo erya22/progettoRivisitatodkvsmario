@@ -40,19 +40,29 @@ public class DonkeyKong extends Entity {
 	    int targetHeight = Constants.TILE_SIZE * 2;
 
 	    BufferedImage imgRight = Sprite.resize(Sprite.DK_LANCIA_BARILE_R.img(), targetWidth, targetHeight);
-	    BufferedImage[] dx = new BufferedImage[] { imgRight };
+	    BufferedImage[] dx = new BufferedImage[] { imgRight,
+	    		imgRight,
+	    		imgRight
+	    };
 	    spriteMap.put(new SimpleEntry<>(ActionState.THROWING, Direction.RIGHT), dx);
 
 	    BufferedImage imgLeft = Sprite.resize(Sprite.DK_L.img(), targetWidth, targetHeight);
-	    BufferedImage[] sx = new BufferedImage[] { imgLeft };
+	    BufferedImage[] sx = new BufferedImage[] { imgLeft,
+	    		imgLeft,
+	    		imgLeft
+	    		};
 	    spriteMap.put(new SimpleEntry<>(ActionState.STATIC, Direction.LEFT), sx);
 
 	    BufferedImage imgRest = Sprite.resize(Sprite.DK_REST.img(), targetWidth, targetHeight);
-	    BufferedImage[] rest = new BufferedImage[] { imgRest };
+	    BufferedImage[] rest = new BufferedImage[] { imgRest,
+	    		imgRest,
+	    		imgRest};
 	    spriteMap.put(new SimpleEntry<>(ActionState.STATIC, Direction.NONE), rest);
 
 	    BufferedImage imgRoar = Sprite.resize(Sprite.DK_ROAR.img(), targetWidth, targetHeight);
-	    BufferedImage[] urlo = new BufferedImage[] { imgRoar };
+	    BufferedImage[] urlo = new BufferedImage[] { imgRoar,
+	    		imgRoar,
+	    		imgRoar};
 	    spriteMap.put(new SimpleEntry<>(ActionState.ROARING, Direction.NONE), urlo);
 
 	    // Fallback for missing states/directions
@@ -79,7 +89,6 @@ public class DonkeyKong extends Entity {
 		
 		setCurrentActionState(ActionState.THROWING);
 		
-		
 		int barrelX = this.getX() + this.getWidth();
 		int barrelY = this.getY() + (this.getHeight() / 2);
 		
@@ -100,15 +109,6 @@ public class DonkeyKong extends Entity {
 	public void updatePhysics(ArrayList<Collision> beams) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public void updateAnimation() {
-		setFrameCounter(getFrameCounter() + 1);
-		if (getFrameCounter() >= getFrameDelay()) {
-			setFrameCounter(0);
-			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
-		}
 	}
 
 }
