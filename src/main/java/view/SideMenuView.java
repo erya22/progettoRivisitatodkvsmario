@@ -13,9 +13,12 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import defaultmain.ClientManager;
 import defaultmain.GameEngine;
+import dkserver.PlayerStatus;
 import model.Player;
 import model.PlayerListener;
+import utils.Constants;
 
 //TODO: aggiungi nuove immagini frecce
 public class SideMenuView extends JPanel implements PlayerListener {
@@ -23,12 +26,14 @@ public class SideMenuView extends JPanel implements PlayerListener {
     private BufferedImage arrowImg, wasdImg, viteImg;
     private Player player;
     private GameEngine engine;
+    private ElencoView elencoView;
 
     
-    public SideMenuView(Player player, GameEngine engine) {
+    public SideMenuView(Player player, GameEngine engine, ElencoView elencoView) {
     	this.player = player;
-    	this.player.setListener(this);
     	this.engine = engine;
+    	this.elencoView = elencoView;
+    	this.player.setListener(this);
     	
     	//CARICAMENTO IMMAGINI
     	try {
@@ -135,7 +140,16 @@ public class SideMenuView extends JPanel implements PlayerListener {
         	for(int i = 1; i <= player.getPlayerLives(); i++) // da implementare con le vite del player correnti
         		g2.drawImage(viteImg, x + 180 + (i * 40), y - 32, 32, 32, null);
         }
+        
+        for (PlayerStatus status : elencoView.getElenco()) {
+        	y += 40;
+        	if (y > Constants.SCREEN_HEIGHT) break;
+        	String riga = String.format("%s %d %d %s" ,status.getNickname(), status.getScore(), status.getVite(), status.isAlive() ? "vivo" : "morto" );
+        	g2.drawString(riga, x, y);
+        }
+        
     }
+    
     
     //Per display vite rimanenti
     public void sideMenuRefresh() {

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import controller.PlayerController;
 import model.PlayerState;
 import model.World;
+import view.ElencoView;
 import view.GamePanel;
 
 /**
@@ -17,6 +18,7 @@ public class GameEngine implements Runnable {
     private World world;
     private GamePanel panel;
     private PlayerController controller;
+    private ClientManager clientManager;
 
     /**
      * Costruttore.
@@ -24,10 +26,11 @@ public class GameEngine implements Runnable {
      * @param panel Il pannello grafico su cui disegnare.
      * @param controller Il controller del giocatore.
      */
-    public GameEngine(World world, GamePanel panel, PlayerController controller) {
+    public GameEngine(World world, GamePanel panel, PlayerController controller, ClientManager clientManager) {
         this.world = world;
         this.panel = panel;
         this.controller = controller;
+        this.clientManager = clientManager;
     }
 
     /**
@@ -90,5 +93,9 @@ public class GameEngine implements Runnable {
             }
         }
     }
+
 }
+    
+    
+
 

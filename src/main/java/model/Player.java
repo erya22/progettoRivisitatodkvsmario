@@ -2,6 +2,7 @@ package model;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import defaultmain.ClientManager;
+import dkserver.PlayerStatus;
 import utils.CollisionManager;
 import utils.Constants;
 import utils.LadderManager;
@@ -27,6 +29,8 @@ import utils.Sprite;
  */
 public class Player extends Entity {
 	private static final Logger log = LoggerFactory.getLogger(Player.class);
+	
+	private PlayerStatus ps = ClientManager.instance().playerStatus();
 	
 	private PlayerState state;
 	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
@@ -211,6 +215,7 @@ public class Player extends Entity {
 	public void hitByBarrell() {
 		log.debug("hit by barrel method");
 		playerLives--;
+		ClientManager.instance().playerStatus().setVite(playerLives);
 		listener.sideMenuRefresh();
 		animateHitInit();
 		setPlayerState(PlayerState.HIT_BY_BARREL);
@@ -259,8 +264,10 @@ public class Player extends Entity {
 	 * Ferma il gioco se player ha zero vite rimanenti.
 	 */
 	public void checkIfAlive() {
-		if(getPlayerState() == PlayerState.DEAD)
+		if(getPlayerState() == PlayerState.DEAD) {
+			ClientManager.instance().playerStatus().setAlive(false);
 			listener.stopGameLoop();
+		}
 			
 	}
 	
@@ -283,6 +290,7 @@ public class Player extends Entity {
      */
 	public void addScore(int scoreAdded) {
 		score += scoreAdded;
+		ClientManager.instance().update(score, playerLives, getPlayerState() == PlayerState.ALIVE);
 	}
 
 	/**
@@ -561,6 +569,15 @@ public class Player extends Entity {
 
 	public void setPlayerState(PlayerState state) {
 		this.state = state;
+		ClientManager.instance().update(score, playerLives, getPlayerState() == PlayerState.ALIVE);
+
+		try {
+			ArrayList<PlayerStatus> ssss = ClientManager.instance().getClient().read(ps);
+			
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public int getPlayerLives() {
@@ -569,6 +586,13 @@ public class Player extends Entity {
 
 	public void setPlayerLives(int playerLives) {
 		this.playerLives = playerLives;
+		ClientManager.instance().update(score, playerLives, getPlayerState() == PlayerState.ALIVE);
+		try {
+			ClientManager.instance().getClient().read(ps);
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public PlayerListener getListener() {
@@ -585,6 +609,13 @@ public class Player extends Entity {
 
 	public void setScore(int score) {
 		this.score = score;
+		ClientManager.instance().update(score, playerLives, getPlayerState() == PlayerState.ALIVE);
+		try {
+			ClientManager.instance().getClient().read(ps);
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public boolean isHitAnimationInitialized() {

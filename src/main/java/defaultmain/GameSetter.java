@@ -19,6 +19,7 @@ import model.TileMap;
 import model.World;
 import utils.Constants;
 import utils.TileMapLoader;
+import view.ElencoView;
 import view.GamePanel;
 import view.MapView;
 import view.SideMenuView;
@@ -41,11 +42,12 @@ public class GameSetter {
     private ArrayList<Entity> entities;
     
     private PlayerController pcontroller;
-    
     private MapView mapView;
     private GamePanel panel;
     private SideMenuView sideMenu;
     private GameEngine engine;
+    
+    private ClientManager clientManager;
 
     /**
      * Inizializza tutti gli elementi necessari per il gioco:
@@ -58,6 +60,7 @@ public class GameSetter {
      * </ul>
      */
 	public void setupGame() {
+		
         //LISTE
         items = new ArrayList<>();
         entities = new ArrayList<>();
@@ -102,7 +105,6 @@ public class GameSetter {
         		0, //currentFrameCounter
         		50, //frameDelay
         		0); //spriteNumber
-        //TODO: METODO LOADSPRITES!
         
         //PEACH
         peach = new Peach(12 * Constants.TILE_SIZE, 5 * Constants.TILE_SIZE, 0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE * 2, spriteFramesPeach, "Peach", 0, 0, 10, 1);        
@@ -116,18 +118,13 @@ public class GameSetter {
         panel = new GamePanel(world, pcontroller, mapView); 
         
         //MENU
-        engine = new GameEngine(world, panel, pcontroller);
-        sideMenu = new SideMenuView(player, engine);
+        engine = new GameEngine(world, panel, pcontroller, clientManager);
     }
 
 	//----GETTERS AND SETTERS----
 	
 	public World getWorld() {
 		return world;
-	}
-
-	public void setWorld(World world) {
-		this.world = world;
 	}
 
 	public GamePanel getPanel() {
@@ -142,15 +139,20 @@ public class GameSetter {
 		return pcontroller;
 	}
     
-	public SideMenuView getSideMenu() {
-		return sideMenu;
+    public void setSideMenu(SideMenuView sideMenu) {
+		this.sideMenu = sideMenu;
 	}
-    
-    public GameEngine getEngine() {
+
+	public GameEngine getEngine() {
 		return engine;
 	}
 
 	public void setEngine(GameEngine engine) {
 		this.engine = engine;
 	}
+
+	public SideMenuView getSideMenu() {
+		return sideMenu;
+	}
+	
 }

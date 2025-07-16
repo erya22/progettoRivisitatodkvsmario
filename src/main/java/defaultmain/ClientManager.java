@@ -58,14 +58,30 @@ public class ClientManager {
 		
 	}
 	
-	public synchronized void update(long score, int vite, boolean alive) {
+	public void update(long score, int vite, boolean alive) {
 		myStatus.setScore(score);
 		myStatus.setVite(vite);
 		myStatus.setAlive(alive);
 	}
 	
-	public ClientManager instance() {
+	public static ClientManager instance() {
 		return instance;
 	}
+	
+	public PlayerStatus playerStatus() {
+		return myStatus;
+	}
+	
+	public Client getClient() {
+		return client;
+	}
+	
+//	public ArrayList<PlayerStatus> read() {
+//		try {
+//			return client.read(myStatus);
+//		} catch (Exception e) {
+//			return new ArrayList<PlayerStatus>();
+//		}
+//	}
 
 }

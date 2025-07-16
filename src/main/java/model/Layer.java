@@ -1,4 +1,4 @@
-package utils;
+package model;
 
 /**
  * Rappresenta un layer della mappa di gioco.
