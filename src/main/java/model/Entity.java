@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * parent class per Player Barrel DK ecc.
+ * Parent class per Player, DK, Peach.
  */
 public abstract class Entity {
 	private static final Logger log = LoggerFactory.getLogger(Entity.class);
@@ -21,8 +21,6 @@ public abstract class Entity {
 	private int width, height;
 	private String name;
 
-	
-	
 	//ANIMAZIONE E SUO STATO
 	private HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames;
 	private ActionState currentActionState;
@@ -34,6 +32,22 @@ public abstract class Entity {
 	private int frameDelay;
 	private int spriteNumber;
 	
+	/**
+     * Costruttore.
+     * 
+     * @param x Posizione orizzontale iniziale
+     * @param y Posizione verticale iniziale
+     * @param velocityX Velocità orizzontale iniziale
+     * @param velocityY Velocità verticale iniziale
+     * @param width Larghezza entità
+     * @param height Altezza entità
+     * @param spriteFrames Mappa degli sprite di animazione
+     * @param name Nome dell'entità
+     * @param currentFrameIndex Indice frame animazione iniziale
+     * @param frameCounter Contatore frame iniziale
+     * @param frameDelay Ritardo frame animazione
+     * @param spriteNumber Numero frame animazione
+     */
 	public Entity(int x, int y, int velocityX, int velocityY, int width, int height,
             HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames,
             String name, int currentFrameIndex, int frameCounter, int frameDelay, int spriteNumber) {
@@ -57,11 +71,20 @@ public abstract class Entity {
 		this.spriteNumber = spriteNumber;
 	}
 	
-	// Metodo astratto per aggiornare la logica di ogni entità a ogni frame
+	/**
+	 * Metodo astratto per aggiornare la logica di ogni entità a ogni frame.
+	 */
     public abstract void update();
-    
+
+    /**
+     * Metodo astratto per aggiornare la fisica dell'entità, ad esempio per gestire collisioni.
+     * Lista di collisioni con travi o altre entità
+     */
     public abstract void updatePhysics(ArrayList<Collision> beams);
 	
+    /**
+     * Aggiorna l'animazione incrementando il frame corrente in base al ritardo impostato.
+     */
     public void updateAnimation() {
     	
     	setSpriteNumber(getCurrentAnimationFrames().length);
@@ -72,11 +95,18 @@ public abstract class Entity {
 		}
 	}
     
-    // Metodo per recuperare il frame attuale da disegnare, utile per la view
+    /**
+     *  Metodo per recuperare il frame attuale da disegnare, utile per la view.
+     * @return Array di BufferedImage per l'animazione corrente
+     */
     public BufferedImage[] getCurrentAnimationFrames() {
         return spriteFrames.get(new SimpleEntry<>(currentActionState, currentDirection));
     }
     
+    /**
+     * Restituisce il frame corrente di animazione da disegnare. Aggiorna l'animazione.
+     * @return BufferedImage del frame corrente
+     */
     public BufferedImage getCurrentFrame() {
     	updateAnimation();
         BufferedImage[] sprites = spriteFrames.get(new SimpleEntry<>(getCurrentActionState(), getCurrentDirection()));
@@ -90,6 +120,7 @@ public abstract class Entity {
     }
 
 
+    //----GETTERS AND SETTERS----
 	public int getX() {
 		return x;
 	}
@@ -230,6 +261,9 @@ public abstract class Entity {
 		return new Rectangle(x, y, width, height);
 	}
 
+	/**
+     * Restituisce una rappresentazione testuale dello stato dell'entità.
+     */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

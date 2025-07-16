@@ -8,6 +8,9 @@ import model.PlayerState;
 import model.World;
 import view.GamePanel;
 
+/**
+ * Classe responsabile del gameloop. Gestisce gli aggiornamenti del mondo, l'input del giocatore e il rendering.
+ */
 public class GameEngine implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(GameEngine.class);
     private boolean running = true;
@@ -15,16 +18,29 @@ public class GameEngine implements Runnable {
     private GamePanel panel;
     private PlayerController controller;
 
+    /**
+     * Costruttore.
+     * @param world Il mondo di gioco da aggiornare.
+     * @param panel Il pannello grafico su cui disegnare.
+     * @param controller Il controller del giocatore.
+     */
     public GameEngine(World world, GamePanel panel, PlayerController controller) {
         this.world = world;
         this.panel = panel;
         this.controller = controller;
     }
 
+    /**
+     * Ferma il gameloop.
+     */
     public void stop() {
         running = false;
     }
 
+    /**
+     * Metodo principale del gameloop.  Si occupa di aggiornare il mondo, gestire l'input,
+     * aggiornare la logica e ridisegnare la schermata.
+     */
     @Override
     public void run() {
         while (running) {

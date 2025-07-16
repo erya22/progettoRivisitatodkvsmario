@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * Enum con i vari stati delle entità.
+ */
 public enum ActionState {
     IDLE,        // fermo
     WALKING,     // cammina (Mario)

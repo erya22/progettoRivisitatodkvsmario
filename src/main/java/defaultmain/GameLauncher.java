@@ -9,6 +9,10 @@ import dkserver.Client;
 import view.GamePanel;
 import view.SideMenuView;
 
+/**
+ * Classe principale per l'avvio dell'applicazione.
+ * Inizializza la GUI, crea il mondo di gioco e avvia il gameloop chiamando GameEngine.
+ */
 public class GameLauncher {
 	
     public static void main(String[] args) {

@@ -3,6 +3,9 @@ package utils;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 
+/**
+ * Costanti fisse per tutta la durata del programma.
+ */
 public class Constants {
 	
 	//SCREEN SETTINGS

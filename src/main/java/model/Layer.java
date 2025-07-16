@@ -1,14 +1,23 @@
-package model;
+package utils;
+
+/**
+ * Rappresenta un layer della mappa di gioco.
+ */
 public class Layer {
     public String name;
     public String type;
-    public int[] data; // flat array representing the map
+    public int[] data; // flat array che rappresenta la mappa
     public int width;
     public int height;
     
+    /**
+     * Costruttore vuoto
+     */
     public Layer() {
     	
     }
+    
+    //----GETTERS AND SETTERS----
     
 	public String getName() {
 		return name;

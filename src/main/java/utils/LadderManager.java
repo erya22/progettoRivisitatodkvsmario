@@ -4,9 +4,16 @@ import java.util.ArrayList;
 
 import model.Ladder;
 
+/**
+ * Si occupa della gestione delle scale presenti nel gioco.
+ */
 public class LadderManager {
 	private static ArrayList<Ladder> ladders = new ArrayList<>();
 	
+	/**
+     * Carica un set di scale predefinite e le aggiunge alla lista.
+     * @return un ArrayList contenente le scale del livello.
+     */
 	public static ArrayList<Ladder> loadSampleLadders() {
 		ladders.add(new Ladder(2, 12 * Constants.TILE_SIZE, 30 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE - 4, true));
 		ladders.add(new Ladder(2, 14 * Constants.TILE_SIZE, 23 * Constants.TILE_SIZE - 4, Constants.TILE_SIZE, 4 * Constants.TILE_SIZE + 2, true));

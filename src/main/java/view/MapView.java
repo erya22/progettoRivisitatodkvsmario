@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
 import model.TileMap;
+import model.Layer;
 import utils.Constants;
 import utils.TileMapLoader;
 import utils.TileUtils;
@@ -37,7 +38,7 @@ public class MapView extends JComponent {
     
     public void render(Graphics2D g) {
     	
-        for (model.Layer layer : map.getLayers()) {
+        for (Layer layer : map.getLayers()) {
             if (!"tilelayer".equals(layer.getType())) continue;
 
             int[] data = layer.getData();

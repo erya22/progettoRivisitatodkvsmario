@@ -2,9 +2,11 @@ package model;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 
+/**
+ * Classe astratta base per tutti gli oggetti di gioco.
+ */
 public abstract class GameItem {
 
     private int x, y;
@@ -22,7 +24,22 @@ public abstract class GameItem {
 	private int frameDelay;
 	private int spriteNumber;
     
-    // Costruttore
+	/**
+     * Costruttore per creare un oggetto di gioco con parametri specifici.
+     * 
+     * @param x Posizione orizzontale iniziale
+     * @param y Posizione verticale iniziale
+     * @param width Larghezza dell'oggetto
+     * @param height Altezza dell'oggetto
+     * @param sprites Mappa delle animazioni per direzione
+     * @param currentActionState Stato d'azione iniziale
+     * @param currentDirection Direzione iniziale
+     * @param currentTerrain Terreno iniziale
+     * @param currentFrameIndex Indice del frame iniziale dell'animazione
+     * @param frameCounter Contatore frame iniziale
+     * @param frameDelay Ritardo fra frame
+     * @param spriteNumber Numero totale di frame dell'animazione
+     */
     public GameItem(int x, int y, int width, int height, HashMap<Direction, BufferedImage[]> sprites,
     		ActionState currentActionState, Direction currentDirection, Terrain currentTerrain, int currentFrameIndex, int frameCounter, int frameDelay,
     		int spriteNumber) {
@@ -40,7 +57,24 @@ public abstract class GameItem {
         this.spriteNumber = spriteNumber;
     }
 
-    // Getter e Setter comuni
+	/**
+	 *  Metodo astratto per l'aggiornamento logico
+	 */
+	public abstract void update();
+	
+	/**
+     * Aggiorna l'animazione incrementando il frame corrente in base al ritardo.
+     */
+	public void updateAnimation() {
+		setSpriteNumber(getCurrentAnimationFrames().length);
+		setFrameCounter(getFrameCounter() + 1);
+		if (getFrameCounter() >= getFrameDelay()) {
+			setFrameCounter(0);
+			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
+		}
+	}
+
+    //----GETTERS AND SETTERS----
     public int getX() { return x; }
     public void setX(int x) { this.x = x; }
 
@@ -50,28 +84,13 @@ public abstract class GameItem {
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
+    public BufferedImage[] getCurrentAnimationFrames() {
+	    return spriteFrames.get(currentDirection);
+	}
+	
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
-
-    // Metodo astratto per l'aggiornamento logico
-    public abstract void update();
-    
-    public BufferedImage[] getCurrentAnimationFrames() {
-        return spriteFrames.get(currentDirection);
-    }
-    
-    public void updateAnimation() {
-    	setSpriteNumber(getCurrentAnimationFrames().length);
-		setFrameCounter(getFrameCounter() + 1);
-		if (getFrameCounter() >= getFrameDelay()) {
-			setFrameCounter(0);
-			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
-		}
-	}
-
-//    // Metodo astratto per l'aggiornamento della fisica
-//    public abstract void updatePhysics(ArrayList<Collision> beams);
 
 	public HashMap<Direction, BufferedImage[]> getSpriteFrames() {
 		return spriteFrames;

@@ -19,6 +19,10 @@ import model.PlayerState;
 import model.Terrain;
 import utils.CollisionManager;
 
+/**
+ * Controller per la gestione dell'input tastiera del player. Gestisce il movimento orizzontale, verticale, il salto,
+ * le interazioni con scale e travi, e l'uscita dal gioco.
+ */
 public class PlayerController implements KeyListener {
 	private static final Logger log = LoggerFactory.getLogger(PlayerController.class);
 	//TODO: manca la view
@@ -30,17 +34,23 @@ public class PlayerController implements KeyListener {
 	private long escPressedTime = -1;
 	private static final long ESC_HOLD_DURATION_MS = 1000;
 	
+	/**
+     * Costruttore
+     * @param player il player da controllare
+     */
 	public PlayerController(Player player) {
 		this.player = player;
 	}
 	
+	/**
+     * Metodo principale di aggiornamento del movimento.
+     */
 	public void updateMovement() {
 	    boolean movingHorizontally = false;
 	    if (player.getPlayerState() == PlayerState.HIT_BY_BARREL) {
 	    	keysPressed.clear();
 	        return; // Blocca input
 	    }
-
 
 	    // ---- GESTIONE USCITA ----
 	    if (keysPressed.contains(KeyEvent.VK_ESCAPE)) {
@@ -106,7 +116,10 @@ public class PlayerController implements KeyListener {
 
 
 
-
+	/**
+     * Gestisce la pressione di un tasto.
+     * @param e l'evento KeyEvent corrispondente
+     */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (player.getPlayerState()) {
@@ -149,6 +162,10 @@ public class PlayerController implements KeyListener {
 		}
 	}
 
+	/**
+     * Gestisce il rilascio di un tasto.
+     * @param e l'evento KeyEvent corrispondente
+     */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		keysPressed.remove(e.getKeyCode());
@@ -173,6 +190,9 @@ public class PlayerController implements KeyListener {
 		
 	}
 	
+	/**
+	 * Non utilizzato, necessario per l'implementazione dell'interfaccia.
+	 */
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub

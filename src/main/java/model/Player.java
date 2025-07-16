@@ -18,20 +18,24 @@ import utils.LadderManager;
 import utils.Sprite;
 
 /**
- * TODO: movimento, salto con fisica, 
- * scale, collisione con barile
+ * La classe Player rappresenta il giocatore (Mario), estende la classe {@link Entity} e gestisce le interazioni del giocatore con travi,
+ * scale, barili e animazioni.
+ * <p>
+ * Questa classe include logiche per movimento, salto, arrampicata, collisioni, stato di vita,
+ * punteggio e animazioni.
+ * </p>
  */
 public class Player extends Entity {
 	private static final Logger log = LoggerFactory.getLogger(Player.class);
 	
 	private PlayerState state;
-	//TODO: forse da spostare in Entity?
 	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
 	private ArrayList<Ladder> ladders = LadderManager.loadSampleLadders();
 	
 	//BOUNDS PER LE SCALE
 	private Rectangle ladderBounds;
 	private ActionState previousActionState;
+	
 	//JUMP SETTINGS
 	private int jumpStrength;
 	private boolean isMovingHorizontallyWhileJumping = false;
@@ -49,6 +53,24 @@ public class Player extends Entity {
 	private boolean isHitAnimationInitialized = false;
 	private long animationTime = 0;
 	
+	/**
+     * Costruttore.
+     *
+     * @param x                posizione iniziale X
+     * @param y                posizione iniziale Y
+     * @param velocityX        velocità orizzontale
+     * @param velocityY        velocità verticale
+     * @param width            larghezza del player
+     * @param height           altezza del player
+     * @param spriteFrames     mappa di sprite per stato e direzione
+     * @param name             nome del giocatore
+     * @param currentFrameIndex indice frame corrente
+     * @param frameCounter     contatore frame per l'animazione
+     * @param frameDelay       ritardo tra frame
+     * @param spriteNumber     numero di sprite totali
+     * @param jumpStrength     forza del salto
+     * @param ps               stato iniziale del giocatore
+     */
 	public Player(int x, int y, int velocityX, int velocityY, int width, int height,
 			HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames, String name, int currentFrameIndex,
 			int frameCounter, int frameDelay, int spriteNumber, int jumpStrength, PlayerState ps) {
@@ -60,6 +82,11 @@ public class Player extends Entity {
 		setSpriteFrames(loadPlayerSprites());
 	}
 	
+	/**
+     * Fa camminare il giocatore verso una direzione su una trave.
+     * Supporta il salire leggermente per adeguarsi all'altezza delle travi.
+     * @param direction direzione in cui camminare (LEFT o RIGHT)
+     */
 	public void walk(Direction direction) {
 		if (getCurrentTerrain() == Terrain.BEAM) {
 			if (getCurrentDirection() != direction) {
@@ -70,7 +97,6 @@ public class Player extends Entity {
 				setCurrentActionState(ActionState.WALKING);
 			}
 			
-			//CODICE AGGIUNTO ORA:
 			int nextX = getX() + (direction == Direction.RIGHT ? getVelocityX() : -getVelocityX());
 	        int maxStepUp = 8; // massimo quanto Mario può "salire" automaticamente
 
@@ -78,7 +104,7 @@ public class Player extends Entity {
 	        for (int dy = 0; dy <= maxStepUp; dy++) {
 	            Rectangle testFeet = new Rectangle(nextX, getY() + dy + getHeight(), getWidth(), 1);
 
-	            for (Collision beam : beams) { // usa dove hai la lista
+	            for (Collision beam : beams) {
 	                if (beam.getBounds().intersects(testFeet)) {
 //	                	log.debug("Trave trovata!");
 	                    // Trave trovata leggermente più in alto: sali
@@ -89,20 +115,20 @@ public class Player extends Entity {
 	                }
 	            }
 	        }
-
 	        // Nessuna trave rilevata: movimento normale orizzontale
 	        setX(nextX);
-	        //FINE CODICE AGGIUNTO ORA
-			
 //			log.info("Mario cammina verso: {} a x({}) y({})", getCurrentDirection(), getX(), getY());
 		}
 		
 		
 	}
 	
+	/**
+     * Permette al giocatore di arrampicarsi su o giù da una scala se presente.
+     * @param direction direzione dell'arrampicata (UP, DOWN, LEFT, RIGHT)
+     */
 	public void climb(Direction direction) {
 //	    log.debug("TI STAI ARRAMPICANDO VERSO: {}", direction);
-
 	    ladderBounds = getLadderBounds();
 	    boolean onLadder = false;
 
@@ -129,7 +155,6 @@ public class Player extends Entity {
 	        if (direction == Direction.UP) {
 	            setY(getY() - getLadderY());
 	        } else if (direction == Direction.DOWN) {
-	            //BLOCCO CONTRO TRAVE
 	            Rectangle feetAfterStep = new Rectangle(getX(), getY() + getLadderY() + getHeight(), getWidth(), 1);
 	            boolean beamBelow = false;
 
@@ -145,7 +170,6 @@ public class Player extends Entity {
 	                setCurrentTerrain(Terrain.BEAM);
 	                return;
 	            }
-
 	            setY(getY() + getLadderY());
 	        } else if (direction == Direction.RIGHT) {
 	        	setX(getX() + getVelocityX());
@@ -160,6 +184,10 @@ public class Player extends Entity {
 	    }
 	}
 	
+	/**
+     * Fa saltare il giocatore, impostando la velocità verticale negativa.
+     * @param movingHorizontally indica se il salto include movimento orizzontale
+     */
 	public void jump(boolean movingHorizontally) {
 		log.debug("is key pressed? {}", movingHorizontally);
 		if (getCurrentTerrain() == Terrain.BEAM) {
@@ -169,11 +197,17 @@ public class Player extends Entity {
 		}
 	}
 	
+	/**
+     * Verifica se il giocatore è attualmente in aria.
+     * @return true se il giocatore è in aria, false altrimenti
+     */
 	public boolean isInAir() {
 	    return getCurrentTerrain() == Terrain.AIR;
 	}
 	
-	//Collisione con barili
+	/**
+	 * Collisione con barili, in caso toglie una vita al player.
+	 */
 	public void hitByBarrell() {
 		log.debug("hit by barrel method");
 		playerLives--;
@@ -182,6 +216,9 @@ public class Player extends Entity {
 		setPlayerState(PlayerState.HIT_BY_BARREL);
 	}
 	
+	/**
+     * Inizializza l'animazione dopo essere stato colpito.
+     */
 	public void animateHitInit() {
 		log.debug("passed by animate init");
 		setCurrentActionState(ActionState.HIT);
@@ -196,6 +233,10 @@ public class Player extends Entity {
 		
 	}
 	
+	/**
+     * Aggiorna i frame dell’animazione di colpo finché non termina.
+     * @return true se l’animazione è ancora in corso, false se è finita
+     */
 	public boolean animateHit()	{
 		log.debug("passed by animate hit method cfi: {}, fc: {}, spn{}", getCurrentFrameIndex(), getFrameCounter(), getSpriteNumber());
 		long now = System.currentTimeMillis();
@@ -210,19 +251,22 @@ public class Player extends Entity {
 			restart();
 		}
 		return false;
-		
-		
 	}
 	
 
 	
-	//Ferma il gioco. TODO: popup con score finale e se si vole ricominciare la partita
+	/**
+	 * Ferma il gioco se player ha zero vite rimanenti.
+	 */
 	public void checkIfAlive() {
 		if(getPlayerState() == PlayerState.DEAD)
 			listener.stopGameLoop();
 			
 	}
 	
+	/**
+     * Reimposta il giocatore alla posizione iniziale e stato iniziale.
+     */
 	public void restart() {
 		setX(this.xStart);
 		setY(this.yStart);
@@ -233,12 +277,19 @@ public class Player extends Entity {
 		setFrameCounter(0);
 	}
 	
+	/**
+     * Aggiunge punteggio al giocatore.
+     * @param scoreAdded punteggio da aggiungere
+     */
 	public void addScore(int scoreAdded) {
 		score += scoreAdded;
 	}
 
+	/**
+     * Carica tutti gli sprite associati ai vari stati e direzioni del giocatore.
+     * @return una mappa degli sprite indicizzata per stato e direzione
+     */
 	private HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> loadPlayerSprites() {
-	    // Carica immagini e riempi spriteFrames
 		HashMap<SimpleEntry<ActionState, Direction>, BufferedImage[]> spriteFrames = new HashMap<AbstractMap.SimpleEntry<ActionState,Direction>, BufferedImage[]>();
 		
 		int targetWidth = Constants.TILE_SIZE;
@@ -264,7 +315,6 @@ public class Player extends Entity {
 		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.DOWN), up);
 		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.LEFT), up);
 		spriteFrames.put(new SimpleEntry<ActionState, Direction>(ActionState.CLIMBING, Direction.RIGHT), up);
-		
 		
 		// RIGHT
 		BufferedImage[] right = new BufferedImage[] {
@@ -314,7 +364,6 @@ public class Player extends Entity {
 		};
 		
 		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.HIT, Direction.RIGHT), hitFrames);
-		//TODO: When used, reverse order of the array
 		spriteFrames.put(new AbstractMap.SimpleEntry<ActionState, Direction>(ActionState.HIT, Direction.LEFT), revHitFrames);
 		
 		for (ActionState state : ActionState.values()) {
@@ -325,20 +374,22 @@ public class Player extends Entity {
 		        );
 		    }
 		}
-
-		
 		return spriteFrames;
-
 	}
 
-	//TODO: aggiorna i dati per la view
+	/**
+	 * Salva lo stato attuale prima di aggiornare
+	 */
 	@Override
 	public void update() {
-		// Salva lo stato attuale prima di aggiornare
 	    previousActionState = getCurrentActionState();
 //		log.debug("DATI AGGIORNATI: {}", this.toString());
 	}
 	
+	/**
+     * Applica la fisica al giocatore come gravità e limiti mappa.
+     * @param beams le travi contro cui gestire le collisioni
+     */
 	@Override
 	public void updatePhysics(ArrayList<Collision> beams) {
 		//LIMITI ORIZZONTALI MAPPA
@@ -350,8 +401,6 @@ public class Player extends Entity {
 //			log.debug("Mario ha colpito il bordo orizzontale destro della mappa");
 		}
 			
-
-		
 		// Applica gravità solo se in salto o in caduta
 	    if (getCurrentActionState() == ActionState.JUMPING || getCurrentActionState() == ActionState.FALLING) {
 	        setCurrentTerrain(Terrain.AIR);
@@ -429,7 +478,29 @@ public class Player extends Entity {
 	    }
 	}
 	
-
+	/**
+     * Restituisce una rappresentazione testuale dello stato del player.
+     */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Player [jumpStrength = ").append(jumpStrength).append("\n, getCurrentAnimationFrames() = ")
+				.append(Arrays.toString(getCurrentAnimationFrames())).append(" \n, getX()=").append(getX())
+				.append("\n, getY()=").append(getY()).append("\n, getVelocityX()=").append(getVelocityX())
+				.append("\n, getVelocityY()=").append(getVelocityY()).append("\n, getWidth()=").append(getWidth())
+				.append("\n, getHeight()=").append(getHeight()).append("\n, getName()=").append(getName())
+				.append("\n, getSpriteFrames()=").append(getSpriteFrames()).append("\n, getCurrentActionState()=")
+				.append(getCurrentActionState()).append(", getCurrentDirection()=").append(getCurrentDirection())
+				.append("\n, getCurrentTerrain()=").append(getCurrentTerrain()).append("\n, getCurrentFrameIndex()=")
+				.append(getCurrentFrameIndex()).append("\n, getFrameCounter()=").append(getFrameCounter())
+				.append("\n, getFrameDelay()=").append(getFrameDelay()).append("\n, getSpriteNumber()=")
+				.append(getSpriteNumber()).append("\n, getClass()=").append(getClass()).append("\n, hashCode()=")
+				.append(hashCode()).append("\n, toString()=").append(super.toString()).append("]");
+		return builder.toString();
+	}
+	
+	//----GETTERS AND SETTERS----
+	
 	public int getJumpStrength() {
 		return jumpStrength;
 	}
@@ -472,24 +543,6 @@ public class Player extends Entity {
 		return ladderCheck;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Player [jumpStrength = ").append(jumpStrength).append("\n, getCurrentAnimationFrames() = ")
-				.append(Arrays.toString(getCurrentAnimationFrames())).append(" \n, getX()=").append(getX())
-				.append("\n, getY()=").append(getY()).append("\n, getVelocityX()=").append(getVelocityX())
-				.append("\n, getVelocityY()=").append(getVelocityY()).append("\n, getWidth()=").append(getWidth())
-				.append("\n, getHeight()=").append(getHeight()).append("\n, getName()=").append(getName())
-				.append("\n, getSpriteFrames()=").append(getSpriteFrames()).append("\n, getCurrentActionState()=")
-				.append(getCurrentActionState()).append(", getCurrentDirection()=").append(getCurrentDirection())
-				.append("\n, getCurrentTerrain()=").append(getCurrentTerrain()).append("\n, getCurrentFrameIndex()=")
-				.append(getCurrentFrameIndex()).append("\n, getFrameCounter()=").append(getFrameCounter())
-				.append("\n, getFrameDelay()=").append(getFrameDelay()).append("\n, getSpriteNumber()=")
-				.append(getSpriteNumber()).append("\n, getClass()=").append(getClass()).append("\n, hashCode()=")
-				.append(hashCode()).append("\n, toString()=").append(super.toString()).append("]");
-		return builder.toString();
-	}
-	
 	public ArrayList<Ladder> getLadders() {
 		return ladders;
 	}

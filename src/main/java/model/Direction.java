@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * Enum che gestisce le direzioni di barili o del player.
+ */
 public enum Direction {
     LEFT,
     RIGHT,

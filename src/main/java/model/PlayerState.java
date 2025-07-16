@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * Enum che gestisce i vari stati del player.
+ */
 public enum PlayerState {
 	ALIVE,
 	DEAD,

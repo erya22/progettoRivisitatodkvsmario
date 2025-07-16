@@ -1,10 +1,25 @@
 package model;
 
+import java.awt.Rectangle;
+
+/**
+ * Rappresenta una scala nel gioco.
+ */
 public class Ladder {
 	private int id;
     private int x, y, width, height;
     private boolean visible;
 
+    /**
+     * Costruttore.
+     * 
+     * @param id Identificativo univoco della scala
+     * @param x Posizione orizzontale della scala
+     * @param y Posizione verticale della scala
+     * @param width Larghezza della scala
+     * @param height Altezza della scala
+     * @param visible Stato di visibilità iniziale
+     */
     public Ladder(int id, int x, int y, int width, int height, boolean visible) {
         this.id = id;
         this.x = x;
@@ -14,6 +29,7 @@ public class Ladder {
         this.visible = visible;
     }
 
+    //----GETTERS AND SETTERS----
     public int getId() {
         return id;
     }
@@ -38,7 +54,7 @@ public class Ladder {
         return visible;
     }
 
-    public java.awt.Rectangle getBounds() {
-        return new java.awt.Rectangle(x, y, width, height);
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, width, height);
     }
 }

@@ -3,7 +3,20 @@ import java.awt.image.BufferedImage;
 
 import org.imgscalr.Scalr;
 
+/**
+ * Classe di utilità dei tiles.
+ */
 public class TileUtils {
+	
+	/**
+     * Estrae e ridimensiona i singoli tile da un'immagine tileset.
+     * 
+     * @param tileset l'immagine contenente tutti i tile
+     * @param tileWidth larghezza originale di un tile nel tileset
+     * @param tileHeight altezza originale di un tile nel tileset
+     * @param scaledTileSize dimensione (larghezza e altezza) desiderata per i tile ridimensionati
+     * @return array di BufferedImage contenente tutti i tile ridimensionati
+     */
     public static BufferedImage[] loadTiles(BufferedImage tileset, int tileWidth, int tileHeight, int scaledTileSize) {
         int tilePerRow = tileset.getWidth() / tileWidth;
         int tilePerCol = tileset.getHeight() / tileHeight;

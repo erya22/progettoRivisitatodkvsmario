@@ -3,9 +3,22 @@ import java.util.ArrayList;
 
 import model.Collision;
 
+/**
+ * La classe fornisce metodi per gestire le collisioni nel gioco. Permette il caricamento di un insieme predefinito di oggetti {@link Collision}
+ * rappresentanti piattaforme o ostacoli su cui il giocatore può interagire.
+ * 
+ * Tutte le collisioni sono costruite usando coordinate basate sulla costante Constants.TILE_SIZE,
+ * rendendo la loro posizione e dimensione facilmente adattabile alla risoluzione della mappa.
+ */
 public class CollisionManager {
     private static ArrayList<Collision> collisions = new ArrayList<>();
 
+    /**
+     * Carica un insieme predefinito di oggetti {@link Collision} rappresentanti le piattaforme 
+     * e gli ostacoli del livello di gioco.
+     * 
+     * @return una lista di oggetti {@code Collision} con coordinate e dimensioni predefinite
+     */
     public static ArrayList<Collision> loadSampleCollisions() {
         collisions.add(new Collision(2, 0 * Constants.TILE_SIZE, 31 * Constants.TILE_SIZE, Constants.TILE_SIZE * 4, Constants.TILE_SIZE, true));
         collisions.add(new Collision(4, 4 * Constants.TILE_SIZE, 31 * Constants.TILE_SIZE - 2, Constants.TILE_SIZE * 4, Constants.TILE_SIZE, true));

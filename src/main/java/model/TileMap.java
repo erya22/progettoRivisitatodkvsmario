@@ -1,6 +1,9 @@
 package model;
 import java.util.List;
 
+/**
+ * Classe che rappresenta una mappa composta da tile, popolata tramite parsing di un file JSON.
+ */
 public class TileMap {
     private int width;
     private int height;
@@ -10,9 +13,13 @@ public class TileMap {
     private int compressionlevel;
     private List<Layer> layers;
     
+    //Costruttore vuoto.
     public TileMap() {
     	
     }
+    
+    //----GETTERS AND SETTERS----
+    
 	public int getWidth() {
 		return width;
 	}

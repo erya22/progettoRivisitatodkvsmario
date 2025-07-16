@@ -23,6 +23,13 @@ import view.GamePanel;
 import view.MapView;
 import view.SideMenuView;
 
+/**
+ * Classe responsabile dell'inizializzazione e configurazione dell'intero gioco.
+ * 
+ * <p>Contiene metodi per creare e collegare gli oggetti del model (Player, Donkey Kong, Peach),
+ * della view (GamePanel, SideMenuView) e  del controller (PlayerController), oltre al game loop (GameEngine).
+ * Questa classe istanzia tutte le componenti del gioco prima dell'avvio vero e proprio.</p>
+ */
 public class GameSetter {
 	//DOVE CREARE IL CLIENT MANAGER?
 	private World world;
@@ -40,6 +47,16 @@ public class GameSetter {
     private SideMenuView sideMenu;
     private GameEngine engine;
 
+    /**
+     * Inizializza tutti gli elementi necessari per il gioco:
+     * <ul>
+     *   <li>Entità principali: Player, Donkey Kong, Peach</li>
+     *   <li>Mappa e relativo caricamento</li>
+     *   <li>Oggetti e entità nel mondo</li>
+     *   <li>Vista e controller</li>
+     *   <li>Game loop</li>
+     * </ul>
+     */
 	public void setupGame() {
         //LISTE
         items = new ArrayList<>();
@@ -103,6 +120,8 @@ public class GameSetter {
         sideMenu = new SideMenuView(player, engine);
     }
 
+	//----GETTERS AND SETTERS----
+	
 	public World getWorld() {
 		return world;
 	}

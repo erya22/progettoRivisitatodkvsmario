@@ -5,9 +5,17 @@ import java.util.ArrayList;
 import model.Direction;
 import model.TriggerZone;
 
+/**
+* Gestisce la creazione e il caricamento delle TriggerZone di esempio.
+*/
 public class TriggerZoneManager {
 	private static ArrayList<TriggerZone> triggerZones;
 	
+	/**
+     * Carica un set di TriggerZone di esempio, create con coordinate, dimensioni e direzione
+     * predeterminate, usando valori calcolati tramite Constants.TILE_SIZE.
+     * @return una lista di TriggerZone con valori di esempio
+     */
 	public static ArrayList<TriggerZone> loadSampleTriggerZone() {
 		triggerZones = new ArrayList<>();
 		triggerZones.add(new TriggerZone(0, 8 * Constants.TILE_SIZE, 8 * Constants.TILE_SIZE, Constants.TILE_SIZE * 2, Direction.RIGHT));
