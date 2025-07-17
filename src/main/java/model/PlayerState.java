@@ -8,5 +8,5 @@ public enum PlayerState {
 	DEAD,
 	HIT_BY_DK,
 	HIT_BY_BARREL,
-	WINNER
+	SAVED_PEACH
 }

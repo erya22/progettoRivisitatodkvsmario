@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import defaultmain.ClientManager;
 import dkserver.PlayerStatus;
 import model.Player;
+import model.PlayerState;
 
 /**
  * La classe {@code GameResultManager} gestisce la logica di fine partita
@@ -103,15 +104,36 @@ public class GameResultManager {
      * @param parentComponent  il componente padre per posizionare la finestra
      */
     public static void mostraGameResultDialog(Player player, Component parentComponent) {
-        int p1Score = player.getScore();
-        String winner = "Player 1"; // Per ora hardcoded
+        String winner = calculateWinner(player);
 
         GameResultDialog dialog = new GameResultDialog(
             SwingUtilities.getWindowAncestor(parentComponent),
-            p1Score,
+            player,
             ClientManager.instance().getElenco(),
             winner
         );
         dialog.setVisible(true);
+    }
+    
+    /**
+     * Calcola il vincitore in base al punteggio in caso di partita in multiplayer.
+     * @param player giocatore in locale
+     * @return nome del vincitore
+     */
+    public static String calculateWinner(Player player) {
+    	ArrayList<PlayerStatus> elenco = ClientManager.instance().getElenco();
+    	String winner = null;
+    	if(elenco.size() == 1) {
+    		winner = player.getName();
+    		return winner; 
+    	}
+    	long highestScore = 0;
+        for (PlayerStatus ps : elenco) {
+        	if(ps.getScore() > highestScore) {
+        		winner = ps.getNickname();
+        	}
+        }
+        return winner;
+
     }
 }

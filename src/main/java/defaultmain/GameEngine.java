@@ -47,7 +47,7 @@ public class GameEngine implements Runnable {
     public void run() {
         while (running) {
         	
-        	if (world.getPlayer().getPlayerState() == PlayerState.WINNER) {
+        	if (world.getPlayer().getPlayerState() == PlayerState.SAVED_PEACH) {
                 log.debug("HAI VINTO!");
                 stop();
                 break;

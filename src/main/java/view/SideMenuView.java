@@ -154,7 +154,7 @@ public class SideMenuView extends JPanel implements PlayerListener {
         for (PlayerStatus status : elencoView.getElenco()) {
         	y += 40;
         	if (y > Constants.SCREEN_HEIGHT) break;
-        	String riga = String.format("%s [ SCORE: %d ]\n[ VITE RIMANENTI: %d ]\n[ STATUS: %s ]" ,status.getNickname(), status.getScore(), status.getVite(), status.isAlive() ? "vivo" : "morto" );
+        	String riga = String.format("%s | SCORE: %d | STATUS: %s" ,status.getNickname(), status.getScore(), status.isAlive() ? "vivo" : "morto" );
         	g2.drawString(riga, x, y);
         }
         

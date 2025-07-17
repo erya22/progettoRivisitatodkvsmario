@@ -2,7 +2,6 @@ package model;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,12 +95,11 @@ public class World {
 	private void updateAllEntities(ArrayList<Collision> beams) {
 		if (peach.isCollidingWithMario(player)) {
 			log.debug("Mario vincitore!");
-			player.setPlayerState(PlayerState.WINNER);
+			player.setPlayerState(PlayerState.SAVED_PEACH);
 			player.setScore(player.getScore() + 1000); // Punteggio aggiuntivo se salvi peach
 			peach.setCurrentActionState(ActionState.VICTORY);
 			player.getListener().sideMenuRefresh();
 			GameResultManager.endGame(player, player.getListener().getGamePanel());
-			player.getListener().stopGameLoop(); // fermo il gioco
 			
 			return;
 		}

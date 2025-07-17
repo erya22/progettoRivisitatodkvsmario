@@ -256,6 +256,7 @@ public class Player extends Entity {
 		}
 		if (playerLives == 0) {
 			setPlayerState(PlayerState.DEAD);
+			checkIfAlive();
 		} else {
 			restart();
 		}
@@ -270,7 +271,6 @@ public class Player extends Entity {
 		if(getPlayerState() == PlayerState.DEAD) {
 			ClientManager.instance().playerStatus().setAlive(false);
 			GameResultManager.endGame(this, listener.getGamePanel());
-			listener.stopGameLoop();
 		}
 }
 	
@@ -293,7 +293,7 @@ public class Player extends Entity {
      */
 	public void addScore(int scoreAdded) {
 		score += scoreAdded;
-		ClientManager.instance().update(score, playerLives, getPlayerState() == PlayerState.ALIVE);
+		ClientManager.instance().update(score, playerLives, getPlayerState() != PlayerState.DEAD);
 	}
 
 	/**
@@ -569,7 +569,7 @@ public class Player extends Entity {
 
 	public void setPlayerState(PlayerState state) {
 		this.state = state;
-		ClientManager.instance().update(score, playerLives, getPlayerState() == PlayerState.ALIVE);
+		ClientManager.instance().update(score, playerLives, getPlayerState() != PlayerState.DEAD);
 
 		try {
 			ArrayList<PlayerStatus> ssss = ClientManager.instance().getClient().read(ps);
@@ -585,7 +585,7 @@ public class Player extends Entity {
 
 	public void setPlayerLives(int playerLives) {
 		this.playerLives = playerLives;
-		ClientManager.instance().update(score, playerLives, getPlayerState() == PlayerState.ALIVE);
+		ClientManager.instance().update(score, playerLives, getPlayerState() != PlayerState.DEAD);
 		try {
 			ClientManager.instance().getClient().read(ps);
 		} catch (ClassNotFoundException | IOException e) {
@@ -607,7 +607,7 @@ public class Player extends Entity {
 
 	public void setScore(int score) {
 		this.score = score;
-		ClientManager.instance().update(score, playerLives, getPlayerState() == PlayerState.ALIVE);
+		ClientManager.instance().update(score, playerLives, getPlayerState() != PlayerState.DEAD);
 		try {
 			ClientManager.instance().getClient().read(ps);
 		} catch (ClassNotFoundException | IOException e) {
