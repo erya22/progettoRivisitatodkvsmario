@@ -109,6 +109,7 @@ public class World {
 			entity.updatePhysics(beams);
 		}
 	}
+	
 	/**
      * Aggiorna tutti gli oggetti di gioco, come barili, rimuovendo quelli scaduti
      * e gestendo le collisioni.

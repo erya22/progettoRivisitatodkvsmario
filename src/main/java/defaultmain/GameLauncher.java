@@ -40,7 +40,6 @@ public class GameLauncher {
     	elencoView.setSideMenu(sideMenu);
     	
     	setter.setSideMenu(sideMenu);
-        
 
         // Pannello principale con layout
         JPanel mainPanel = new JPanel(new BorderLayout());

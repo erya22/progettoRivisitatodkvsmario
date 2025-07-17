@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Window;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -16,13 +17,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import org.slf4j.LoggerFactory;
+
 import audio.AudioManager;
+import defaultmain.ClientManager;
 import dkserver.PlayerStatus;
 import model.Player;
 import model.PlayerState;
 
 public class GameResultDialog extends JDialog {
+	private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameResultDialog.class);
     private Font retroFont;
+    
     
     /**
      * Costruttore
@@ -200,9 +206,14 @@ public class GameResultDialog extends JDialog {
         yesButton.setForeground(Color.WHITE);
         yesButton.setFocusPainted(false);
         yesButton.addActionListener(e -> {
-            AudioManager.pauseBackgroundMusic();
+            AudioManager.stopMusic();
             dispose();
             if (toDispose != null) toDispose.dispose();
+            try {
+                ClientManager.instance().getClient().sendResetCommand(); //Svuota l'elenco in caso di nuova partita
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             new Thread(() -> MenuStart.main(new String[]{})).start();
         });
 

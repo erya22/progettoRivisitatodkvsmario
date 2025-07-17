@@ -13,7 +13,6 @@ import javax.swing.SwingUtilities;
 import defaultmain.ClientManager;
 import dkserver.PlayerStatus;
 import model.Player;
-import model.PlayerState;
 
 /**
  * La classe {@code GameResultManager} gestisce la logica di fine partita
@@ -73,9 +72,9 @@ public class GameResultManager {
         Window window = SwingUtilities.getWindowAncestor(parentComponent);
         JDialog waitingDialog = new JDialog(window, "In attesa");
         JLabel label = new JLabel("Attendi che l'altro giocatore finisca...", SwingConstants.CENTER);
-        label.setFont(new Font("Monospaced", Font.BOLD, 14));
+        label.setFont(new Font("Monospaced", Font.BOLD, 12));
         waitingDialog.add(label);
-        waitingDialog.setSize(300, 120);
+        waitingDialog.setSize(450, 180);
         waitingDialog.setLocationRelativeTo(window);
         waitingDialog.setVisible(true);
         return waitingDialog;

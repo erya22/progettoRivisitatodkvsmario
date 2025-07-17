@@ -28,7 +28,7 @@ public class MenuStart {
             System.err.println("Errore nel caricamento del font.");
             e.printStackTrace();
         }
-
+        
         UIManager.put("OptionPane.messageFont", retroFont);
         UIManager.put("OptionPane.buttonFont", retroFont);
         UIManager.put("OptionPane.background", Color.BLACK);

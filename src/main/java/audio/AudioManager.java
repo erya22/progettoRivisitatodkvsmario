@@ -7,6 +7,7 @@ import javax.sound.sampled.Clip;
 public class AudioManager {
     private static Clip backgroundClip;
     private static Clip jumpClip;
+    private static Clip oneShotClip;
 
     /**
      * Metodo di preload per il salto
@@ -89,15 +90,37 @@ public class AudioManager {
         new Thread(() -> {
             try {
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(AudioManager.class.getResource(path));
-                Clip oneShotClip = AudioSystem.getClip();
-                oneShotClip.open(audioIn);
-                oneShotClip.start();
+                Clip tempClip = AudioSystem.getClip();
+                tempClip.open(audioIn);
+                synchronized (AudioManager.class) {
+                    if (oneShotClip != null && oneShotClip.isRunning()) {
+                        oneShotClip.stop();
+                        oneShotClip.close();
+                    }
+                    oneShotClip = tempClip;
+                }
+                tempClip.start();
                 // attende che termini per liberare risorse
-                Thread.sleep(oneShotClip.getMicrosecondLength() / 1000);
-                oneShotClip.close();
+                Thread.sleep(tempClip.getMicrosecondLength() / 1000);
+                tempClip.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
     }
+
+    /**
+     * Ferma tutta la musica in corso (background + one-shot)
+     */
+    public static void stopMusic() {
+        stopBackgroundMusic();
+        synchronized (AudioManager.class) {
+            if (oneShotClip != null && oneShotClip.isRunning()) {
+                oneShotClip.stop();
+                oneShotClip.close();
+                oneShotClip = null;
+            }
+        }
+    }
+
 }
