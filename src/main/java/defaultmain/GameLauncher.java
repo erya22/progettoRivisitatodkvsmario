@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import audio.AudioManager;
+import controller.GameEngine;
 import model.Player;
 import utils.Sprite;
 import view.ElencoView;

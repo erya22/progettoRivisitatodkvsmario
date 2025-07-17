@@ -3,10 +3,10 @@ package model;
 import java.awt.Rectangle;
 
 /**
- * Rappresenta un oggetto di collisione nel gioco, usato per definire
- * travi o ostacoli con cui possono interagire altri oggetti o entità.
+ * Rappresenta un oggetto di collisione nel gioco, usato per definire travi o ostacoli con cui possono interagire altri oggetti o entità.
+ * Plain object, serve solo per caricare il JSON.
  */
-public class Collision {
+public class Beam {
     private int id;
     private int x, y, width, height;
     private boolean visible;
@@ -21,7 +21,7 @@ public class Collision {
      * @param height  Altezza del rettangolo di collisione
      * @param visible Indica se l'oggetto è visibile a schermo
      */
-    public Collision(int id, int x, int y, int width, int height, boolean visible) {
+    public Beam(int id, int x, int y, int width, int height, boolean visible) {
         this.id = id;
         this.x = x;
         this.y = y;

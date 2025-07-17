@@ -91,7 +91,7 @@ public class Barrel extends GameItem {
      * @param beams Lista delle travi 
      * @param triggerZones Lista delle zone che forzano un cambio direzione
      */
-	public void roll(ArrayList<Collision> beams, ArrayList<TriggerZone> triggerZones) {
+	public void roll(ArrayList<Beam> beams, ArrayList<TriggerZone> triggerZones) {
 		if (isFalling(beams)) {
 			setCurrentActionState(ActionState.FALLING);
 			setCurrentDirection(Direction.DOWN);
@@ -130,9 +130,9 @@ public class Barrel extends GameItem {
 	 * @param beams Lista delle travi 
 	 * @return True se il barile sta cadendo, false viceversa
 	 */
-	public boolean isFalling(ArrayList<Collision> beams) {
+	public boolean isFalling(ArrayList<Beam> beams) {
 	
-		for (Collision beam : beams) {
+		for (Beam beam : beams) {
 			if (beam.getBounds().intersects(getFeetBounds())) {
 				return false;
 			}
@@ -146,7 +146,7 @@ public class Barrel extends GameItem {
 	 * @param beam Lista delle travi 
 	 * @return True se collide
 	 */
-	public boolean isCollidingWithBeam(Collision beam) {
+	public boolean isCollidingWithBeam(Beam beam) {
 		return this.getBounds().intersects(beam.getBounds());
 	}
 	
@@ -164,11 +164,11 @@ public class Barrel extends GameItem {
      * @param beams Lista delle travi
      * @param triggerZones Lista delle zone di cambio direzione
      */
-	public void updatePhysics(ArrayList<Collision> beams, ArrayList<TriggerZone> triggerZones) {
+	public void updatePhysics(ArrayList<Beam> beams, ArrayList<TriggerZone> triggerZones) {
 	    boolean onBeam = false;
 
 	    // Controlla se è sopra una beam
-	    for (Collision b : beams) {
+	    for (Beam b : beams) {
 	    	if (b.getBounds().intersects(getFeetBounds())) {
 //	    	    log.debug("🎯 COLLISIONE RILEVATA con beam a y={}", b.getY());
 	    	    // Allinea il barile sopra la beam

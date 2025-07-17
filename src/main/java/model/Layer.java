@@ -1,7 +1,7 @@
 package model;
 
 /**
- * Rappresenta un layer della mappa di gioco.
+ * Rappresenta un layer della mappa di gioco, plain object, serve solo per caricare il JSON.
  */
 public class Layer {
     public String name;

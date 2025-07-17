@@ -87,7 +87,7 @@ public class Peach extends Entity {
 	}
 
 	@Override
-	public void updatePhysics(ArrayList<Collision> beams) {
+	public void updatePhysics(ArrayList<Beam> beams) {
 		// TODO Auto-generated method stub
 		
 	}

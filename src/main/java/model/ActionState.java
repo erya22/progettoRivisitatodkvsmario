@@ -6,8 +6,8 @@ package model;
 public enum ActionState {
     IDLE,        // fermo
     WALKING,     // cammina (Mario)
-    JUMPING,
-    ROLLING, // sta saltando (Mario)
+    JUMPING,	 // sta salytando(Mario)
+    ROLLING, 	 // sta rotolando (barrel)
     FALLING,     // sta cadendo (Mario)
     CLIMBING,    // su scala (Mario)
     THROWING,    // DK lancia un barile

@@ -10,7 +10,6 @@ public class TileUtils {
 	
 	/**
      * Estrae e ridimensiona i singoli tile da un'immagine tileset.
-     * 
      * @param tileset l'immagine contenente tutti i tile
      * @param tileWidth larghezza originale di un tile nel tileset
      * @param tileHeight altezza originale di un tile nel tileset

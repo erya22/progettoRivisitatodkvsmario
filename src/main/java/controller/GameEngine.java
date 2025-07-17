@@ -1,9 +1,9 @@
-package defaultmain;
+package controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controller.PlayerController;
+import defaultmain.ClientManager;
 import model.PlayerState;
 import model.World;
 import view.GamePanel;

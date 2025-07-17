@@ -3,7 +3,7 @@ package model;
 import java.awt.Rectangle;
 
 /**
- * Rappresenta una scala nel gioco.
+ * Rappresenta una scala nel gioco, plain object, serve solo per caricare il JSON.
  */
 public class Ladder {
 	private int id;

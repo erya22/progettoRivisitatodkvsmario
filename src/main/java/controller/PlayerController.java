@@ -9,13 +9,13 @@ import java.util.Set;
 
 
 import model.ActionState;
-import model.Collision;
+import model.Beam;
 import model.Direction;
 import model.Ladder;
 import model.Player;
 import model.PlayerState;
 import model.Terrain;
-import utils.CollisionManager;
+import utils.BeamManager;
 
 /**
  * Controller per la gestione dell'input tastiera del player. Gestisce il movimento orizzontale, verticale, il salto,
@@ -24,7 +24,7 @@ import utils.CollisionManager;
 public class PlayerController implements KeyListener {
 	private Player player;
 	private final Set<Integer> keysPressed = new HashSet<>();
-	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
+	private ArrayList<Beam> beams = BeamManager.loadSampleCollisions();
 	
 	//Variabili di uscita al programma
 	private long escPressedTime = -1;

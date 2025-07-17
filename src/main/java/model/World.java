@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import menu.GameResultManager;
-import utils.CollisionManager;
+import utils.BeamManager;
 import utils.Constants;
 import utils.LadderManager;
 import utils.TriggerZoneManager;
@@ -30,7 +30,7 @@ public class World {
 	private Peach peach;
 	private ArrayList<Entity> entities;
 	private ArrayList<GameItem> items;
-	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
+	private ArrayList<Beam> beams = BeamManager.loadSampleCollisions();
 	private ArrayList<Ladder> ladders = LadderManager.loadSampleLadders();
 	private ArrayList<TriggerZone> triggerZones = TriggerZoneManager.loadSampleTriggerZone();
 	
@@ -61,10 +61,10 @@ public class World {
      * @param beams  lista delle travi nel mondo
      * @return true se l'entità è sopra una trave, false altrimenti 
      */
-	public boolean isStandingOnBeam(Entity entity, ArrayList<Collision> beams) {
+	public boolean isStandingOnBeam(Entity entity, ArrayList<Beam> beams) {
 		Rectangle feet = entity.getFeetBounds();
 		
-		for (Collision beam : beams) {
+		for (Beam beam : beams) {
 			Rectangle beamBounds = beam.getBounds();
 			
 			// Controlla se i piedi toccano la trave e sono appena sopra
@@ -79,7 +79,7 @@ public class World {
      * Aggiorna lo stato del mondo, delle entità e degli oggetti, se non in pausa.
      * @param beams lista delle travi
      */
-	public void update(ArrayList<Collision> beams) {
+	public void update(ArrayList<Beam> beams) {
 		if (isPaused) return;
 		floatingScores.removeIf(FloatingScore::isExpired);
 
@@ -92,7 +92,7 @@ public class World {
      * e aggiorna fisica e logica di movimento.
      * @param beams lista delle travi
      */
-	private void updateAllEntities(ArrayList<Collision> beams) {
+	private void updateAllEntities(ArrayList<Beam> beams) {
 		if (peach.isCollidingWithMario(player)) {
 			log.debug("Mario vincitore!");
 			player.setPlayerState(PlayerState.SAVED_PEACH);
@@ -115,7 +115,7 @@ public class World {
      * e gestendo le collisioni.
      * @param beams lista delle travi
      */
-	private void updateAllItems(ArrayList<Collision> beams) {
+	private void updateAllItems(ArrayList<Beam> beams) {
 		boolean isBarrelColliding = false;
 		ArrayList<Barrel> expiredBarrels = new ArrayList<Barrel>();
 		
@@ -272,7 +272,7 @@ public class World {
 		this.items = items;
 	}
 
-	public ArrayList<Collision> getBeams() {
+	public ArrayList<Beam> getBeams() {
 		return beams;
 	}
 

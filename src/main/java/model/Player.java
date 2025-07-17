@@ -15,7 +15,7 @@ import audio.AudioManager;
 import defaultmain.ClientManager;
 import dkserver.PlayerStatus;
 import menu.GameResultManager;
-import utils.CollisionManager;
+import utils.BeamManager;
 import utils.Constants;
 import utils.LadderManager;
 import utils.Sprite;
@@ -34,7 +34,7 @@ public class Player extends Entity {
 	private PlayerStatus ps = ClientManager.instance().playerStatus();
 	
 	private PlayerState state;
-	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
+	private ArrayList<Beam> beams = BeamManager.loadSampleCollisions();
 	private ArrayList<Ladder> ladders = LadderManager.loadSampleLadders();
 	
 	//BOUNDS PER LE SCALE
@@ -113,7 +113,7 @@ public class Player extends Entity {
 	        for (int dy = 0; dy <= maxStepUp; dy++) {
 	            Rectangle testFeet = new Rectangle(nextX, getY() + dy + getHeight(), getWidth(), 1);
 
-	            for (Collision beam : beams) {
+	            for (Beam beam : beams) {
 	                if (beam.getBounds().intersects(testFeet)) {
 //	                	log.debug("Trave trovata!");
 	                    // Trave trovata leggermente più in alto: sali
@@ -167,7 +167,7 @@ public class Player extends Entity {
 	            Rectangle feetAfterStep = new Rectangle(getX(), getY() + getLadderY() + getHeight(), getWidth(), 1);
 	            boolean beamBelow = false;
 
-	            for (Collision beam : beams) {
+	            for (Beam beam : beams) {
 	                if (beam.getBounds().intersects(feetAfterStep)) {
 	                    beamBelow = true;
 	                    break;
@@ -393,7 +393,7 @@ public class Player extends Entity {
 	 */
 	@Override
 	public void update() {
-	    previousActionState = getCurrentActionState();
+//	    previousActionState = getCurrentActionState();
 	}
 	
 	/**
@@ -401,7 +401,7 @@ public class Player extends Entity {
      * @param beams le travi contro cui gestire le collisioni
      */
 	@Override
-	public void updatePhysics(ArrayList<Collision> beams) {
+	public void updatePhysics(ArrayList<Beam> beams) {
 		//LIMITI ORIZZONTALI MAPPA
 		if (getX() < 0){
 			setX(0);
@@ -434,7 +434,7 @@ public class Player extends Entity {
 	        // Previsione dei piedi nella prossima posizione
 	        Rectangle feet = new Rectangle(getX(), getY() + getHeight(), getWidth(), 1);
 
-	        for (Collision beam : beams) {
+	        for (Beam beam : beams) {
 	            if (beam.getBounds().intersects(feet)) {
 	                // Atterraggio sulla trave
 	                setY(beam.getBounds().y - getHeight()); // Allinea i piedi
@@ -449,7 +449,7 @@ public class Player extends Entity {
 	        if (getVelocityY() < 0) {
 	        	Rectangle head = getHeadBounds();
 	        	
-	        	for (Collision beam : beams) {
+	        	for (Beam beam : beams) {
 	        		if (beam.getBounds().intersects(head)) {
 	        			// ECCEZIONE: se Mario è su scala, lasciamolo passare
 	                    if (getCurrentTerrain() == Terrain.LADDER && getCurrentActionState() == ActionState.CLIMBING) {
@@ -470,7 +470,7 @@ public class Player extends Entity {
 	        Rectangle feet = new Rectangle(getX(), getY() + getHeight(), getWidth(), 1);
 	        boolean onBeam = false;
 
-	        for (Collision beam : beams) {
+	        for (Beam beam : beams) {
 	            if (beam.getBounds().intersects(feet)) {
 	                onBeam = true;
 	                break;

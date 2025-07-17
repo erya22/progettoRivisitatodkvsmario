@@ -101,7 +101,7 @@ public class DonkeyKong extends Entity {
 		int barrelX = this.getX() + this.getWidth() + Constants.TILE_SIZE;
 		int barrelY = this.getY() + (this.getHeight() / 2);
 		
-		log.debug("BARILE LANCIATO!");
+//		log.debug("BARILE LANCIATO!");
 		
 		return new Barrel(barrelX, barrelY, Constants.TILE_SIZE,
 				null, ActionState.FALLING, Direction.DOWN,
@@ -117,7 +117,7 @@ public class DonkeyKong extends Entity {
 	}
 
 	@Override
-	public void updatePhysics(ArrayList<Collision> beams) {
+	public void updatePhysics(ArrayList<Beam> beams) {
 		// TODO Auto-generated method stub
 		
 	}

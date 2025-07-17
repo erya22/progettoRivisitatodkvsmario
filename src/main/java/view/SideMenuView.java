@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 import javax.swing.JPanel;
 
-import defaultmain.GameEngine;
+import controller.GameEngine;
 import dkserver.PlayerStatus;
 import model.Player;
 import model.PlayerListener;

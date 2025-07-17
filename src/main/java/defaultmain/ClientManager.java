@@ -75,6 +75,10 @@ public class ClientManager {
 	
 	//----GETTERS AND SETTERS----
 	
+	/**
+	 * Metodo che utilizziamo per prendere un'istanza del ClientManager, e accedere a variabili del server.
+	 * @return l'istanza
+	 */
 	public static ClientManager instance() {
 		return instance;
 	}

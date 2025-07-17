@@ -80,18 +80,19 @@ public abstract class Entity {
      * Metodo astratto per aggiornare la fisica dell'entità, ad esempio per gestire collisioni.
      * Lista di collisioni con travi o altre entità
      */
-    public abstract void updatePhysics(ArrayList<Collision> beams);
+    public abstract void updatePhysics(ArrayList<Beam> beams);
 	
     /**
      * Aggiorna l'animazione incrementando il frame corrente in base al ritardo impostato.
      */
     public void updateAnimation() {
     	
-    	setSpriteNumber(getCurrentAnimationFrames().length);
-		setFrameCounter(getFrameCounter() + 1);
+    	//
+    	setSpriteNumber(getCurrentAnimationFrames().length); // Dimensione dell'array
+		setFrameCounter(getFrameCounter() + 1); // Scandisce i tick, definisce quanto dura l'animazione di un singolo frame
 		if (getFrameCounter() >= getFrameDelay()) {
 			setFrameCounter(0);
-			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber());
+			setCurrentFrameIndex((getCurrentFrameIndex() + 1) % getSpriteNumber()); //Scorre i frame
 		}
 	}
     
