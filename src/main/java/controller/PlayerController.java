@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import model.ActionState;
 import model.Collision;
@@ -24,8 +22,6 @@ import utils.CollisionManager;
  * le interazioni con scale e travi, e l'uscita dal gioco.
  */
 public class PlayerController implements KeyListener {
-	private static final Logger log = LoggerFactory.getLogger(PlayerController.class);
-	//TODO: manca la view
 	private Player player;
 	private final Set<Integer> keysPressed = new HashSet<>();
 	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
@@ -47,9 +43,9 @@ public class PlayerController implements KeyListener {
      */
 	public void updateMovement() {
 	    boolean movingHorizontally = false;
-	    if (player.getPlayerState() == PlayerState.HIT_BY_BARREL) {
-	    	keysPressed.clear();
-	        return; // Blocca input
+	    if (player.getPlayerState() == PlayerState.HIT_BY_BARREL || player.getCurrentActionState() == ActionState.HIT) {
+	        keysPressed.clear();
+	        return; // Blocca input se colpito
 	    }
 
 	    // ---- GESTIONE USCITA ----
@@ -127,7 +123,6 @@ public class PlayerController implements KeyListener {
 		case DEAD: 
 		case WINNER: return;
 		}
-//		log.debug("Tasto premuto {}", e.getKeyCode());
 		keysPressed.add(e.getKeyCode());
 		
 		boolean leftPressed = keysPressed.contains(KeyEvent.VK_A) || keysPressed.contains(KeyEvent.VK_LEFT);

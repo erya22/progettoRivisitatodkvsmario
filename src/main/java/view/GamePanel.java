@@ -34,7 +34,6 @@ public class GamePanel extends JPanel {
         this.controller = controller;
         this.mapView = mapView;
         
-        
         setBackground(Color.BLACK);
         
         setFocusable(true);
@@ -42,35 +41,38 @@ public class GamePanel extends JPanel {
         addKeyListener(controller);
 	 }
 
-	    @Override
-	    protected void paintComponent(Graphics g) {
-	        super.paintComponent(g);
-	        
-	        Graphics2D g2d = (Graphics2D) g;
-	        
-	        Player player = world.getPlayer();
-	        Peach peach = world.getPeach();
-	        DonkeyKong dk = world.getDk();
-	        ArrayList<GameItem> item = world.getItems();
-	        BufferedImage barrelPile = Sprite.resize(Sprite.BARREL_PILE.img(), Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 3);
+	 /**
+	  * Disegna il jpanel, la mappa e tutti gli oggetti/entità
+	  */
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
+        Graphics2D g2d = (Graphics2D) g;
+        
+        Player player = world.getPlayer();
+        Peach peach = world.getPeach();
+        DonkeyKong dk = world.getDk();
+        ArrayList<GameItem> item = world.getItems();
+        BufferedImage barrelPile = Sprite.resize(Sprite.BARREL_PILE.img(), Constants.TILE_SIZE * 3, Constants.TILE_SIZE * 3);
 
-	        //Disegna la mappa
-	        mapView.render((Graphics2D) g);
-	        
-	        g2d.drawImage(barrelPile, 0, 8 * Constants.TILE_SIZE - 10, null);
-	        
-	        // Disegna temporaneamente Mario come un rettangolo rosso
-	        g2d.drawImage(player.getCurrentFrame(), player.getX(), player.getY(), null);
-	        
-	        g2d.drawImage(dk.getCurrentFrame(), dk.getX(), dk.getY(), null);
-	        
-	        g2d.drawImage(peach.getCurrentFrame(), peach.getX(), peach.getY(), null);
-	        
-	        for (GameItem barrel : world.getItems()) {
-	        	g.drawImage(barrel.getCurrentFrame(), barrel.getX(), barrel.getY(), null);
-	        }
-	        
-	        
-	    }
-	
+        //Disegna la mappa
+        mapView.render((Graphics2D) g);
+        
+        g2d.drawImage(barrelPile, 0, 8 * Constants.TILE_SIZE - 10, null);
+        
+        // Disegna temporaneamente Mario come un rettangolo rosso
+        g2d.drawImage(player.getCurrentFrame(), player.getX(), player.getY(), null);
+        
+        g2d.drawImage(dk.getCurrentFrame(), dk.getX(), dk.getY(), null);
+        
+        g2d.drawImage(peach.getCurrentFrame(), peach.getX(), peach.getY(), null);
+        
+        for (GameItem barrel : world.getItems()) {
+        	g.drawImage(barrel.getCurrentFrame(), barrel.getX(), barrel.getY(), null);
+        }
+        
+        
+    }
+
 }

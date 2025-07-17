@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import menu.GameResultManager;
 import utils.CollisionManager;
 import utils.Constants;
 import utils.LadderManager;
@@ -32,6 +33,7 @@ public class World {
 	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
 	private ArrayList<Ladder> ladders = LadderManager.loadSampleLadders();
 	private ArrayList<TriggerZone> triggerZones = TriggerZoneManager.loadSampleTriggerZone();
+	private PlayerListener listener;
 	
 	/**
      * Costruttore.
@@ -68,11 +70,9 @@ public class World {
 			
 			// Controlla se i piedi toccano la trave e sono appena sopra
 			if (feet.intersects(beamBounds)) {
-				log.debug("{} è su una trave!", entity.getName());
 				return true;
 			}
 		}
-		log.debug("{} NON è su una trave!", entity.getName());
 		return false;
 	}
 	
@@ -95,9 +95,10 @@ public class World {
 		if (peach.isCollidingWithMario(player)) {
 			log.debug("Mario vincitore!");
 			player.setPlayerState(PlayerState.WINNER);
-			player.setScore(1000); // Provvisorio, punteggio aggiuntivo se salvi peach
+			player.setScore(player.getScore() + 1000); // Punteggio aggiuntivo se salvi peach
 			peach.setCurrentActionState(ActionState.VICTORY);
 			player.getListener().sideMenuRefresh();
+			GameResultManager.endGame(player, listener.getGamePanel());
 			player.getListener().stopGameLoop(); // fermo il gioco
 			
 			return;
@@ -148,7 +149,6 @@ public class World {
 			log.debug("barile rimosso");
 			items.removeAll(expiredBarrels);
 		}
-
 	}
 	
 	/**
@@ -172,9 +172,7 @@ public class World {
             }
             return true;
 	    }
-        
         return false;
-        
 	}
 	
 	/**

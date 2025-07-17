@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import controller.PlayerController;
 import model.PlayerState;
 import model.World;
-import view.ElencoView;
 import view.GamePanel;
 
 /**
@@ -88,11 +87,20 @@ public class GameEngine implements Runnable {
             try {
                 Thread.sleep(16);
             } catch (InterruptedException e) {
-                log.debug("sleep failed", e);
                 running = false;
             }
         }
     }
+
+    //----GETTERS AND SETTERS----
+    
+	public GamePanel getPanel() {
+		return panel;
+	}
+
+	public void setPanel(GamePanel panel) {
+		this.panel = panel;
+	}
 
 }
     

@@ -1,11 +1,14 @@
 package defaultmain;
 
 import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import audio.AudioManager;
 import model.Player;
+import utils.Sprite;
 import view.ElencoView;
 import view.GamePanel;
 import view.SideMenuView;
@@ -30,6 +33,7 @@ public class GameLauncher {
     	GamePanel panel = setter.getPanel();
     	GameEngine engine = setter.getEngine();
     	Player player = setter.getWorld().getPlayer();
+    	AudioManager.preloadJumpSound();
     	
     	ElencoView elencoView = new ElencoView();
     	SideMenuView sideMenu = new SideMenuView(player, engine, elencoView);
@@ -48,6 +52,8 @@ public class GameLauncher {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);
+        BufferedImage icon = Sprite.MARIO_WALK_R.img();
+        frame.setIconImage(icon);
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
 

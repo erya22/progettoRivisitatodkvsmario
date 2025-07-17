@@ -42,7 +42,10 @@ public enum Sprite {
     BARREL3("/barrelhammer/barrel3.png"),
     BARREL4("/barrelhammer/barrel4.png"),
     BARREL5("/barrelhammer/barrel5.png"),
-    BARREL_PILE("/barrelhammer/barili.png");
+    BARREL_PILE("/barrelhammer/barili.png"),
+	MENU("/menuview/Title.png"),
+	SIDEMENU_WASD("/sidemenuview/WASD.png"),
+	SIDEMENU_FRECCE("/sidemenuview/FRECCE.png");
     
     private final Logger log = LoggerFactory.getLogger(Sprite.class);
     

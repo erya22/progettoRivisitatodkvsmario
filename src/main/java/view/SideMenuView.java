@@ -1,5 +1,6 @@
 package view;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -7,20 +8,20 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import defaultmain.ClientManager;
 import defaultmain.GameEngine;
 import dkserver.PlayerStatus;
 import model.Player;
 import model.PlayerListener;
 import utils.Constants;
+import utils.Sprite;
 
-//TODO: aggiungi nuove immagini frecce
+/**
+ * MENU e istruzioni in display sulla destra dellos chermo
+ */
 public class SideMenuView extends JPanel implements PlayerListener {
     private Font customFont;
     private BufferedImage arrowImg, wasdImg, viteImg;
@@ -28,7 +29,10 @@ public class SideMenuView extends JPanel implements PlayerListener {
     private GameEngine engine;
     private ElencoView elencoView;
 
-    
+    /**
+     * Costruttore.
+     * @param player giocatore locale
+     */
     public SideMenuView(Player player, GameEngine engine, ElencoView elencoView) {
     	this.player = player;
     	this.engine = engine;
@@ -36,13 +40,9 @@ public class SideMenuView extends JPanel implements PlayerListener {
     	this.player.setListener(this);
     	
     	//CARICAMENTO IMMAGINI
-    	try {
-            arrowImg = ImageIO.read(getClass().getResourceAsStream("/SIDEMENU/FRECCE.png"));
-            wasdImg = ImageIO.read(getClass().getResourceAsStream("/SIDEMENU/WASD.png"));
-            viteImg = ImageIO.read(getClass().getResourceAsStream("/playersprites/a1.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        arrowImg = Sprite.SIDEMENU_FRECCE.img();
+        wasdImg = Sprite.SIDEMENU_WASD.img();
+        viteImg = Sprite.MARIO_WALK_R.img();
     	
     	//CARICAMENTO FONT
         try {
@@ -65,6 +65,9 @@ public class SideMenuView extends JPanel implements PlayerListener {
         setBackground(Color.BLACK);
     }
 
+    /**
+     * Scrive e disegna le immagini sulla destra dello schermo.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -127,11 +130,18 @@ public class SideMenuView extends JPanel implements PlayerListener {
         
         y += 40;
         g2.drawString("Salta i barili per guadagnare punti!", x, y);
-        y += 40;
-        g2.drawString("Hai a disposizione tre vite", x, y);
         
         y += 40;
+        g2.drawString("Punteggio per salto barile: +100", x, y);
+        
+        y += 40;
+        g2.drawString("Punteggio per salvataggio principessa: +1000", x, y);
+
+        y += 40;
         g2.drawString("SCORE: " + player.getScore(), x, y);
+        
+        y += 40;
+        g2.drawString("Hai a disposizione tre vite", x, y);
         
         //Immagini vite rimanenti
         y += 40;
@@ -144,21 +154,33 @@ public class SideMenuView extends JPanel implements PlayerListener {
         for (PlayerStatus status : elencoView.getElenco()) {
         	y += 40;
         	if (y > Constants.SCREEN_HEIGHT) break;
-        	String riga = String.format("%s %d %d %s" ,status.getNickname(), status.getScore(), status.getVite(), status.isAlive() ? "vivo" : "morto" );
+        	String riga = String.format("%s [ SCORE: %d ]\n[ VITE RIMANENTI: %d ]\n[ STATUS: %s ]" ,status.getNickname(), status.getScore(), status.getVite(), status.isAlive() ? "vivo" : "morto" );
         	g2.drawString(riga, x, y);
         }
         
     }
     
     
-    //Per display vite rimanenti
+    /**
+     * Per display vite rimanenti
+     */
     public void sideMenuRefresh() {
         repaint(); 
     }
 
+    /**
+     * Ferma il gameloop.
+     */
 	@Override
 	public void stopGameLoop() {
 		engine.stop();
-		
+	}
+
+	/**
+	 * @return il gamePanel
+	 */
+	@Override
+	public Component getGamePanel() {
+		return engine.getPanel();
 	}
 }

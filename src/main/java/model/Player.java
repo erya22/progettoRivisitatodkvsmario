@@ -8,12 +8,13 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import audio.AudioManager;
 import defaultmain.ClientManager;
 import dkserver.PlayerStatus;
+import menu.GameResultManager;
 import utils.CollisionManager;
 import utils.Constants;
 import utils.LadderManager;
@@ -56,6 +57,10 @@ public class Player extends Entity {
 	
 	private boolean isHitAnimationInitialized = false;
 	private long animationTime = 0;
+	private boolean isRecoveringFromHit = false;
+	private long hitStartTime;
+	private final long hitDuration = 500; // durata animazione in ms
+
 	
 	/**
      * Costruttore.
@@ -193,10 +198,10 @@ public class Player extends Entity {
      * @param movingHorizontally indica se il salto include movimento orizzontale
      */
 	public void jump(boolean movingHorizontally) {
-		log.debug("is key pressed? {}", movingHorizontally);
 		if (getCurrentTerrain() == Terrain.BEAM) {
 			this.setVelocityY(-getJumpStrength());
 			this.setCurrentActionState(ActionState.JUMPING);
+			AudioManager.playJumpSound();
 			setMovingHorizontallyWhileJumping(movingHorizontally);
 		}
 	}
@@ -213,39 +218,38 @@ public class Player extends Entity {
 	 * Collisione con barili, in caso toglie una vita al player.
 	 */
 	public void hitByBarrell() {
-		log.debug("hit by barrel method");
 		playerLives--;
 		ClientManager.instance().playerStatus().setVite(playerLives);
 		listener.sideMenuRefresh();
 		animateHitInit();
 		setPlayerState(PlayerState.HIT_BY_BARREL);
+		AudioManager.playOneShotMusic("/audio/death.wav");
 	}
 	
 	/**
      * Inizializza l'animazione dopo essere stato colpito.
      */
 	public void animateHitInit() {
-		log.debug("passed by animate init");
 		setCurrentActionState(ActionState.HIT);
+		isRecoveringFromHit = true;
+		hitStartTime = System.currentTimeMillis();
+
 		if (getCurrentDirection() != Direction.LEFT) {
 			setCurrentDirection(Direction.RIGHT);			
 		}
 		animationTime = System.currentTimeMillis() + 3000;
-		log.debug("animationTime: {}", animationTime);
 		setFrameCounter(0);
 		setSpriteNumber(getCurrentAnimationFrames().length);
 		setCurrentFrameIndex(0);
-		
 	}
+
 	
 	/**
      * Aggiorna i frame dell’animazione di colpo finché non termina.
      * @return true se l’animazione è ancora in corso, false se è finita
      */
 	public boolean animateHit()	{
-		log.debug("passed by animate hit method cfi: {}, fc: {}, spn{}", getCurrentFrameIndex(), getFrameCounter(), getSpriteNumber());
 		long now = System.currentTimeMillis();
-		log.debug("now: {} e at: {}", now, animationTime);
 		if (now < animationTime) {
 			updateAnimation();
 			return true;
@@ -259,17 +263,16 @@ public class Player extends Entity {
 	}
 	
 
-	
 	/**
-	 * Ferma il gioco se player ha zero vite rimanenti.
+	 * Ferma il gioco e mostra jdialog se player ha zero vite rimanenti.
 	 */
 	public void checkIfAlive() {
 		if(getPlayerState() == PlayerState.DEAD) {
 			ClientManager.instance().playerStatus().setAlive(false);
+			GameResultManager.endGame(this, listener.getGamePanel());
 			listener.stopGameLoop();
 		}
-			
-	}
+}
 	
 	/**
      * Reimposta il giocatore alla posizione iniziale e stato iniziale.
@@ -391,7 +394,6 @@ public class Player extends Entity {
 	@Override
 	public void update() {
 	    previousActionState = getCurrentActionState();
-//		log.debug("DATI AGGIORNATI: {}", this.toString());
 	}
 	
 	/**
@@ -403,10 +405,8 @@ public class Player extends Entity {
 		//LIMITI ORIZZONTALI MAPPA
 		if (getX() < 0){
 			setX(0);
-//			log.debug("Mario ha colpito il bordo orizzontale sinistro della mappa");
 		} else if (getX() + getWidth() > Constants.MAP_WIDTH){
 			setX(Constants.MAP_WIDTH - getWidth());
-//			log.debug("Mario ha colpito il bordo orizzontale destro della mappa");
 		}
 			
 		// Applica gravità solo se in salto o in caduta
@@ -575,7 +575,6 @@ public class Player extends Entity {
 			ArrayList<PlayerStatus> ssss = ClientManager.instance().getClient().read(ps);
 			
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -590,7 +589,6 @@ public class Player extends Entity {
 		try {
 			ClientManager.instance().getClient().read(ps);
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -613,7 +611,6 @@ public class Player extends Entity {
 		try {
 			ClientManager.instance().getClient().read(ps);
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -625,11 +622,5 @@ public class Player extends Entity {
 	public void setHitAnimationInitialized(boolean isHitAnimationInitialized) {
 		this.isHitAnimationInitialized = isHitAnimationInitialized;
 	}
-    
-    
-	
-	
-	
-	
 	
 }

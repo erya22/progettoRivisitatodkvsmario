@@ -12,6 +12,9 @@ import utils.Constants;
 import utils.TileMapLoader;
 import utils.TileUtils;
 
+/**
+ * Componente grafico che disegna la mappa di gioco. Carica la mappa, il tileset e disegna i layer tile-based.
+ */
 public class MapView extends JComponent {
 	private BufferedImage[] tiles;
     private BufferedImage tileset;
@@ -20,6 +23,10 @@ public class MapView extends JComponent {
     private int tileSize;
     private TileMap map;
     
+    /**
+     * Crea una nuova {@code MapView} caricando la mappa e il tileset.
+     * Inizializza le tile pronte per essere disegnate.
+     */
     public MapView() {
     	this.map = TileMapLoader.loadMap();
         this.tileset = TileMapLoader.loadTileset();
@@ -29,6 +36,10 @@ public class MapView extends JComponent {
         this.tiles = TileUtils.loadTiles(tileset, tileWidth, tileHeight, tileSize);
     }
     
+    /**
+     * Imposta una nuova dimensione per le tile e ricarica le immagini scalate.
+     * @param newTileSize la nuova dimensione in pixel per le tile
+     */
     public void setTileSize(int newTileSize) {
         if (newTileSize != this.tileSize) {
             this.tileSize = newTileSize;
@@ -36,6 +47,10 @@ public class MapView extends JComponent {
         }
     }
     
+    /**
+     * Esegue il rendering della mappa disegnando ogni layer tile-based.
+     * @param g il contesto grafico su cui disegnare
+     */
     public void render(Graphics2D g) {
     	
         for (Layer layer : map.getLayers()) {
@@ -57,6 +72,9 @@ public class MapView extends JComponent {
         }
     }
     
+    /**
+     * Metodo standard per disegnare la mappa.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

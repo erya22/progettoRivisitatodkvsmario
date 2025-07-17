@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import dkserver.Client;
 import dkserver.PlayerStatus;
 
+/**
+ * La classe gestisce la comunicazione tra il client locale e il server per sincronizzare lo stato dei giocatori in un gioco multiplayer.
+ * È prevista una sola istanza per esecuzione.
+ */
 public class ClientManager {
 	
 	private static ClientManager instance;
@@ -13,6 +17,11 @@ public class ClientManager {
 	private PlayerStatus myStatus;
 	private Client client;
 	
+	/**
+     * Costruttore.
+     * @param nickname   il nome del giocatore locale
+     * @param serverName il nome o indirizzo del server a cui connettersi
+     */
 	public ClientManager(String nickname, String serverName) {
 		this.myStatus = new PlayerStatus(nickname, 0, 3, true);
 		this.elenco = new ArrayList<PlayerStatus>();
@@ -20,7 +29,6 @@ public class ClientManager {
 		try {
 			this.client = new Client(serverName);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			client = null;
 			e.printStackTrace();
 		}
@@ -35,16 +43,13 @@ public class ClientManager {
 					try {
 						elenco = client.read(myStatus);
 					} catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					try {
 						Thread.sleep(10000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -53,16 +58,22 @@ public class ClientManager {
 			
 			
 		});
-		
 		t.start();
-		
 	}
 	
+	/**
+     * Aggiorna lo stato del giocatore locale.
+     * @param score il nuovo punteggio
+     * @param vite  il numero di vite rimanenti
+     * @param alive true se il giocatore è vivo, altrimenti false
+     */
 	public void update(long score, int vite, boolean alive) {
 		myStatus.setScore(score);
 		myStatus.setVite(vite);
 		myStatus.setAlive(alive);
 	}
+	
+	//----GETTERS AND SETTERS----
 	
 	public static ClientManager instance() {
 		return instance;
@@ -75,13 +86,12 @@ public class ClientManager {
 	public Client getClient() {
 		return client;
 	}
-	
-//	public ArrayList<PlayerStatus> read() {
-//		try {
-//			return client.read(myStatus);
-//		} catch (Exception e) {
-//			return new ArrayList<PlayerStatus>();
-//		}
-//	}
 
+	public ArrayList<PlayerStatus> getElenco() {
+		return elenco;
+	}
+
+	public void setElenco(ArrayList<PlayerStatus> elenco) {
+		this.elenco = elenco;
+	}
 }
