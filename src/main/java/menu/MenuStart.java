@@ -14,8 +14,8 @@ import audio.AudioManager;
 import defaultmain.GameLauncher;
 
 /**
- * Classe Per startare il menu, che poi si occuperà di lanciare il gioco.
- * IMPORTANTE: runnare questa classe dopo aver startato il server
+ * Classe per avviare il menu, che poi si occuperà di lanciare il gioco.
+ * IMPORTANTE: runnare questa classe dopo aver avviato il server
  */
 public class MenuStart {
     public static void main(String[] args) {

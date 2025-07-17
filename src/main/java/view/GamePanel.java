@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import controller.PlayerController;
 import model.DonkeyKong;
+import model.FloatingScore;
 import model.GameItem;
 import model.Peach;
 import model.Player;
@@ -71,6 +73,13 @@ public class GamePanel extends JPanel {
         for (GameItem barrel : world.getItems()) {
         	g.drawImage(barrel.getCurrentFrame(), barrel.getX(), barrel.getY(), null);
         }
+        
+        for (FloatingScore fs : world.getFloatingScores()) {
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.drawString("+" + fs.getScore(), fs.getX(), fs.getY());
+        }
+
         
         
     }

@@ -2,6 +2,7 @@ package model;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,8 @@ public class World {
      */
 	public void update(ArrayList<Collision> beams) {
 		if (isPaused) return;
+		floatingScores.removeIf(FloatingScore::isExpired);
+
 		updateAllEntities(beams);
 		updateAllItems(beams);
 	}
@@ -174,6 +177,17 @@ public class World {
         return false;
 	}
 	
+	private ArrayList<FloatingScore> floatingScores = new ArrayList<>();
+
+	public void addFloatingScore(int x, int y, int score) {
+	    floatingScores.add(new FloatingScore(x, y, score));
+	}
+
+	public ArrayList<FloatingScore> getFloatingScores() {
+	    return floatingScores;
+	}
+
+	
 	/**
      * Verifica se il player ha saltato con successo sopra un barile, assegnandogli uno score di 100.
      * @param barrel il barile da verificare
@@ -191,6 +205,7 @@ public class World {
             player.addScore(100);
             barrel.setJumpedOver(true); /*NOTA: non viene piu resettata a false per ogni barile, quindi se il player salta piu volte  
             								 lo stesso barile non avrà score aggiuntivo, ma è abbastanza insolito che ciò avvenga*/
+            addFloatingScore(player.getX() + 10, barrel.getY() - 30, 100);
         }
 	}
 

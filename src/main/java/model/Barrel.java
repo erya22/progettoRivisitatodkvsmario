@@ -19,10 +19,6 @@ import utils.Sprite;
 public class Barrel extends GameItem {
 	private static final Logger log = LoggerFactory.getLogger(GameItem.class);
 	
-	private int previousBeamY = -1;
-	private final int maxStepUp = 0;
-	private final int maxStepDown = 10;
-	
 	private BarrelState barrelState;
 	private int velocityX;
 	private int velocityY;
