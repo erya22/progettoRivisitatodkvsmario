@@ -76,7 +76,7 @@ Include le entità, stati, mappa e logica di gioco.
 
 Utilità generiche e gestione collisioni:
 
-- **`CollisionManager`**: gestisce collisioni via `Rectangle`.
+- **`BeamManager`**: gestisce collisioni via `Rectangle`.
 - **`LadderManager`**: identifica la posizione delle scale.
 - **`TiledMapLoader`** / **`TiledUtils`**: caricano mappa e tile come immagini `BufferedImage`.
 - **`NumSprites`**: gestisce i riferimenti statici agli sprite.
