@@ -39,12 +39,12 @@ public class GameResultManager {
      * @param parentComponent  il componente padre usato per centrare le finestre di dialogo
      */
     public static void endGame(Player player, Component parentComponent) {
-        if (GameResultManager.isMultiplayer(ClientManager.instance().getElenco())) {
+        if (isMultiplayer(ClientManager.instance().getElenco())) {
             // Mostra dialogo di attesa finché anche l'altro giocatore non termina
-            JDialog waitingDialog = GameResultManager.waitingDialog(parentComponent);
+            JDialog waitingDialog = waitingDialog(parentComponent);
 
             new Thread(() -> {
-                while (!(GameResultManager.bothPlayersDead(ClientManager.instance().getElenco()))) {
+                while (!(bothPlayersDead(ClientManager.instance().getElenco()))) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException ignored) {}
@@ -52,12 +52,12 @@ public class GameResultManager {
 
                 SwingUtilities.invokeLater(() -> {
                     waitingDialog.dispose();
-                    GameResultManager.mostraGameResultDialog(player, parentComponent);
+                    mostraGameResultDialog(player, parentComponent);
                 });
             }).start();
         } else {
             // Modalità singolo giocatore: mostra subito il risultato
-            GameResultManager.mostraGameResultDialog(player, parentComponent);
+            mostraGameResultDialog(player, parentComponent);
         }
     }
 

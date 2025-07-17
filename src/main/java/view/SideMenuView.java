@@ -151,10 +151,14 @@ public class SideMenuView extends JPanel implements PlayerListener {
         		g2.drawImage(viteImg, x + 180 + (i * 40), y - 32, 32, 32, null);
         }
         
+        y+=40;
+        g2.setColor(Color.yellow);
+        g2.drawString("UTENTE    SCORE VITE STATO", x, y);
+        g2.setColor(Color.white);
         for (PlayerStatus status : elencoView.getElenco()) {
-        	y += 40;
+        	y += 20;
         	if (y > Constants.SCREEN_HEIGHT) break;
-        	String riga = String.format("%s [ SCORE: %d ]\n[ VITE RIMANENTI: %d ]\n[ STATUS: %s ]" ,status.getNickname(), status.getScore(), status.getVite(), status.isAlive() ? "vivo" : "morto" );
+        	String riga = String.format("%-9.9s %5d %3d  %s" ,status.getNickname(), status.getScore(), status.getVite(), status.isAlive() ? "vivo" : "morto" );
         	g2.drawString(riga, x, y);
         }
         
