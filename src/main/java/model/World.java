@@ -164,12 +164,12 @@ public class World {
         	boolean hitFromAbove = player.getY() + player.getHeight() <= barrel.getY() + 10;
         	            
             player.hitByBarrell();
-            player.checkIfAlive();
-            
             if (hitFromAbove) {
                 // Mario è atterrato sopra il barile, non conto i 100 punti di score
-                player.addScore(-100);
+            	if(player.getScore() > 0)
+            			player.addScore(-100);
             }
+            player.checkIfAlive();
             return true;
 	    }
         return false;
