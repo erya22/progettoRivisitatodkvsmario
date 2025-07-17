@@ -33,7 +33,6 @@ public class World {
 	private ArrayList<Collision> beams = CollisionManager.loadSampleCollisions();
 	private ArrayList<Ladder> ladders = LadderManager.loadSampleLadders();
 	private ArrayList<TriggerZone> triggerZones = TriggerZoneManager.loadSampleTriggerZone();
-	private PlayerListener listener;
 	
 	/**
      * Costruttore.
@@ -98,7 +97,7 @@ public class World {
 			player.setScore(player.getScore() + 1000); // Punteggio aggiuntivo se salvi peach
 			peach.setCurrentActionState(ActionState.VICTORY);
 			player.getListener().sideMenuRefresh();
-			GameResultManager.endGame(player, listener.getGamePanel());
+			GameResultManager.endGame(player, player.getListener().getGamePanel());
 			player.getListener().stopGameLoop(); // fermo il gioco
 			
 			return;
