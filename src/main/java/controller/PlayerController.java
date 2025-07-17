@@ -121,7 +121,7 @@ public class PlayerController implements KeyListener {
 		switch (player.getPlayerState()) {
 		case HIT_BY_BARREL:
 		case DEAD: 
-		case WINNER: return;
+		case SAVED_PEACH: return;
 		}
 		keysPressed.add(e.getKeyCode());
 		

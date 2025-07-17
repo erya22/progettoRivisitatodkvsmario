@@ -18,30 +18,44 @@ import javax.swing.SwingConstants;
 
 import audio.AudioManager;
 import dkserver.PlayerStatus;
+import model.Player;
+import model.PlayerState;
 
 public class GameResultDialog extends JDialog {
     private Font retroFont;
-    private Window player1Window;
     
     /**
      * Costruttore
-     * @param p1 finestra di dialogo
-     * @param p1Score score del player locale
+     * @param window finestra di dialogo
+     * @param p1 player locale
      * @param elenco elenco dei players 
-     * @param winner vincitore //TODO: calcolo punteggio e vincitore)
+     * @param winner vincitore 
      */
-    public GameResultDialog(Window p1, int p1Score, ArrayList<PlayerStatus> elenco, String winner) {
-        super(p1, "Game Over", ModalityType.APPLICATION_MODAL);
+    public GameResultDialog(Window window, Player p1, ArrayList<PlayerStatus> elenco, String winner) {
+        super(window, "Game Over", ModalityType.APPLICATION_MODAL);
+        
+        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                Window owner = getOwner();
+                if (owner != null) {
+                    owner.dispose();
+                }
+                System.exit(0);
+            }
+        });
+
         AudioManager.pauseBackgroundMusic();
         AudioManager.playOneShotMusic("/audio/win1.wav"); 
         if(elenco.size() == 1) {
-        	initSinglePlayerUI(p1Score);
+        	initSinglePlayerUI(p1.getScore(), p1.getPlayerState());
         } else {
         	ArrayList<String> playerNames = new ArrayList<>();
             ArrayList<Long> playerScores = new ArrayList<>();
 
             for (PlayerStatus ps : elenco) {
-                playerNames.add(ps.getNickname()); // o getPlayerName(), a seconda della tua classe
+                playerNames.add(ps.getNickname());
                 playerScores.add(ps.getScore());
             }
 
@@ -53,7 +67,7 @@ public class GameResultDialog extends JDialog {
      * Interfaccia utente jdialog se sono in singleplayer
      * @param score punteggio del giocatore locale
      */
-    private void initSinglePlayerUI(int score) {
+    private void initSinglePlayerUI(int score, PlayerState state) {
         try {
             retroFont = Font.createFont(Font.TRUETYPE_FONT,
                     getClass().getResourceAsStream("/fontstexts/PressStart2P-Regular.ttf"))
@@ -72,16 +86,24 @@ public class GameResultDialog extends JDialog {
         panel.setBackground(Color.BLACK);
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JLabel titleLabel = new JLabel("GAME OVER", SwingConstants.CENTER);
+        // Titolo principale
+        JLabel titleLabel = new JLabel(state == PlayerState.SAVED_PEACH ? "YOU WIN!" : "GAME OVER", SwingConstants.CENTER);
         titleLabel.setForeground(Color.RED);
         titleLabel.setFont(retroFont);
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        JPanel centerPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+        // Pannello centrale con score e messaggio
+        JPanel centerPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         centerPanel.setBackground(Color.BLACK);
 
-        Window owner = getOwner();
         Font smallerFont = retroFont.deriveFont(10f);
+
+        if (state == PlayerState.SAVED_PEACH) {
+            JLabel savedPrincess = new JLabel("Hai salvato la principessa", SwingConstants.CENTER);
+            savedPrincess.setForeground(Color.PINK);
+            savedPrincess.setFont(smallerFont);
+            centerPanel.add(savedPrincess);
+        }
 
         JLabel scoreLabel = new JLabel("YOUR SCORE: " + score, SwingConstants.CENTER);
         scoreLabel.setForeground(Color.YELLOW);
@@ -94,55 +116,12 @@ public class GameResultDialog extends JDialog {
         centerPanel.add(thanksLabel);
 
         panel.add(centerPanel, BorderLayout.CENTER);
-
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.setBackground(Color.BLACK);
-
-        JLabel replayLabel = new JLabel("PLAY AGAIN?", SwingConstants.CENTER);
-        replayLabel.setForeground(Color.WHITE);
-        replayLabel.setFont(retroFont);
-        bottomPanel.add(replayLabel, BorderLayout.NORTH);
-
-        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonsPanel.setBackground(Color.BLACK);
-
-        JButton yesButton = new JButton("YES");
-        yesButton.setFont(retroFont.deriveFont(10f));
-        yesButton.setBackground(Color.DARK_GRAY);
-        yesButton.setForeground(Color.WHITE);
-        yesButton.setFocusPainted(false);
-        yesButton.addActionListener(e -> {
-        	AudioManager.pauseBackgroundMusic();
-            dispose();
-            if (owner != null) {
-                owner.dispose(); // Chiude la finestra principale del gioco
-            }
-            new Thread(() -> MenuStart.main(new String[]{})).start(); // rilancia il gioco
-        });
-
-        JButton noButton = new JButton("NO");
-        noButton.setFont(retroFont.deriveFont(10f));
-        noButton.setBackground(Color.DARK_GRAY);
-        noButton.setForeground(Color.WHITE);
-        noButton.setFocusPainted(false);
-        noButton.addActionListener(e -> {
-            dispose(); // chiudi dialog
-            if (owner != null) {
-                owner.dispose(); // chiudi la finestra principale
-            }
-            System.exit(0); // termina il programma
-        });
-
-
-        buttonsPanel.add(yesButton);
-        buttonsPanel.add(noButton);
-
-        bottomPanel.add(buttonsPanel, BorderLayout.SOUTH);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
+        panel.add(createBottomButtonsPanel(getOwner()), BorderLayout.SOUTH);
 
         setContentPane(panel);
         setResizable(false);
     }
+
 
     /**
      *  Interfaccia utente jdialog se sono in multiplayer
@@ -174,7 +153,7 @@ public class GameResultDialog extends JDialog {
         titleLabel.setFont(retroFont);
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        JPanel scoresPanel = new JPanel(new GridLayout(playerNames.size() + 1, 1, 5, 2)); // +1 per il vincitore
+        JPanel scoresPanel = new JPanel(new GridLayout(playerNames.size() + 1, 1, 5, 2)); 
         scoresPanel.setBackground(Color.BLACK);
 
         Font smallerFont = retroFont.deriveFont(10f);
@@ -192,8 +171,18 @@ public class GameResultDialog extends JDialog {
         scoresPanel.add(winnerLabel);
 
         panel.add(scoresPanel, BorderLayout.CENTER);
+        panel.add(createBottomButtonsPanel(getOwner()), BorderLayout.SOUTH);
 
-        // Pulsanti
+        setContentPane(panel);
+        setResizable(false);
+    }
+    
+    /**
+     * Gestisce schermata e buttons del play again
+     * @param toDispose la finestra principale da chiudere
+     * @return un {@link JPanel} contenente il messaggio e i bottoni YES/NO
+     */
+    private JPanel createBottomButtonsPanel(Window toDispose) {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBackground(Color.BLACK);
 
@@ -213,7 +202,7 @@ public class GameResultDialog extends JDialog {
         yesButton.addActionListener(e -> {
             AudioManager.pauseBackgroundMusic();
             dispose();
-            if (player1Window != null) player1Window.dispose();
+            if (toDispose != null) toDispose.dispose();
             new Thread(() -> MenuStart.main(new String[]{})).start();
         });
 
@@ -224,18 +213,14 @@ public class GameResultDialog extends JDialog {
         noButton.setFocusPainted(false);
         noButton.addActionListener(e -> {
             dispose();
-            if (player1Window != null) player1Window.dispose();
+            if (toDispose != null) toDispose.dispose();
             System.exit(0);
         });
 
         buttonsPanel.add(yesButton);
         buttonsPanel.add(noButton);
-
         bottomPanel.add(buttonsPanel, BorderLayout.SOUTH);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
 
-        setContentPane(panel);
-        setResizable(false);
+        return bottomPanel;
     }
-
 }
