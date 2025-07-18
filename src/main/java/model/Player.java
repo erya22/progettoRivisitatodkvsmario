@@ -3,11 +3,13 @@ package model;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -573,7 +575,7 @@ public class Player extends Entity {
 
 		try {
 			ArrayList<PlayerStatus> ssss = ClientManager.instance().getClient().read(ps);
-			
+		} catch(SocketException se ) {
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
@@ -584,14 +586,16 @@ public class Player extends Entity {
 	}
 
 	public void setPlayerLives(int playerLives) {
-		this.playerLives = playerLives;
-		ClientManager.instance().update(score, playerLives, getPlayerState() != PlayerState.DEAD);
-		try {
-			ClientManager.instance().getClient().read(ps);
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
+	    this.playerLives = playerLives;
+	    ClientManager.instance().update(score, playerLives, getPlayerState() != PlayerState.DEAD);
+	    try {
+	        ClientManager.instance().getClient().read(ps);
+	    } catch (SocketException se) {
+	    } catch (ClassNotFoundException | IOException e) {
+	        e.printStackTrace();
+	    }
 	}
+
 
 	public PlayerListener getListener() {
 		return listener;
@@ -610,6 +614,7 @@ public class Player extends Entity {
 		ClientManager.instance().update(score, playerLives, getPlayerState() != PlayerState.DEAD);
 		try {
 			ClientManager.instance().getClient().read(ps);
+		} catch(SocketException se ) {
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}

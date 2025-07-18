@@ -1,6 +1,7 @@
 package defaultmain;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import dkserver.Client;
@@ -36,27 +37,26 @@ public class ClientManager {
 		if (client == null) return;
 		
 		Thread t = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						elenco = client.read(myStatus);
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					try {
-						Thread.sleep(10000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				
-			}
-			
-			
+		    @Override
+		    public void run() {
+		        while (true) {
+		            try {
+		                elenco = client.read(myStatus);
+		            } catch (SocketException se) {
+		            	System.out.println("Client disconnesso: connessione interrotta dal server.");
+		                break;
+		            } catch (IOException e) {
+		                e.printStackTrace();
+		            } catch (ClassNotFoundException e) {
+		                e.printStackTrace();
+		            }
+		            try {
+		                Thread.sleep(10000);
+		            } catch (InterruptedException e) {
+		                e.printStackTrace();
+		            }
+		        }
+		    }
 		});
 		t.start();
 	}
@@ -102,14 +102,15 @@ public class ClientManager {
 	public void sendStatusUpdate() {
 	    try {
 	        try {
-				client.read(myStatus);
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	            client.read(myStatus);
+	        } catch (ClassNotFoundException e) {
+	            e.printStackTrace();
+	        }
+	    } catch (SocketException se) {
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
 	}
+
 
 }

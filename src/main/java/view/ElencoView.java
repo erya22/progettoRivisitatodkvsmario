@@ -1,6 +1,7 @@
 package view;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -39,6 +40,7 @@ public class ElencoView {
                 log.debug("ps: {}", ps);
                 try {
                     elenco = ClientManager.instance().getClient().read(ps);
+                } catch(SocketException se ) {
                 } catch (ClassNotFoundException | IOException e) {
                     e.printStackTrace();
                 }
