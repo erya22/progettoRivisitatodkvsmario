@@ -225,6 +225,14 @@ public class GameResultDialog extends JDialog {
         noButton.addActionListener(e -> {
             dispose();
             if (toDispose != null) toDispose.dispose();
+
+            try {
+                PlayerStatus shutdown = new PlayerStatus("__SHUTDOWN__", 0, 0, false);
+                ClientManager.instance().getClient().sendShutdownCommand();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
             System.exit(0);
         });
 

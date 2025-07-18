@@ -3,11 +3,12 @@ package controller;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-
+import defaultmain.ClientManager;
 import model.ActionState;
 import model.Beam;
 import model.Direction;
@@ -53,7 +54,12 @@ public class PlayerController implements KeyListener {
 	        if (escPressedTime < 0) {
 	            escPressedTime = System.currentTimeMillis();
 	        } else if (System.currentTimeMillis() - escPressedTime >= ESC_HOLD_DURATION_MS) {
-	            System.exit(0);
+	            try {
+					ClientManager.instance().getClient().sendShutdownCommand();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	        	System.exit(0);
 	        }
 	    } else {
 	        escPressedTime = -1; // reset se ESC non è premuto
