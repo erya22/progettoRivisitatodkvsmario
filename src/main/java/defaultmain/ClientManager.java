@@ -98,4 +98,18 @@ public class ClientManager {
 	public void setElenco(ArrayList<PlayerStatus> elenco) {
 		this.elenco = elenco;
 	}
+	
+	public void sendStatusUpdate() {
+	    try {
+	        try {
+				client.read(myStatus);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+
 }
