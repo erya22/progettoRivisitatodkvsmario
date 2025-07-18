@@ -99,6 +99,7 @@ public class World {
 			player.setPlayerState(PlayerState.SAVED_PEACH);
 			player.setScore(player.getScore() + 1000); // Punteggio aggiuntivo se salvi peach
 			ClientManager.instance().playerStatus().setAlive(false);
+			ClientManager.instance().sendStatusUpdate();
 			peach.setCurrentActionState(ActionState.VICTORY);
 			player.getListener().sideMenuRefresh();
 			GameResultManager.endGame(player, player.getListener().getGamePanel());
