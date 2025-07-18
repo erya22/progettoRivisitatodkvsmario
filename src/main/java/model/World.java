@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import defaultmain.ClientManager;
 import menu.GameResultManager;
 import utils.BeamManager;
 import utils.Constants;
@@ -97,6 +98,7 @@ public class World {
 			log.debug("Mario vincitore!");
 			player.setPlayerState(PlayerState.SAVED_PEACH);
 			player.setScore(player.getScore() + 1000); // Punteggio aggiuntivo se salvi peach
+			ClientManager.instance().playerStatus().setAlive(false);
 			peach.setCurrentActionState(ActionState.VICTORY);
 			player.getListener().sideMenuRefresh();
 			GameResultManager.endGame(player, player.getListener().getGamePanel());
